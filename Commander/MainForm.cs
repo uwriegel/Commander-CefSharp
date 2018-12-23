@@ -1,4 +1,5 @@
-﻿using CefSharp.WinForms;
+﻿using CefSharp;
+using CefSharp.WinForms;
 using Commander.Properties;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,8 @@ namespace Commander
     {
         public MainForm()
         {
-            // TODO: Menu DevTools
             // TODO: Themes
             InitializeComponent();
-            //browser.Load("file:///C:/Users/urieg/Projects/CommanderUI/dist/Commander/index.html");
             browser.Load("serve://commander");
         }
 
@@ -44,14 +43,37 @@ namespace Commander
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(800, 450);
-
             Icon = Resources.Kirk;
+
+            CreateMenu(this);
+
             Controls.Add(browser);
             Name = "MainForm";
             Text = "Commander";
 
             ResumeLayout(false);
         }
+
+        void CreateMenu(Control parent)
+        {
+            var menu = new MenuStrip()
+            {
+                Parent = parent
+            };
+
+            var itemFile = new ToolStripMenuItem("&File");
+            menu.Items.Add(itemFile);
+
+            var itemView = new ToolStripMenuItem("&View");
+            menu.Items.Add(itemView);
+
+            var itemDevTools = new ToolStripMenuItem("&Developer Tools", null, OnDevTools, Keys.F12);
+            itemView.DropDownItems.Add(itemDevTools);
+            itemView.ShortcutKeys = Keys.F10;
+
+        }
+
+        void OnDevTools(object src, EventArgs args) => browser.GetBrowser().ShowDevTools();
 
         ChromiumWebBrowser browser;
     }

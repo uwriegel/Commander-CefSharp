@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Commander
 {
@@ -31,6 +32,9 @@ namespace Commander
 
             settings.CefCommandLineArgs.Add("enable-media-stream", "enable-media-stream");
             settings.CefCommandLineArgs.Add("disable-web-security", "disable-web-security");
+            
+            //settings.MultiThreadedMessageLoop = false;
+            //Application.Idle += (s, e) => CefSharp.Cef.DoMessageLoopWork();
 
             settings.RegisterScheme(new CefCustomScheme
             {
