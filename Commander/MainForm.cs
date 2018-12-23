@@ -15,6 +15,8 @@ namespace Commander
         public MainForm()
         {
             InitializeComponent();
+
+            browser.Load("https://www.google.de");
         }
     }
 }

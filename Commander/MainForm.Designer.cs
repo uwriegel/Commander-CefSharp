@@ -1,4 +1,6 @@
-﻿namespace Commander
+﻿using CefSharp.WinForms;
+
+namespace Commander
 {
     partial class MainForm
     {
@@ -28,13 +30,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            browser = new ChromiumWebBrowser("");
+            this.button1 = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+
+            browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            browser.Location = new System.Drawing.Point(0, 0);
+            browser.Size = new System.Drawing.Size(800, 450);
+            browser.TabIndex = 0;
+            // 
+            // MainForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(browser);
+            this.Name = "MainForm";
             this.Text = "Form1";
+            this.ResumeLayout(false);
         }
 
         #endregion
+
+        System.Windows.Forms.Button button1;
+        ChromiumWebBrowser browser;
     }
 }
 
