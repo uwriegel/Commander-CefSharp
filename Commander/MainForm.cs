@@ -19,6 +19,7 @@ namespace Commander
         {
             // TODO: Themes
             InitializeComponent();
+            SizeChanged += (s, e) => BeginInvoke((Action)(() => CefSharp.Cef.DoMessageLoopWork()));
             browser.Load("serve://commander");
         }
 
@@ -28,14 +29,18 @@ namespace Commander
         /// </summary>
         void InitializeComponent()
         {
+            var menu = CreateMenu(this);
+
             browser = new ChromiumWebBrowser("");
             SuspendLayout();
+
+            KeyPreview = true;
 
             browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            browser.Location = new System.Drawing.Point(0, 0);
-            browser.Size = new System.Drawing.Size(800, 450);
+            browser.Location = new System.Drawing.Point(0, menu.Height);
+            browser.Size = new System.Drawing.Size(800, 450 - menu.Height);
             browser.TabIndex = 0;
             // 
             // MainForm
@@ -45,16 +50,16 @@ namespace Commander
             ClientSize = new System.Drawing.Size(800, 450);
             Icon = Resources.Kirk;
 
-            CreateMenu(this);
-
             Controls.Add(browser);
             Name = "MainForm";
             Text = "Commander";
 
             ResumeLayout(false);
+
+            browser.Focus();
         }
 
-        void CreateMenu(Control parent)
+        MenuStrip CreateMenu(Control parent)
         {
             var menu = new MenuStrip()
             {
@@ -70,7 +75,7 @@ namespace Commander
             var itemDevTools = new ToolStripMenuItem("&Developer Tools", null, OnDevTools, Keys.F12);
             itemView.DropDownItems.Add(itemDevTools);
             itemView.ShortcutKeys = Keys.F10;
-
+            return menu;
         }
 
         void OnDevTools(object src, EventArgs args) => browser.GetBrowser().ShowDevTools();
