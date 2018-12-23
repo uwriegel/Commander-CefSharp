@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CefSharp.WinForms;
+using Commander.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,7 +19,40 @@ namespace Commander
             // TODO: Menu DevTools
             // TODO: Themes
             InitializeComponent();
-            browser.Load("file:///C:/Users/urieg/Projects/CommanderUI/dist/Commander/index.html");
+            //browser.Load("file:///C:/Users/urieg/Projects/CommanderUI/dist/Commander/index.html");
+            browser.Load("serve://commander");
         }
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        void InitializeComponent()
+        {
+            browser = new ChromiumWebBrowser("");
+            SuspendLayout();
+
+            browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            browser.Location = new System.Drawing.Point(0, 0);
+            browser.Size = new System.Drawing.Size(800, 450);
+            browser.TabIndex = 0;
+            // 
+            // MainForm
+            // 
+            AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(800, 450);
+
+            Icon = Resources.Kirk;
+            Controls.Add(browser);
+            Name = "MainForm";
+            Text = "Commander";
+
+            ResumeLayout(false);
+        }
+
+        ChromiumWebBrowser browser;
     }
 }

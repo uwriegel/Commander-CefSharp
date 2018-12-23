@@ -32,11 +32,11 @@ namespace Commander
             settings.CefCommandLineArgs.Add("enable-media-stream", "enable-media-stream");
             settings.CefCommandLineArgs.Add("disable-web-security", "disable-web-security");
 
-            //settings.RegisterScheme(new CefCustomScheme
-            //{
-            //    SchemeName = CustomProtocolFactory.SchemeName,
-            //    SchemeHandlerFactory = new CustomProtocolFactory()
-            //});
+            settings.RegisterScheme(new CefCustomScheme
+            {
+                SchemeName = CustomProtocolFactory.SchemeName,
+                SchemeHandlerFactory = new CustomProtocolFactory()
+            });
 
             var res = CefSharp.Cef.Initialize(settings);
             CefSharpSettings.LegacyJavascriptBindingEnabled = true;
