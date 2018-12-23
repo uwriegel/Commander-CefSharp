@@ -1,4 +1,5 @@
 ﻿using CefSharp.WinForms;
+using Commander.Properties;
 
 namespace Commander
 {
@@ -7,7 +8,7 @@ namespace Commander
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        System.ComponentModel.IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -31,7 +32,6 @@ namespace Commander
         private void InitializeComponent()
         {
             browser = new ChromiumWebBrowser("");
-            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
 
             browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -46,15 +46,16 @@ namespace Commander
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            
+            this.Icon = Resources.Kirk;
             this.Controls.Add(browser);
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "Commander";
             this.ResumeLayout(false);
         }
 
         #endregion
 
-        System.Windows.Forms.Button button1;
         ChromiumWebBrowser browser;
     }
 }

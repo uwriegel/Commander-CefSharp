@@ -14,9 +14,10 @@ namespace Commander
     {
         public MainForm()
         {
+            // TODO: Menu DevTools
+            // TODO: Themes
             InitializeComponent();
-
-            browser.Load("https://www.google.de");
+            browser.Load("file:///C:/Users/urieg/Projects/CommanderUI/dist/Commander/index.html");
         }
     }
 }
