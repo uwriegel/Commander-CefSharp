@@ -58,6 +58,8 @@ namespace Commander
         public MainForm()
         {
             // TODO: Themes
+            // TODO: Persistent Properties
+            // TODO: Language
             InitializeComponent();
             browser.Load("serve://commander");
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
@@ -108,6 +110,48 @@ namespace Commander
 
             var itemView = new MenuItem("&View");
             menu.MenuItems.Add(itemView);
+
+            var itemTheme = new MenuItem("&Theme");
+            itemView.MenuItems.Add(itemTheme);
+            itemView.MenuItems.Add("-");
+
+            var itemThemeBlue = new MenuItem("&Blue");
+            var itemThemeLightBlue = new MenuItem("&Light blue");
+            var itemThemeDark = new MenuItem("&Dark");
+            itemThemeBlue.Checked = true;
+
+            void OnTheme(object src, EventArgs args)
+            {
+                if (src == itemThemeBlue)
+                {
+                    itemThemeBlue.Checked = true;
+                    itemThemeLightBlue.Checked = false;
+                    itemThemeDark.Checked = false;
+                }
+                else if (src == itemThemeLightBlue)
+                {
+                    itemThemeBlue.Checked = false;
+                    itemThemeLightBlue.Checked = true;
+                    itemThemeDark.Checked = false;
+                }
+                else if (src == itemThemeDark)
+                {
+                    itemThemeBlue.Checked = false;
+                    itemThemeLightBlue.Checked = false;
+                    itemThemeDark.Checked = true;
+                }
+            }
+
+            itemThemeBlue.Click += OnTheme;
+            itemThemeLightBlue.Click += OnTheme;
+            itemThemeDark.Click += OnTheme;
+
+            itemThemeBlue.RadioCheck = true;
+            itemThemeLightBlue.RadioCheck = true;
+            itemThemeDark.RadioCheck = true;
+            itemTheme.MenuItems.Add(itemThemeBlue);
+            itemTheme.MenuItems.Add(itemThemeLightBlue);
+            itemTheme.MenuItems.Add(itemThemeDark);
 
             var itemDevTools = new MenuItem("&Developer Tools", OnDevTools, Shortcut.F12);
             itemView.MenuItems.Add(itemDevTools);
