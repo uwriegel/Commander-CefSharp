@@ -11,7 +11,7 @@ namespace Commander
     {
         public Accelerator(MenuItem menuItem)
         {
-            this.MenuItem = menuItem;
+            MenuItem = menuItem;
             switch (menuItem.Shortcut)
             {
                 case Shortcut.F12:

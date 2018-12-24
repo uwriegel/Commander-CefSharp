@@ -18,8 +18,13 @@ namespace Commander
 
         public void OnFrameLoadEnd(IWebBrowser browserControl, FrameLoadEndEventArgs frameLoadEndArgs)
         {
-            if (frameLoadEndArgs.Frame.IsMain)
+            if (frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url == "serve://commander/")
+            {
+                // TODO: read from Property
+                browser.EvaluateScriptAsync("setTheme", "dark");
                 BeginInvoke((Action)(() => browser.Focus()));
+            }
+                
         }
 
         public void OnLoadError(IWebBrowser browserControl, LoadErrorEventArgs loadErrorArgs) {}
@@ -127,18 +132,24 @@ namespace Commander
                     itemThemeBlue.Checked = true;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = false;
+                    browser.EvaluateScriptAsync("setTheme", "blue");
+                    // TODO: save Property
                 }
                 else if (src == itemThemeLightBlue)
                 {
                     itemThemeBlue.Checked = false;
                     itemThemeLightBlue.Checked = true;
                     itemThemeDark.Checked = false;
+                    browser.EvaluateScriptAsync("setTheme", "lightblue");
+                    // TODO: save Property
                 }
                 else if (src == itemThemeDark)
                 {
                     itemThemeBlue.Checked = false;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = true;
+                    browser.EvaluateScriptAsync("setTheme", "dark");
+                    // TODO: save Property
                 }
             }
 
@@ -146,6 +157,7 @@ namespace Commander
             itemThemeLightBlue.Click += OnTheme;
             itemThemeDark.Click += OnTheme;
 
+            // TODO: read from Property
             itemThemeBlue.RadioCheck = true;
             itemThemeLightBlue.RadioCheck = true;
             itemThemeDark.RadioCheck = true;
