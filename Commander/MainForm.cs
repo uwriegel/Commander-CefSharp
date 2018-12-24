@@ -10,7 +10,7 @@ using Commander.Extension;
 
 namespace Commander
 {
-    public partial class MainForm : Form, ILoadHandler
+    public partial class MainForm : Form, ILoadHandler, IKeyboardHandler
     {
         #region ILoadHandler
 
@@ -28,14 +28,39 @@ namespace Commander
 
         #endregion
 
+        #region IKeyboardHandler
+
+        public bool OnPreKeyEvent(IWebBrowser chromiumWebBrowser, IBrowser ibrowser, KeyType type, int windowsKeyCode, int nativeKeyCode, CefEventFlags modifiers, bool isSystemKey, ref bool isKeyboardShortcut)
+        {
+            if (type == KeyType.RawKeyDown)
+            {
+                var accelerator = accelerators.FirstOrDefault(n => n.HasValue ? n.Value.Key == windowsKeyCode
+                    && (modifiers.HasFlag(CefEventFlags.AltDown) ? n.Value.Alt : !n.Value.Alt)
+                    && (modifiers.HasFlag(CefEventFlags.ShiftDown) ? n.Value.Shift : !n.Value.Shift)
+                    && (modifiers.HasFlag(CefEventFlags.ControlDown) ? n.Value.Ctrl : !n.Value.Ctrl) : false);
+
+                if (accelerator.HasValue)
+                {
+                    accelerator.Value.MenuItem.PerformClick();
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+
+        public bool OnKeyEvent(IWebBrowser chromiumWebBrowser, IBrowser browser, KeyType type, int windowsKeyCode, int nativeKeyCode, CefEventFlags modifiers, bool isSystemKey)
+            => false;
+
+        #endregion
         public MainForm()
         {
-            // TODO: Keyboardhandler: Shortcuts
-            // TODO: Loaded: Focus
             // TODO: Themes
             InitializeComponent();
             browser.Load("serve://commander");
-            var shortCuts = GetShortcuts(Menu.MenuItems.ToIEnumerable());
+            accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
 
         /// <summary>
@@ -50,6 +75,7 @@ namespace Commander
 
             KeyPreview = true;
             browser.LoadHandler = this;
+            browser.KeyboardHandler = this;
             browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -89,17 +115,18 @@ namespace Commander
             Menu = menu;
         }
 
-        IEnumerable<Shortcut> GetShortcuts(IEnumerable<MenuItem> menuItems)
-            => menuItems.SelectMany(n => GetShortcuts(n)).Where(n => n != Shortcut.None);
+        IEnumerable<MenuItem> GetMenuItems(IEnumerable<MenuItem> menuItems)
+            => menuItems.SelectMany(n => GetMenuItems(n)).Where(n => n.Shortcut != Shortcut.None);
 
-        IEnumerable<Shortcut> GetShortcuts(MenuItem menuItem)
+        IEnumerable<MenuItem> GetMenuItems(MenuItem menuItem)
         {
-            var indirectShortcuts = menuItem.MenuItems.ToIEnumerable().Select(n => n.Shortcut);
-            return indirectShortcuts.Append(menuItem.Shortcut);
+            var indirectShortcuts = menuItem.MenuItems.ToIEnumerable();
+            return indirectShortcuts.Append(menuItem);
         }
 
         void OnDevTools(object src, EventArgs args) => browser.GetBrowser().ShowDevTools();
 
         readonly ChromiumWebBrowser browser = new ChromiumWebBrowser("");
+        Accelerator?[] accelerators;
     }
 }

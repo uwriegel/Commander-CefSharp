@@ -92,6 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accelerator.cs" />
     <Compile Include="Browser\Cef.cs" />
     <Compile Include="Browser\CustomProtocol.cs" />
     <Compile Include="Browser\CustomProtocolFactory.cs" />
