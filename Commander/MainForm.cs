@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using Commander.Extension;
+using System.Threading;
 
 namespace Commander
 {
@@ -20,7 +21,7 @@ namespace Commander
         {
             if (frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url == commanderUrl)
             {
-                browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Properties.Settings.Default.Theme);
+                browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Settings.Default.Theme);
                 BeginInvoke((Action)(() => browser.Focus()));
             }
                 
@@ -63,7 +64,22 @@ namespace Commander
         {
             InitializeComponent();
             browser.Load(commanderUrl);
+            browser.RegisterAsyncJsObject("CommanderLeft", new Commander("left"), new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
+        }
+
+        class Commander
+        {
+            public Commander(string name)
+            {
+
+            }
+
+            public string Test(string text)
+            {
+                Thread.Sleep(10000);
+                return "Test" + text;
+            }
         }
 
         /// <summary>
@@ -79,9 +95,9 @@ namespace Commander
             KeyPreview = true;
             browser.LoadHandler = this;
             browser.KeyboardHandler = this;
-            browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            browser.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
+            | AnchorStyles.Left
+            | AnchorStyles.Right;
             browser.Location = new System.Drawing.Point(0, 0);
             browser.Size = new System.Drawing.Size(800, 450);
             browser.TabIndex = 0;
@@ -89,7 +105,7 @@ namespace Commander
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(800, 450);
             Icon = Resources.Kirk;
 
@@ -119,7 +135,7 @@ namespace Commander
             var itemThemeBlue = new MenuItem(Resources.MenuThemeBlue);
             var itemThemeLightBlue = new MenuItem(Resources.MenuThemeLightBlue);
             var itemThemeDark = new MenuItem(Resources.MenuThemeDark);
-            switch (Properties.Settings.Default.Theme)
+            switch (Settings.Default.Theme)
             {
                 case Themes.LightBlue:
                     itemThemeLightBlue.Checked = true;
@@ -140,7 +156,7 @@ namespace Commander
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = false;
                     browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Themes.Blue);
-                    Properties.Settings.Default.Theme = Themes.Blue;
+                    Settings.Default.Theme = Themes.Blue;
                 }
                 else if (src == itemThemeLightBlue)
                 {
@@ -148,7 +164,7 @@ namespace Commander
                     itemThemeLightBlue.Checked = true;
                     itemThemeDark.Checked = false;
                     browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Themes.LightBlue);
-                    Properties.Settings.Default.Theme = Themes.LightBlue;
+                    Settings.Default.Theme = Themes.LightBlue;
                 }
                 else if (src == itemThemeDark)
                 {
@@ -156,9 +172,9 @@ namespace Commander
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = true;
                     browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Themes.Dark);
-                    Properties.Settings.Default.Theme = Themes.Dark;
+                    Settings.Default.Theme = Themes.Dark;
                 }
-                Properties.Settings.Default.Save();
+                Settings.Default.Save();
             }
 
             itemThemeBlue.Click += OnTheme;
