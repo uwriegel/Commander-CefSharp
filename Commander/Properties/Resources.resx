@@ -121,4 +121,25 @@
   <data name="Kirk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Kirk.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="MenuDeveloperTools" xml:space="preserve">
+    <value>&amp;Developer Tools</value>
+  </data>
+  <data name="MenuFile" xml:space="preserve">
+    <value>&amp;File</value>
+  </data>
+  <data name="MenuThemeBlue" xml:space="preserve">
+    <value>&amp;Blue</value>
+  </data>
+  <data name="MenuThemeDark" xml:space="preserve">
+    <value>&amp;Dark</value>
+  </data>
+  <data name="MenuThemeLightBlue" xml:space="preserve">
+    <value>&amp;Light Blue</value>
+  </data>
+  <data name="MenuThemes" xml:space="preserve">
+    <value>&amp;Themes</value>
+  </data>
+  <data name="MenuView" xml:space="preserve">
+    <value>&amp;View</value>
+  </data>
 </root>

@@ -18,10 +18,9 @@ namespace Commander
 
         public void OnFrameLoadEnd(IWebBrowser browserControl, FrameLoadEndEventArgs frameLoadEndArgs)
         {
-            if (frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url == "serve://commander/")
+            if (frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url == commanderUrl)
             {
-                // TODO: read from Property
-                browser.EvaluateScriptAsync("setTheme", "dark");
+                browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Properties.Settings.Default.Theme);
                 BeginInvoke((Action)(() => browser.Focus()));
             }
                 
@@ -62,11 +61,8 @@ namespace Commander
         #endregion
         public MainForm()
         {
-            // TODO: Themes
-            // TODO: Persistent Properties
-            // TODO: Language
             InitializeComponent();
-            browser.Load("serve://commander");
+            browser.Load(commanderUrl);
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
 
@@ -110,21 +106,32 @@ namespace Commander
         {
             var menu = new MainMenu();
 
-            var itemFile = new MenuItem("&File");
+            var itemFile = new MenuItem(Resources.MenuFile);
             menu.MenuItems.Add(itemFile);
 
-            var itemView = new MenuItem("&View");
+            var itemView = new MenuItem(Resources.MenuView);
             menu.MenuItems.Add(itemView);
 
-            var itemTheme = new MenuItem("&Theme");
+            var itemTheme = new MenuItem(Resources.MenuThemes);
             itemView.MenuItems.Add(itemTheme);
             itemView.MenuItems.Add("-");
 
-            var itemThemeBlue = new MenuItem("&Blue");
-            var itemThemeLightBlue = new MenuItem("&Light blue");
-            var itemThemeDark = new MenuItem("&Dark");
-            itemThemeBlue.Checked = true;
-
+            var itemThemeBlue = new MenuItem(Resources.MenuThemeBlue);
+            var itemThemeLightBlue = new MenuItem(Resources.MenuThemeLightBlue);
+            var itemThemeDark = new MenuItem(Resources.MenuThemeDark);
+            switch (Properties.Settings.Default.Theme)
+            {
+                case Themes.LightBlue:
+                    itemThemeLightBlue.Checked = true;
+                    break;
+                case Themes.Dark:
+                    itemThemeDark.Checked = true;
+                    break;
+                default:
+                    itemThemeBlue.Checked = true;
+                    break;
+            }
+                       
             void OnTheme(object src, EventArgs args)
             {
                 if (src == itemThemeBlue)
@@ -132,32 +139,32 @@ namespace Commander
                     itemThemeBlue.Checked = true;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = false;
-                    browser.EvaluateScriptAsync("setTheme", "blue");
-                    // TODO: save Property
+                    browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Themes.Blue);
+                    Properties.Settings.Default.Theme = Themes.Blue;
                 }
                 else if (src == itemThemeLightBlue)
                 {
                     itemThemeBlue.Checked = false;
                     itemThemeLightBlue.Checked = true;
                     itemThemeDark.Checked = false;
-                    browser.EvaluateScriptAsync("setTheme", "lightblue");
-                    // TODO: save Property
+                    browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Themes.LightBlue);
+                    Properties.Settings.Default.Theme = Themes.LightBlue;
                 }
                 else if (src == itemThemeDark)
                 {
                     itemThemeBlue.Checked = false;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = true;
-                    browser.EvaluateScriptAsync("setTheme", "dark");
-                    // TODO: save Property
+                    browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Themes.Dark);
+                    Properties.Settings.Default.Theme = Themes.Dark;
                 }
+                Properties.Settings.Default.Save();
             }
 
             itemThemeBlue.Click += OnTheme;
             itemThemeLightBlue.Click += OnTheme;
             itemThemeDark.Click += OnTheme;
 
-            // TODO: read from Property
             itemThemeBlue.RadioCheck = true;
             itemThemeLightBlue.RadioCheck = true;
             itemThemeDark.RadioCheck = true;
@@ -165,7 +172,7 @@ namespace Commander
             itemTheme.MenuItems.Add(itemThemeLightBlue);
             itemTheme.MenuItems.Add(itemThemeDark);
 
-            var itemDevTools = new MenuItem("&Developer Tools", OnDevTools, Shortcut.F12);
+            var itemDevTools = new MenuItem(Resources.MenuDeveloperTools, OnDevTools, Shortcut.F12);
             itemView.MenuItems.Add(itemDevTools);
 
             Menu = menu;
@@ -182,6 +189,7 @@ namespace Commander
 
         void OnDevTools(object src, EventArgs args) => browser.GetBrowser().ShowDevTools();
 
+        const string commanderUrl = "serve://commander/";
         readonly ChromiumWebBrowser browser = new ChromiumWebBrowser("");
         Accelerator?[] accelerators;
     }

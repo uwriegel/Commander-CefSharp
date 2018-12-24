@@ -69,5 +69,68 @@ namespace Commander.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Developer Tools.
+        /// </summary>
+        public static string MenuDeveloperTools {
+            get {
+                return ResourceManager.GetString("MenuDeveloperTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;File.
+        /// </summary>
+        public static string MenuFile {
+            get {
+                return ResourceManager.GetString("MenuFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Blue.
+        /// </summary>
+        public static string MenuThemeBlue {
+            get {
+                return ResourceManager.GetString("MenuThemeBlue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Dark.
+        /// </summary>
+        public static string MenuThemeDark {
+            get {
+                return ResourceManager.GetString("MenuThemeDark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Light Blue.
+        /// </summary>
+        public static string MenuThemeLightBlue {
+            get {
+                return ResourceManager.GetString("MenuThemeLightBlue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Themes.
+        /// </summary>
+        public static string MenuThemes {
+            get {
+                return ResourceManager.GetString("MenuThemes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;View.
+        /// </summary>
+        public static string MenuView {
+            get {
+                return ResourceManager.GetString("MenuView", resourceCulture);
+            }
+        }
     }
 }
