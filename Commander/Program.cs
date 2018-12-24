@@ -14,6 +14,7 @@ namespace Commander
         [STAThread]
         static void Main()
         {
+            Engine.Say.hello("Welt");
             Cef.Initialize();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

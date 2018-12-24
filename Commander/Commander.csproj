@@ -153,6 +153,12 @@
   <ItemGroup>
     <None Include="Resources\Kirk.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.fsproj">
+      <Project>{f2760683-ceb3-441b-ab97-584c95359fff}</Project>
+      <Name>Engine</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
