@@ -13,13 +13,29 @@ using System.Windows.Forms;
 
 namespace Commander
 {
-    public partial class MainForm : Form
+    public partial class MainForm : Form, ILoadHandler
     {
+        #region ILoadHandler
+
+        public void OnFrameLoadStart(IWebBrowser browserControl, FrameLoadStartEventArgs frameLoadStartArgs) {}
+
+        public void OnFrameLoadEnd(IWebBrowser browserControl, FrameLoadEndEventArgs frameLoadEndArgs)
+        {
+            if (frameLoadEndArgs.Frame.IsMain)
+                BeginInvoke((Action)(() => browser.Focus()));
+        }
+
+        public void OnLoadError(IWebBrowser browserControl, LoadErrorEventArgs loadErrorArgs) {}
+
+        public void OnLoadingStateChange(IWebBrowser browserControl, LoadingStateChangedEventArgs loadingStateChangedArgs) {}
+
+        #endregion
+
         public MainForm()
         {
+            // TODO: Keyboardhandler: Shortcuts
             // TODO: Themes
             InitializeComponent();
-            SizeChanged += (s, e) => BeginInvoke((Action)(() => CefSharp.Cef.DoMessageLoopWork()));
             browser.Load("serve://commander");
         }
 
@@ -29,9 +45,12 @@ namespace Commander
         /// </summary>
         void InitializeComponent()
         {
-            var menu = CreateMenu(this);
+            CreateMenu(this);
 
-            browser = new ChromiumWebBrowser("");
+            browser = new ChromiumWebBrowser("")
+            {
+                LoadHandler = this
+            };
             SuspendLayout();
 
             KeyPreview = true;
@@ -39,8 +58,8 @@ namespace Commander
             browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            browser.Location = new System.Drawing.Point(0, menu.Height);
-            browser.Size = new System.Drawing.Size(800, 450 - menu.Height);
+            browser.Location = new System.Drawing.Point(0, 0);
+            browser.Size = new System.Drawing.Size(800, 450);
             browser.TabIndex = 0;
             // 
             // MainForm
@@ -59,23 +78,19 @@ namespace Commander
             browser.Focus();
         }
 
-        MenuStrip CreateMenu(Control parent)
+        void CreateMenu(Control parent)
         {
-            var menu = new MenuStrip()
-            {
-                Parent = parent
-            };
+            var menu = new MainMenu();
 
-            var itemFile = new ToolStripMenuItem("&File");
-            menu.Items.Add(itemFile);
+            var itemFile = new MenuItem("&File");
+            menu.MenuItems.Add(itemFile);
 
-            var itemView = new ToolStripMenuItem("&View");
-            menu.Items.Add(itemView);
+            var itemView = new MenuItem("&View");
+            menu.MenuItems.Add(itemView);
 
-            var itemDevTools = new ToolStripMenuItem("&Developer Tools", null, OnDevTools, Keys.F12);
-            itemView.DropDownItems.Add(itemDevTools);
-            itemView.ShortcutKeys = Keys.F10;
-            return menu;
+            var itemDevTools = new MenuItem("&Developer Tools", OnDevTools, Shortcut.F12);
+            itemView.MenuItems.Add(itemDevTools);
+            Menu = menu;
         }
 
         void OnDevTools(object src, EventArgs args) => browser.GetBrowser().ShowDevTools();
