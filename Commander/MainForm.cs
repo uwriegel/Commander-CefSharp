@@ -3,13 +3,10 @@ using CefSharp.WinForms;
 using Commander.Properties;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Commander.Extension;
 
 namespace Commander
 {
@@ -34,9 +31,11 @@ namespace Commander
         public MainForm()
         {
             // TODO: Keyboardhandler: Shortcuts
+            // TODO: Loaded: Focus
             // TODO: Themes
             InitializeComponent();
             browser.Load("serve://commander");
+            var shortCuts = GetShortcuts(Menu.MenuItems.ToIEnumerable());
         }
 
         /// <summary>
@@ -45,16 +44,12 @@ namespace Commander
         /// </summary>
         void InitializeComponent()
         {
-            CreateMenu(this);
-
-            browser = new ChromiumWebBrowser("")
-            {
-                LoadHandler = this
-            };
             SuspendLayout();
 
-            KeyPreview = true;
+            CreateMenu(this);
 
+            KeyPreview = true;
+            browser.LoadHandler = this;
             browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -90,11 +85,21 @@ namespace Commander
 
             var itemDevTools = new MenuItem("&Developer Tools", OnDevTools, Shortcut.F12);
             itemView.MenuItems.Add(itemDevTools);
+
             Menu = menu;
+        }
+
+        IEnumerable<Shortcut> GetShortcuts(IEnumerable<MenuItem> menuItems)
+            => menuItems.SelectMany(n => GetShortcuts(n)).Where(n => n != Shortcut.None);
+
+        IEnumerable<Shortcut> GetShortcuts(MenuItem menuItem)
+        {
+            var indirectShortcuts = menuItem.MenuItems.ToIEnumerable().Select(n => n.Shortcut);
+            return indirectShortcuts.Append(menuItem.Shortcut);
         }
 
         void OnDevTools(object src, EventArgs args) => browser.GetBrowser().ShowDevTools();
 
-        ChromiumWebBrowser browser;
+        readonly ChromiumWebBrowser browser = new ChromiumWebBrowser("");
     }
 }
