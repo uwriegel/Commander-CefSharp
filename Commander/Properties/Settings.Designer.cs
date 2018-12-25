@@ -34,5 +34,29 @@ namespace Commander.Properties {
                 this["Theme"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("root")]
+        public string LeftRecentPath {
+            get {
+                return ((string)(this["LeftRecentPath"]));
+            }
+            set {
+                this["LeftRecentPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("root")]
+        public string RightRecentPath {
+            get {
+                return ((string)(this["RightRecentPath"]));
+            }
+            set {
+                this["RightRecentPath"] = value;
+            }
+        }
     }
 }

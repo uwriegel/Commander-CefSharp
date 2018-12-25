@@ -22,7 +22,7 @@ namespace Commander
         {
             if (frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url == commanderUrl)
             {
-                browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Settings.Default.Theme);
+                browser.EvaluateScriptAsync($"themes.theme = '{Settings.Default.Theme}'");
                 BeginInvoke((Action)(() => browser.Focus()));
             }
                 
@@ -61,15 +61,21 @@ namespace Commander
             => false;
 
         #endregion
+
+        #region Constructor
+
         public MainForm()
         {
             InitializeComponent();
             browser.Load(commanderUrl);
-            browser.RegisterJsObject("CommanderLeft", new CommanderView(CommanderViewId.Left), new BindingOptions { CamelCaseJavascriptNames = true });
-            browser.RegisterJsObject("CommanderRight", new CommanderView(CommanderViewId.Right), new BindingOptions { CamelCaseJavascriptNames = true });
+            browser.RegisterJsObject("CommanderLeft", new CommanderView(CommanderViewId.Left, new LeftHost()), new BindingOptions { CamelCaseJavascriptNames = true });
+            browser.RegisterJsObject("CommanderRight", new CommanderView(CommanderViewId.Right, new RightHost()), new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
 
+        #endregion
+
+        #region Methods
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -143,7 +149,7 @@ namespace Commander
                     itemThemeBlue.Checked = true;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = false;
-                    browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Themes.Blue);
+                    browser.EvaluateScriptAsync($"themes.theme = '{Themes.Blue}'");  
                     Settings.Default.Theme = Themes.Blue;
                 }
                 else if (src == itemThemeLightBlue)
@@ -151,7 +157,7 @@ namespace Commander
                     itemThemeBlue.Checked = false;
                     itemThemeLightBlue.Checked = true;
                     itemThemeDark.Checked = false;
-                    browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Themes.LightBlue);
+                    browser.EvaluateScriptAsync($"themes.theme = '{Themes.LightBlue}'");
                     Settings.Default.Theme = Themes.LightBlue;
                 }
                 else if (src == itemThemeDark)
@@ -159,7 +165,10 @@ namespace Commander
                     itemThemeBlue.Checked = false;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = true;
-                    browser.EvaluateScriptAsync(JavaScriptFunctions.SetTheme, Themes.Dark);
+                    browser.EvaluateScriptAsync($"themes.theme = '{Themes.Dark}'");
+
+                    // TODO:
+                    browser.EvaluateScriptAsync("commanderViewLeft.setColumns({'Affe': 'affe'})");
                     Settings.Default.Theme = Themes.Dark;
                 }
                 Settings.Default.Save();
@@ -193,8 +202,28 @@ namespace Commander
 
         void OnDevTools(object src, EventArgs args) => browser.GetBrowser().ShowDevTools();
 
+        #endregion
+
+        #region Types
+
+        class LeftHost : IHost
+        {
+            public string RecentPath { get => Settings.Default.LeftRecentPath; set => Settings.Default.LeftRecentPath = value; }
+        }
+
+        class RightHost : IHost
+        {
+            public string RecentPath { get => Settings.Default.RightRecentPath; set => Settings.Default.RightRecentPath = value; }
+        }
+
+        #endregion
+
+        #region Fields
+
         const string commanderUrl = "serve://commander/";
         readonly ChromiumWebBrowser browser = new ChromiumWebBrowser("");
         Accelerator?[] accelerators;
+
+        #endregion
     }
 }

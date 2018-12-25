@@ -5,5 +5,11 @@
     <Setting Name="Theme" Type="System.String" Scope="User">
       <Value Profile="(Default)">blue</Value>
     </Setting>
+    <Setting Name="LeftRecentPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">root</Value>
+    </Setting>
+    <Setting Name="RightRecentPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">root</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
