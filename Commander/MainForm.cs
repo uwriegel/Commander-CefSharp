@@ -65,8 +65,8 @@ namespace Commander
         {
             InitializeComponent();
             browser.Load(commanderUrl);
-            browser.RegisterAsyncJsObject("CommanderLeft", new CommanderView(CommanderViewId.Left), new BindingOptions { CamelCaseJavascriptNames = true });
-            browser.RegisterAsyncJsObject("CommanderRight", new CommanderView(CommanderViewId.Right), new BindingOptions { CamelCaseJavascriptNames = true });
+            browser.RegisterJsObject("CommanderLeft", new CommanderView(CommanderViewId.Left), new BindingOptions { CamelCaseJavascriptNames = true });
+            browser.RegisterJsObject("CommanderRight", new CommanderView(CommanderViewId.Right), new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
 
