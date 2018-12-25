@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Library.fs" />
+    <Compile Include="CommanderViewId.fs" />
+    <Compile Include="CommanderView.fs" />
   </ItemGroup>
 
 </Project>

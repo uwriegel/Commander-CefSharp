@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Commander.Extension;
 using System.Threading;
+using Engine;
 
 namespace Commander
 {
@@ -64,22 +65,9 @@ namespace Commander
         {
             InitializeComponent();
             browser.Load(commanderUrl);
-            browser.RegisterAsyncJsObject("CommanderLeft", new Commander("left"), new BindingOptions { CamelCaseJavascriptNames = true });
+            browser.RegisterAsyncJsObject("CommanderLeft", new CommanderView(CommanderViewId.Left), new BindingOptions { CamelCaseJavascriptNames = true });
+            browser.RegisterAsyncJsObject("CommanderRight", new CommanderView(CommanderViewId.Right), new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
-        }
-
-        class Commander
-        {
-            public Commander(string name)
-            {
-
-            }
-
-            public string Test(string text)
-            {
-                Thread.Sleep(10000);
-                return "Test" + text;
-            }
         }
 
         /// <summary>
