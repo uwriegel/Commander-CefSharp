@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Commander.Extension;
 using System.Threading;
 using Engine;
+using System.Diagnostics;
 
 namespace Commander
 {
@@ -142,14 +143,14 @@ namespace Commander
                     break;
             }
                        
-            void OnTheme(object src, EventArgs args)
+            async void OnTheme(object src, EventArgs args)
             {
                 if (src == itemThemeBlue)
                 {
                     itemThemeBlue.Checked = true;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = false;
-                    browser.EvaluateScriptAsync($"themes.theme = '{Themes.Blue}'");  
+                    await browser.EvaluateScriptAsync($"themes.theme = '{Themes.Blue}'");  
                     Settings.Default.Theme = Themes.Blue;
                 }
                 else if (src == itemThemeLightBlue)
@@ -157,7 +158,7 @@ namespace Commander
                     itemThemeBlue.Checked = false;
                     itemThemeLightBlue.Checked = true;
                     itemThemeDark.Checked = false;
-                    browser.EvaluateScriptAsync($"themes.theme = '{Themes.LightBlue}'");
+                    await browser.EvaluateScriptAsync($"themes.theme = '{Themes.LightBlue}'");
                     Settings.Default.Theme = Themes.LightBlue;
                 }
                 else if (src == itemThemeDark)
@@ -165,10 +166,21 @@ namespace Commander
                     itemThemeBlue.Checked = false;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = true;
-                    browser.EvaluateScriptAsync($"themes.theme = '{Themes.Dark}'");
+                    await browser.EvaluateScriptAsync($"themes.theme = '{Themes.Dark}'");
 
                     // TODO:
-                    browser.EvaluateScriptAsync("commanderViewLeft.setColumns({'Affe': 'affe'})");
+
+
+                    var sw = new Stopwatch();
+                    sw.Start();
+                    var columns = Directory.getColumns();
+                    var tet = Enumerable.Range(1, 100).Select(n => columns).ToArray();
+                    var parms = Json.Serialize(tet);
+                    await browser.EvaluateScriptAsync($"commanderViewLeft.setColumns({parms})");
+                    var elapsed = sw.Elapsed;
+                    MessageBox.Show($"Dauerte: {elapsed}");
+
+
                     Settings.Default.Theme = Themes.Dark;
                 }
                 Settings.Default.Save();
