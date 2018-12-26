@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CefSharp.WinForms;
 using CefSharp;
+using static Model;
 
 namespace Commander
 {
@@ -30,6 +31,12 @@ namespace Commander
             var viewType = Engine.GetViewType(path);
             var columns = Engine.GetColumns(viewType);
             await ExecuteScript("setColumns", columns);
+        }
+
+        public async void Get(string path)
+        {
+            var viewType = Engine.GetViewType(path);
+            var result = await ThreadTask<ResponseItem[]>.RunAsync(() => Engine.Get(viewType, path));
         }
 
         void ChangePath(string path)

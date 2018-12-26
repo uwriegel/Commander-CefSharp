@@ -11,6 +11,10 @@ let GetColumns viewType =
     | Enums.Root -> Root.getColumns ()
     | Enums.Directory -> Directory.getColumns ()
         
+let Get viewType (path: string) = 
+    match viewType with
+    | Enums.Root -> Root.get ()
+    | Enums.Directory -> Root.get ()
 
 //    let mutable viewType = Enums.ViewType.Root 
 

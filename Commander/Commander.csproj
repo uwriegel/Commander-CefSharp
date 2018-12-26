@@ -102,7 +102,6 @@
     <Compile Include="CommanderView.cs" />
     <Compile Include="Extension\MenuItemCollectionExtensions.cs" />
     <Compile Include="IHost.cs" />
-    <Compile Include="JavaScriptFunctions.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -115,6 +114,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Themes.cs" />
+    <Compile Include="ThreadTask.cs" />
     <EmbeddedResource Include="Properties\Resources.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.de.Designer.cs</LastGenOutput>
