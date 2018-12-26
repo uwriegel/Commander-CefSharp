@@ -1,15 +1,16 @@
-﻿using CefSharp;
-using CefSharp.WinForms;
-using Commander.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Windows.Forms;
-using Commander.Extension;
-using System.Threading;
-using Engine;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+using CefSharp;
+using CefSharp.WinForms;
+
+using Commander.Extension;
+using Commander.Properties;
 
 namespace Commander
 {
@@ -69,8 +70,10 @@ namespace Commander
         {
             InitializeComponent();
             browser.Load(commanderUrl);
-            browser.RegisterJsObject("CommanderLeft", new CommanderView(CommanderViewId.Left, new LeftHost()), new BindingOptions { CamelCaseJavascriptNames = true });
-            browser.RegisterJsObject("CommanderRight", new CommanderView(CommanderViewId.Right, new RightHost()), new BindingOptions { CamelCaseJavascriptNames = true });
+            browser.RegisterJsObject("CommanderLeft", new CommanderView(CommanderView.ID.Left, browser, new LeftHost()), 
+                new BindingOptions { CamelCaseJavascriptNames = true });
+            browser.RegisterJsObject("CommanderRight", new CommanderView(CommanderView.ID.Right, browser, new RightHost()), 
+                new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
 
@@ -167,20 +170,6 @@ namespace Commander
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = true;
                     await browser.EvaluateScriptAsync($"themes.theme = '{Themes.Dark}'");
-
-                    // TODO:
-
-
-                    var sw = new Stopwatch();
-                    sw.Start();
-                    var columns = Directory.getColumns();
-                    var tet = Enumerable.Range(1, 100).Select(n => columns).ToArray();
-                    var parms = Json.Serialize(tet);
-                    await browser.EvaluateScriptAsync($"commanderViewLeft.setColumns({parms})");
-                    var elapsed = sw.Elapsed;
-                    MessageBox.Show($"Dauerte: {elapsed}");
-
-
                     Settings.Default.Theme = Themes.Dark;
                 }
                 Settings.Default.Save();
@@ -221,11 +210,13 @@ namespace Commander
         class LeftHost : IHost
         {
             public string RecentPath { get => Settings.Default.LeftRecentPath; set => Settings.Default.LeftRecentPath = value; }
+            public string Class { get => "commanderViewLeft"; }
         }
 
         class RightHost : IHost
         {
             public string RecentPath { get => Settings.Default.RightRecentPath; set => Settings.Default.RightRecentPath = value; }
+            public string Class { get => "commanderViewRight"; }
         }
 
         #endregion

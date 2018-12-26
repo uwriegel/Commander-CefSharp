@@ -6,12 +6,10 @@
 
   <ItemGroup>
     <Compile Include="Enums.fs" />
-    <Compile Include="IHost.fs" />
     <Compile Include="Model.fs" />
     <Compile Include="Directory.fs" />
     <Compile Include="Root.fs" />
-    <Compile Include="CommanderViewId.fs" />
-    <Compile Include="CommanderView.fs" />
+    <Compile Include="Engine.fs" />
   </ItemGroup>
 
 </Project>
