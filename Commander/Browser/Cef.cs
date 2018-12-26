@@ -23,8 +23,8 @@ namespace Commander
             {
                 BrowserSubprocessPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "CefSharp.BrowserSubprocess.exe"),
                 Locale = Thread.CurrentThread.CurrentCulture.Name,
-#if DEBUG
                 CachePath = cachePath,
+#if DEBUG
                 //LogSeverity = LogSeverity.Verbose,
                 LogFile = Path.Combine(cachePath, "debug.log")
 #endif
