@@ -1,5 +1,6 @@
 ﻿using CefSharp;
 using CefSharp.WinForms;
+using Commander.Browser;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,6 +38,11 @@ namespace Commander
             {
                 SchemeName = CustomProtocolFactory.SchemeName,
                 SchemeHandlerFactory = new CustomProtocolFactory()
+            });
+            settings.RegisterScheme(new CefCustomScheme
+            {
+                SchemeName = IconProtocolFactory.SchemeName,
+                SchemeHandlerFactory = new IconProtocolFactory()
             });
 
             var res = CefSharp.Cef.Initialize(settings);
