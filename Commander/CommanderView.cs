@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using CefSharp.WinForms;
+
 using CefSharp;
-using static Model;
+using CefSharp.WinForms;
+
 using static Enums;
+using static Model;
 
 namespace Commander
 {

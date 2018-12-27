@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Compile Include="Enums.fs" />
+    <Compile Include="Str.fs" />
     <Compile Include="Model.fs" />
     <Compile Include="Directory.fs" />
     <Compile Include="Root.fs" />
