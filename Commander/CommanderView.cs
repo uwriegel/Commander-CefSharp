@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CefSharp.WinForms;
 using CefSharp;
 using static Model;
+using static Enums;
 
 namespace Commander
 {
@@ -29,21 +30,32 @@ namespace Commander
         {
             var path = host.RecentPath;
             var viewType = Engine.GetViewType(path);
+            await GetColumns(viewType);
+            ChangePath(path);
+        }
+
+        public async void ChangePath(string path)
+        {
+            var viewType = Engine.GetViewType(path);
+            if (viewType != currentViewType)
+            {
+                await GetColumns(viewType);
+                currentViewType = viewType;
+            }
+            currentItems = await ThreadTask<ResponseItem[]>.RunAsync(() => Engine.Get(viewType, path));
+            await ExecuteScriptWithParams("itemsChanged", currentItems.Length);
+        }
+
+        public string GetItems(int start, int end)
+        {
+            return Json.Serialize(currentItems);
+        }
+
+        async Task GetColumns(ViewType viewType)
+        {
             var columns = Engine.GetColumns(viewType);
             await ExecuteScript("setColumns", columns);
         }
-
-        public async void Get(string path)
-        {
-            var viewType = Engine.GetViewType(path);
-            var result = await ThreadTask<ResponseItem[]>.RunAsync(() => Engine.Get(viewType, path));
-        }
-
-        void ChangePath(string path)
-        {
-
-        }
-
         async Task ExecuteScript(string method, object param)
         {
             var sw = new Stopwatch();
@@ -56,8 +68,21 @@ namespace Commander
             Debugger.Log(1, "Main", $"Script execution duration: {elapsed}");
         }
 
+        async Task ExecuteScriptWithParams(string method, params object[] parameters)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+
+            await browser.EvaluateScriptAsync($"{host.Class}.{method}", parameters);
+
+            var elapsed = sw.Elapsed;
+            Debugger.Log(1, "Main", $"Script execution duration: {elapsed}");
+        }
+
         readonly ID id;
         readonly ChromiumWebBrowser browser;
         readonly IHost host;
+        ViewType currentViewType;
+        ResponseItem[] currentItems;
     }
 }
