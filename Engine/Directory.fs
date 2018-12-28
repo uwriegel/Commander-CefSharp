@@ -70,8 +70,8 @@ let get path =
             index = 0
             icon = 
                 match Str.toLower item.Extension with
-                | ".exe" -> "icon://" + item.FullName
-                | _ -> "icon://" + item.Extension
+                | ".exe" -> "icon?path=" + item.FullName
+                | _ -> "icon?path=" + item.Extension
             items = [| getNameOnly item.Name; item.Extension; convertTime item.LastWriteTime; string item.Length; "" |] 
             isHidden = isHidden item.Attributes
             isCurrent = false

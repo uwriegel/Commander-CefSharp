@@ -100,8 +100,6 @@
     <Compile Include="Browser\Cef.cs" />
     <Compile Include="Browser\CustomProtocol.cs" />
     <Compile Include="Browser\CustomProtocolFactory.cs" />
-    <Compile Include="Browser\IconProtocol.cs" />
-    <Compile Include="Browser\IconProtocolFactory.cs" />
     <Compile Include="CommanderView.cs" />
     <Compile Include="Extension\MenuItemCollectionExtensions.cs" />
     <Compile Include="IHost.cs" />
