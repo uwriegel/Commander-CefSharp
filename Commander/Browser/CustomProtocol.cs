@@ -58,18 +58,20 @@ namespace Commander
 
         async void SetIcon(string ext, ICallback callback)
         {
-            Stream = await GetIconAsync(ext);
-            MimeType = "image/png";
-            StatusCode = 200;
-            ResponseLength = Stream.Length;
-            callback.Continue();
+            await Task.Factory.StartNew(async () =>
+            {
+                Stream = await GetIconAsync(ext);
+                MimeType = "image/png";
+                StatusCode = 200;
+                ResponseLength = Stream.Length;
+                callback.Continue();
+            });
         }
 
         async Task<Stream> GetIconAsync(string ext)
         {
             async Task<IntPtr> GetIconHandleAsync(int callCount)
             {
-                await Task.Delay(20);
                 var shinfo = new ShFileInfo();
                 Api.SHGetFileInfo(ext, Api.FileAttributeNormal, ref shinfo, Marshal.SizeOf(shinfo),
                        SHGetFileInfoConstants.ICON

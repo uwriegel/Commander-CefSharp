@@ -5,6 +5,8 @@ namespace Commander
 {
     static class Program
     {
+        // TODO: Save Window location and state
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
