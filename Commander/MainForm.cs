@@ -14,7 +14,7 @@ using Commander.Properties;
 
 namespace Commander
 {
-    public partial class MainForm : Form, ILoadHandler, IKeyboardHandler
+    public class MainForm : Form, ILoadHandler, IKeyboardHandler
     {
         #region ILoadHandler
 
@@ -90,6 +90,13 @@ namespace Commander
 
             CreateMenu(this);
 
+            if (Settings.Default.WindowLocation.X != -1 && Settings.Default.WindowLocation.Y != -1)
+            {
+                this.StartPosition = FormStartPosition.Manual;
+                this.Location = Settings.Default.WindowLocation;
+            }
+            ClientSize = Settings.Default.WindowSize;
+
             KeyPreview = true;
             browser.LoadHandler = this;
             browser.KeyboardHandler = this;
@@ -97,14 +104,14 @@ namespace Commander
             | AnchorStyles.Left
             | AnchorStyles.Right;
             browser.Location = new System.Drawing.Point(0, 0);
-            browser.Size = new System.Drawing.Size(800, 450);
+            browser.Size = this.ClientSize;
             browser.TabIndex = 0;
+
             // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(800, 450);
             Icon = Resources.Kirk;
 
             Controls.Add(browser);
@@ -112,6 +119,19 @@ namespace Commander
             Text = "Commander";
 
             ResumeLayout(false);
+
+            FormClosing += (object sender, FormClosingEventArgs e) =>
+            {
+                if (WindowState == FormWindowState.Normal)
+                {
+                    Settings.Default.WindowLocation = this.Location;
+                    Settings.Default.WindowSize = Size;
+                }
+                //else
+                //    Settings.Default.WindowSize = RestoreBounds.Size;
+
+                Settings.Default.Save();
+            };
 
             browser.Focus();
         }
