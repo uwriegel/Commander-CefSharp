@@ -27,7 +27,8 @@ namespace Commander
         {
             var path = host.RecentPath;
             var viewType = GetViewType(path);
-            await GetColumns(viewType);
+            var columns = GetColumns(viewType);
+            await ExecuteScript("setColumns", columns);
             ChangePath(path);
         }
 
@@ -36,7 +37,8 @@ namespace Commander
             var viewType = GetViewType(path);
             if (viewType != currentViewType)
             {
-                await GetColumns(viewType);
+                var columns = GetColumns(viewType);
+                await ExecuteScript("setColumns", columns);
                 currentViewType = viewType;
             }
 
@@ -56,7 +58,9 @@ namespace Commander
 
 
 
+            // TODO: return computed path
             currentItems = await ThreadTask<ResponseItem[]>.RunAsync(() => Engine.Get(vt, path));
+            host.RecentPath = path;
             await ExecuteScriptWithParams("itemsChanged", currentItems.Length);
         }
 
@@ -65,21 +69,19 @@ namespace Commander
             return Json.Serialize(currentItems);
         }
 
-        async Task GetColumns(ViewType viewType)
+        Columns GetColumns(ViewType viewType)
         {
-            Columns columns;
             switch (viewType)
             {
                 case ViewType.Root:
-                    columns = new Columns(Root.Name, new[]
+                    return new Columns(Root.Name, new[]
                     {
                         new Column(Resources.RootName, true),
                         new Column(Resources.RootLabel, true),
                         new Column(Resources.RootSize, true)
                     });
-                    break;
                 default:
-                    columns = new Columns(Directory.Name, new[]
+                    return new Columns(Directory.Name, new[]
                     {
                         new Column(Resources.DirectoryName, true),
                         new Column(Resources.DirectoryExtension, true),
@@ -87,9 +89,7 @@ namespace Commander
                         new Column(Resources.DirectorySize, true),
                         new Column(Resources.DirectoryVersion, true)
                     });
-                    break;
             }
-            await ExecuteScript("setColumns", columns);
         }
         async Task ExecuteScript(string method, object param)
         {

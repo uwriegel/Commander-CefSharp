@@ -5,7 +5,6 @@ namespace Commander
 {
     static class Program
     {
-        // TODO: Save last path
         // TODO: Eliminate F#
         // TODO: Select ViewItems from Items
         // TODO: GetVersion, GetExif
