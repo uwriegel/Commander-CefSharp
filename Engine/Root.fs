@@ -5,14 +5,6 @@ open System.IO
 
 let Name = "root"
 
-let getColumns () = {
-        name = Name
-        values = [| 
-            { name = "Name"; isSortable = true }
-            { name = "Bezeichnung"; isSortable = true }
-            { name = "Größe"; isSortable = true }
-        |]                
-    }
 
 let get () = 
 

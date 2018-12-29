@@ -1,16 +1,5 @@
 ﻿module Engine
 
-let GetViewType path = 
-    if path = Root.Name then   
-        Enums.Root
-    else
-        Enums.Directory
-
-let GetColumns viewType =
-    match viewType with
-    | Enums.Root -> Root.getColumns ()
-    | Enums.Directory -> Directory.getColumns ()
-        
 let Get viewType (path: string) = 
     match viewType with
     | Enums.Root -> Root.get ()

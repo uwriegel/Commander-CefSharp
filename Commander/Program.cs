@@ -5,10 +5,11 @@ namespace Commander
 {
     static class Program
     {
-        // TODO: Sort by column
-        // TODO: Check F#
+        // TODO: Save last path
+        // TODO: Eliminate F#
         // TODO: Select ViewItems from Items
         // TODO: GetVersion, GetExif
+        // TODO: Sort by column
         // TODO: One path: delay 5s, the other not, cancel long call
         // TODO: Hide hidden
 

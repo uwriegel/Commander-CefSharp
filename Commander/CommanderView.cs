@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 
 using CefSharp;
 using CefSharp.WinForms;
-
-using static Enums;
+using Commander.Properties;
 using static Model;
 
 namespace Commander
@@ -27,20 +26,37 @@ namespace Commander
         public async void Ready()
         {
             var path = host.RecentPath;
-            var viewType = Engine.GetViewType(path);
+            var viewType = GetViewType(path);
             await GetColumns(viewType);
             ChangePath(path);
         }
 
         public async void ChangePath(string path)
         {
-            var viewType = Engine.GetViewType(path);
+            var viewType = GetViewType(path);
             if (viewType != currentViewType)
             {
                 await GetColumns(viewType);
                 currentViewType = viewType;
             }
-            currentItems = await ThreadTask<ResponseItem[]>.RunAsync(() => Engine.Get(viewType, path));
+
+
+
+
+            Enums.ViewType vt;
+            switch (viewType)
+            {
+                case ViewType.Root:
+                    vt = Enums.ViewType.Root;
+                    break;
+                default:
+                    vt = Enums.ViewType.Directory;
+                    break;
+            }
+
+
+
+            currentItems = await ThreadTask<ResponseItem[]>.RunAsync(() => Engine.Get(vt, path));
             await ExecuteScriptWithParams("itemsChanged", currentItems.Length);
         }
 
@@ -51,7 +67,28 @@ namespace Commander
 
         async Task GetColumns(ViewType viewType)
         {
-            var columns = Engine.GetColumns(viewType);
+            Columns columns;
+            switch (viewType)
+            {
+                case ViewType.Root:
+                    columns = new Columns(Root.Name, new[]
+                    {
+                        new Column(Resources.RootName, true),
+                        new Column(Resources.RootLabel, true),
+                        new Column(Resources.RootSize, true)
+                    });
+                    break;
+                default:
+                    columns = new Columns(Directory.Name, new[]
+                    {
+                        new Column(Resources.DirectoryName, true),
+                        new Column(Resources.DirectoryExtension, true),
+                        new Column(Resources.DirectoryDate, true),
+                        new Column(Resources.DirectorySize, true),
+                        new Column(Resources.DirectoryVersion, true)
+                    });
+                    break;
+            }
             await ExecuteScript("setColumns", columns);
         }
         async Task ExecuteScript(string method, object param)
@@ -75,6 +112,20 @@ namespace Commander
 
             var elapsed = sw.Elapsed;
             Debugger.Log(1, "Main", $"Script execution duration: {elapsed}");
+        }
+
+        ViewType GetViewType(string path)
+        {
+            if (path == Root.Name)
+                return ViewType.Root;
+            else
+                return ViewType.Directory;
+        }
+
+        enum ViewType
+        {
+            Root,
+            Directory
         }
 
         readonly ID id;

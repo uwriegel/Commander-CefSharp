@@ -61,6 +61,51 @@ namespace Commander.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string DirectoryDate {
+            get {
+                return ResourceManager.GetString("DirectoryDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ext..
+        /// </summary>
+        public static string DirectoryExtension {
+            get {
+                return ResourceManager.GetString("DirectoryExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string DirectoryName {
+            get {
+                return ResourceManager.GetString("DirectoryName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string DirectorySize {
+            get {
+                return ResourceManager.GetString("DirectorySize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string DirectoryVersion {
+            get {
+                return ResourceManager.GetString("DirectoryVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         public static System.Drawing.Icon Kirk {
@@ -130,6 +175,33 @@ namespace Commander.Properties {
         public static string MenuView {
             get {
                 return ResourceManager.GetString("MenuView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Label.
+        /// </summary>
+        public static string RootLabel {
+            get {
+                return ResourceManager.GetString("RootLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string RootName {
+            get {
+                return ResourceManager.GetString("RootName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string RootSize {
+            get {
+                return ResourceManager.GetString("RootSize", resourceCulture);
             }
         }
     }
