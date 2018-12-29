@@ -9,8 +9,9 @@ namespace Commander.Model
 {
     struct Items
     {
-        public Items(IEnumerable<DirectoryItem> directories, IEnumerable<FileItem> files)
+        public Items(string path, IEnumerable<DirectoryItem> directories, IEnumerable<FileItem> files)
         {
+            Path = path;
             ViewType = ViewType.Directory;
             Drives = null;
             Directories = directories.ToArray();
@@ -19,6 +20,7 @@ namespace Commander.Model
 
         public Items(IEnumerable<Drive> drives)
         {
+            Path = "root";
             ViewType = ViewType.Root;
             Drives = drives.ToArray();
             Directories = null;
@@ -26,6 +28,7 @@ namespace Commander.Model
         }
 
         public ViewType ViewType { get; }
+        public string Path { get; }
         public Drive[] Drives { get; }
         public DirectoryItem[] Directories { get; }
         public FileItem[] Files { get; }

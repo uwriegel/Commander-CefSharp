@@ -56,7 +56,6 @@ namespace Commander
                 }
                 return currentItems.GetLength();
             });
-            // TODO: return computed path
 
             if (setColumns)
             {
@@ -64,7 +63,7 @@ namespace Commander
                 await ExecuteScript("setColumns", columns);
             }
 
-            host.RecentPath = path;
+            host.RecentPath = currentItems.Path;
             await ExecuteScriptWithParams("itemsChanged", length);
         }
 
@@ -85,7 +84,8 @@ namespace Commander
                     break;
             }
 
-            var result = Json.Serialize(resultItems);
+            var response = new Response(currentItems.Path, resultItems);
+            var result = Json.Serialize(response);
             var elapsed = sw.Elapsed;
             Debugger.Log(1, "Main", $"JSON conversion duration: {elapsed}");
             return result;

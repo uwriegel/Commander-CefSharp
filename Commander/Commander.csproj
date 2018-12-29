@@ -103,6 +103,7 @@
     <Compile Include="Enums\ColumnsType.cs" />
     <Compile Include="Enums\ItemType.cs" />
     <Compile Include="Enums\ViewType.cs" />
+    <Compile Include="ExifReader.cs" />
     <Compile Include="Extension\DateTimeExtensions.cs" />
     <Compile Include="Extension\ItemsExtensions.cs" />
     <Compile Include="Extension\MenuItemCollectionExtensions.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Model\Drive.cs" />
     <Compile Include="Model\FileItem.cs" />
     <Compile Include="Model\Items.cs" />
+    <Compile Include="Model\Response.cs" />
     <Compile Include="Model\ResponseItem.cs" />
     <Compile Include="Processors\DirectoryProcessor.cs" />
     <Compile Include="Processors\RootProcessor.cs" />

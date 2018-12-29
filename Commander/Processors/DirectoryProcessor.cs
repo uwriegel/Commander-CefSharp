@@ -18,7 +18,7 @@ namespace Commander.Processors
             var di = new DirectoryInfo(path);
             var directories = GetSafeItems(() => di.GetDirectories());
             var files = GetSafeItems(() => di.GetFiles());
-            return new Items(directories.Select(n => new DirectoryItem(n.Name, n.LastWriteTime, n.Attributes.HasFlag(FileAttributes.Hidden))),
+            return new Items(di.FullName, directories.Select(n => new DirectoryItem(n.Name, n.LastWriteTime, n.Attributes.HasFlag(FileAttributes.Hidden))),
                 files.Select(n => new FileItem(n.Name, n.FullName, n.Extension, n.LastWriteTime, n.Length, n.Attributes.HasFlag(FileAttributes.Hidden))));
         }
 

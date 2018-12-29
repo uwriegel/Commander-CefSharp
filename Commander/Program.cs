@@ -5,7 +5,6 @@ namespace Commander
 {
     static class Program
     {
-        // TODO: return computed path
         // TODO: GetVersion, GetExif
         // TODO: Sort by column
         // TODO: One path: delay 5s, the other not, cancel long call
