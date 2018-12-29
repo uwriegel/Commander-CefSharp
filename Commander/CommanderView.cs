@@ -1,10 +1,16 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 using CefSharp;
 using CefSharp.WinForms;
+
+using Commander.Enums;
+using Commander.Extension;
+using Commander.Model;
+using Commander.Processors;
 using Commander.Properties;
-using static Model;
 
 namespace Commander
 {
@@ -35,38 +41,54 @@ namespace Commander
         public async void ChangePath(string path)
         {
             var viewType = GetViewType(path);
-            if (viewType != currentViewType)
+            var setColumns = viewType != currentItems.ViewType;
+
+            var length = await ThreadTask<int>.RunAsync(() => 
+            {
+                switch (viewType)
+                {
+                    case ViewType.Root:
+                        currentItems = RootProcessor.Get();
+                        break;
+                    default:
+                        currentItems = DirectoryProcessor.Get(path);
+                        break;
+                }
+                return currentItems.GetLength();
+            });
+            // TODO: return computed path
+
+            if (setColumns)
             {
                 var columns = GetColumns(viewType);
                 await ExecuteScript("setColumns", columns);
-                currentViewType = viewType;
             }
 
-
-
-
-            Enums.ViewType vt;
-            switch (viewType)
-            {
-                case ViewType.Root:
-                    vt = Enums.ViewType.Root;
-                    break;
-                default:
-                    vt = Enums.ViewType.Directory;
-                    break;
-            }
-
-
-
-            // TODO: return computed path
-            currentItems = await ThreadTask<ResponseItem[]>.RunAsync(() => Engine.Get(vt, path));
             host.RecentPath = path;
-            await ExecuteScriptWithParams("itemsChanged", currentItems.Length);
+            await ExecuteScriptWithParams("itemsChanged", length);
         }
 
-        public string GetItems(int start, int end)
+        public string GetItems()
         {
-            return Json.Serialize(currentItems);
+            var sw = new Stopwatch();
+            sw.Start();
+
+            IEnumerable<ResponseItem> resultItems;
+            switch (currentItems.ViewType)
+            {
+                case ViewType.Root:
+                    resultItems = currentItems.Drives.Select((n, i) => new ResponseItem(ItemType.Directory, i, new[] { n.Name, n.Label, n.Size.ToString() },
+                        "Drive", false, false));
+                    break;
+                default:
+                    resultItems = DirectoryProcessor.GetItems(currentItems);
+                    break;
+            }
+
+            var result = Json.Serialize(resultItems);
+            var elapsed = sw.Elapsed;
+            Debugger.Log(1, "Main", $"JSON conversion duration: {elapsed}");
+            return result;
         }
 
         Columns GetColumns(ViewType viewType)
@@ -74,14 +96,14 @@ namespace Commander
             switch (viewType)
             {
                 case ViewType.Root:
-                    return new Columns(Root.Name, new[]
+                    return new Columns(RootProcessor.Name, new[]
                     {
                         new Column(Resources.RootName, true),
                         new Column(Resources.RootLabel, true),
                         new Column(Resources.RootSize, true)
                     });
                 default:
-                    return new Columns(Directory.Name, new[]
+                    return new Columns(DirectoryProcessor.Name, new[]
                     {
                         new Column(Resources.DirectoryName, true),
                         new Column(Resources.DirectoryExtension, true),
@@ -97,10 +119,11 @@ namespace Commander
             sw.Start();
 
             var json = Json.Serialize(param);
+            var elapsed = sw.Elapsed;
             await browser.EvaluateScriptAsync($"{host.Class}.{method}({json})");
 
-            var elapsed = sw.Elapsed;
-            Debugger.Log(1, "Main", $"Script execution duration: {elapsed}");
+            var elapsed2 = sw.Elapsed;
+            Debugger.Log(1, "Main", $"Script execution duration: {elapsed}, {elapsed2}");
         }
 
         async Task ExecuteScriptWithParams(string method, params object[] parameters)
@@ -116,22 +139,16 @@ namespace Commander
 
         ViewType GetViewType(string path)
         {
-            if (path == Root.Name)
+            if (path == RootProcessor.Name)
                 return ViewType.Root;
             else
                 return ViewType.Directory;
         }
 
-        enum ViewType
-        {
-            Root,
-            Directory
-        }
-
         readonly ID id;
         readonly ChromiumWebBrowser browser;
         readonly IHost host;
-        ViewType currentViewType;
-        ResponseItem[] currentItems;
+        
+        Items currentItems;
     }
 }

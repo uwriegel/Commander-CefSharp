@@ -2,15 +2,6 @@
 
 type ItemType = Undefined = 0 | Parent = 1 | Directory = 2 | File = 3 
 
-type Column = {
-    name: string
-    isSortable: bool
-}
-
-type Columns = {
-    name: string
-    values: Column[]
-}
 
 type ResponseItem = {
     itemType: ItemType
