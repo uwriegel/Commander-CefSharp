@@ -95,7 +95,9 @@ namespace Commander
                 this.StartPosition = FormStartPosition.Manual;
                 this.Location = Settings.Default.WindowLocation;
             }
-            ClientSize = Settings.Default.WindowSize;
+            Size = Settings.Default.WindowSize;
+            if (Settings.Default.WindowState != FormWindowState.Minimized)
+                WindowState = Settings.Default.WindowState;
 
             KeyPreview = true;
             browser.LoadHandler = this;
@@ -104,7 +106,7 @@ namespace Commander
             | AnchorStyles.Left
             | AnchorStyles.Right;
             browser.Location = new System.Drawing.Point(0, 0);
-            browser.Size = this.ClientSize;
+            browser.Size = ClientSize;
             browser.TabIndex = 0;
 
             // 
@@ -117,20 +119,24 @@ namespace Commander
             Controls.Add(browser);
             Name = "MainForm";
             Text = "Commander";
-
+                       
             ResumeLayout(false);
 
             FormClosing += (object sender, FormClosingEventArgs e) =>
             {
                 if (WindowState == FormWindowState.Normal)
                 {
-                    Settings.Default.WindowLocation = this.Location;
+                    Settings.Default.WindowLocation = Location;
                     Settings.Default.WindowSize = Size;
                 }
-                //else
-                //    Settings.Default.WindowSize = RestoreBounds.Size;
+                else
+                {
+                    Settings.Default.WindowLocation = RestoreBounds.Location;
+                    Settings.Default.WindowSize = RestoreBounds.Size;
+                }
 
                 Settings.Default.Save();
+                Settings.Default.WindowState = WindowState;
             };
 
             browser.Focus();

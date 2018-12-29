@@ -5,7 +5,6 @@ namespace Commander
 {
     static class Program
     {
-        // TODO: TableView: check Model F# C#
         // TODO: Sort by column
         // TODO: Check F#
         // TODO: Select ViewItems from Items
