@@ -6,8 +6,6 @@ namespace Commander
     static class Program
     {
         // TODO: return computed path
-        // TODO: DateTime Format correct language settings
-        // TODO: Size: Format with dots
         // TODO: GetVersion, GetExif
         // TODO: Sort by column
         // TODO: One path: delay 5s, the other not, cancel long call

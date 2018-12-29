@@ -28,7 +28,7 @@ namespace Commander.Processors
                 new[] {
                     n.Name,
                     "",
-                    n.Date.Format(),
+                    n.Date.ToString("g"),
                     "",
                     ""
                 }, 
@@ -37,8 +37,8 @@ namespace Commander.Processors
                 new[] {
                     n.Name,
                     n.Extension,
-                    n.Date.Format(),
-                    n.Size.ToString(), ""
+                    n.Date.ToString("g"),
+                    n.Size.ToString("N0")
                 },
                 n.Icon, false, n.IsHidden)).ToArray();
 

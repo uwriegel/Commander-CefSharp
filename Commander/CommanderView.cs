@@ -77,7 +77,7 @@ namespace Commander
             switch (currentItems.ViewType)
             {
                 case ViewType.Root:
-                    resultItems = currentItems.Drives.Select((n, i) => new ResponseItem(ItemType.Directory, i, new[] { n.Name, n.Label, n.Size.ToString() },
+                    resultItems = currentItems.Drives.Select((n, i) => new ResponseItem(ItemType.Directory, i, new[] { n.Name, n.Label, n.Size.ToString("N0") },
                         "Drive", false, false));
                     break;
                 default:
@@ -98,17 +98,17 @@ namespace Commander
                 case ViewType.Root:
                     return new Columns(RootProcessor.Name, new[]
                     {
-                        new Column(Resources.RootName, true),
-                        new Column(Resources.RootLabel, true),
-                        new Column(Resources.RootSize, true)
+                        new Column(Resources.RootName),
+                        new Column(Resources.RootLabel),
+                        new Column(Resources.RootSize, false, ColumnsType.Size)
                     });
                 default:
                     return new Columns(DirectoryProcessor.Name, new[]
                     {
                         new Column(Resources.DirectoryName, true),
                         new Column(Resources.DirectoryExtension, true),
-                        new Column(Resources.DirectoryDate, true),
-                        new Column(Resources.DirectorySize, true),
+                        new Column(Resources.DirectoryDate, true, ColumnsType.Date),
+                        new Column(Resources.DirectorySize, true, ColumnsType.Size),
                         new Column(Resources.DirectoryVersion, true)
                     });
             }

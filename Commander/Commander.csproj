@@ -100,6 +100,7 @@
     <Compile Include="Browser\CustomProtocol.cs" />
     <Compile Include="Browser\CustomProtocolFactory.cs" />
     <Compile Include="CommanderView.cs" />
+    <Compile Include="Enums\ColumnsType.cs" />
     <Compile Include="Enums\ItemType.cs" />
     <Compile Include="Enums\ViewType.cs" />
     <Compile Include="Extension\DateTimeExtensions.cs" />
