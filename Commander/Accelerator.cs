@@ -14,6 +14,12 @@ namespace Commander
             MenuItem = menuItem;
             switch (menuItem.Shortcut)
             {
+                case Shortcut.CtrlR:
+                    Key = 82;
+                    Alt = false;
+                    Ctrl = true;
+                    Shift = false;
+                    break;
                 case Shortcut.F12:
                     Key = 123;
                     Alt = false;

@@ -142,6 +142,9 @@
   <data name="MenuFile" xml:space="preserve">
     <value>&amp;Datei</value>
   </data>
+  <data name="MenuRefresh" xml:space="preserve">
+    <value>&amp;Aktualisieren</value>
+  </data>
   <data name="MenuThemeBlue" xml:space="preserve">
     <value>&amp;Blau</value>
   </data>

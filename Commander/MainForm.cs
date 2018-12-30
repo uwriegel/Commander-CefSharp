@@ -18,7 +18,7 @@ namespace Commander
     {
         #region ILoadHandler
 
-        public void OnFrameLoadStart(IWebBrowser browserControl, FrameLoadStartEventArgs frameLoadStartArgs) {}
+        public void OnFrameLoadStart(IWebBrowser browserControl, FrameLoadStartEventArgs frameLoadStartArgs) { }
 
         public void OnFrameLoadEnd(IWebBrowser browserControl, FrameLoadEndEventArgs frameLoadEndArgs)
         {
@@ -27,12 +27,12 @@ namespace Commander
                 browser.EvaluateScriptAsync($"themes.theme = '{Settings.Default.Theme}'");
                 BeginInvoke((Action)(() => browser.Focus()));
             }
-                
+
         }
 
-        public void OnLoadError(IWebBrowser browserControl, LoadErrorEventArgs loadErrorArgs) {}
+        public void OnLoadError(IWebBrowser browserControl, LoadErrorEventArgs loadErrorArgs) { }
 
-        public void OnLoadingStateChange(IWebBrowser browserControl, LoadingStateChangedEventArgs loadingStateChangedArgs) {}
+        public void OnLoadingStateChange(IWebBrowser browserControl, LoadingStateChangedEventArgs loadingStateChangedArgs) { }
 
         #endregion
 
@@ -70,9 +70,9 @@ namespace Commander
         {
             InitializeComponent();
             browser.Load(commanderUrl);
-            browser.RegisterJsObject("CommanderLeft", new CommanderView(CommanderView.ID.Left, browser, new LeftHost()), 
+            browser.RegisterJsObject("CommanderLeft", new CommanderView(CommanderView.ID.Left, browser, new LeftHost()),
                 new BindingOptions { CamelCaseJavascriptNames = true });
-            browser.RegisterJsObject("CommanderRight", new CommanderView(CommanderView.ID.Right, browser, new RightHost()), 
+            browser.RegisterJsObject("CommanderRight", new CommanderView(CommanderView.ID.Right, browser, new RightHost()),
                 new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
@@ -119,7 +119,7 @@ namespace Commander
             Controls.Add(browser);
             Name = "MainForm";
             Text = "Commander";
-                       
+
             ResumeLayout(false);
 
             FormClosing += (object sender, FormClosingEventArgs e) =>
@@ -152,6 +152,10 @@ namespace Commander
             var itemView = new MenuItem(Resources.MenuView);
             menu.MenuItems.Add(itemView);
 
+            var itemRefresh = new MenuItem(Resources.MenuRefresh, OnRefresh, Shortcut.CtrlR);
+            itemView.MenuItems.Add(itemRefresh);
+            itemView.MenuItems.Add("-");
+
             var itemTheme = new MenuItem(Resources.MenuThemes);
             itemView.MenuItems.Add(itemTheme);
             itemView.MenuItems.Add("-");
@@ -171,7 +175,7 @@ namespace Commander
                     itemThemeBlue.Checked = true;
                     break;
             }
-                       
+
             async void OnTheme(object src, EventArgs args)
             {
                 if (src == itemThemeBlue)
@@ -179,7 +183,7 @@ namespace Commander
                     itemThemeBlue.Checked = true;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = false;
-                    await browser.EvaluateScriptAsync($"themes.theme = '{Themes.Blue}'");  
+                    await browser.EvaluateScriptAsync($"themes.theme = '{Themes.Blue}'");
                     Settings.Default.Theme = Themes.Blue;
                 }
                 else if (src == itemThemeLightBlue)
@@ -228,6 +232,8 @@ namespace Commander
         }
 
         void OnDevTools(object src, EventArgs args) => browser.GetBrowser().ShowDevTools();
+
+        void OnRefresh(object src, EventArgs args) {}
 
         #endregion
 

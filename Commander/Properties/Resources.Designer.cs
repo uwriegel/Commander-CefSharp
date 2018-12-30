@@ -134,6 +134,15 @@ namespace Commander.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &amp;Refresh.
+        /// </summary>
+        public static string MenuRefresh {
+            get {
+                return ResourceManager.GetString("MenuRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Blue.
         /// </summary>
         public static string MenuThemeBlue {
