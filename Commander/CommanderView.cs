@@ -17,6 +17,21 @@ namespace Commander
 {
     class CommanderView
     {
+        #region Properties
+
+        public bool ShowHidden
+        {
+            get => _showHidden;
+            set
+            {
+                _showHidden = value;
+                Refresh();
+            }
+        }
+        bool _showHidden;
+
+        #endregion
+
         #region Types
 
         public enum ID
@@ -51,6 +66,8 @@ namespace Commander
 
         public async void ChangePath(string path)
         {
+            if (path == null)
+                return;
             var viewType = GetViewType(path);
             var setColumns = viewType != currentItems.ViewType;
 
@@ -63,7 +80,7 @@ namespace Commander
                         currentItems = RootProcessor.Get();
                         break;
                     default:
-                        currentItems = DirectoryProcessor.Get(path);
+                        currentItems = DirectoryProcessor.Get(path, ShowHidden);
                         break;
                 }
             });
@@ -130,6 +147,8 @@ namespace Commander
         #endregion
 
         #region Methods
+
+        public void Refresh() => ChangePath(currentItems.Path);
 
         Columns GetColumns(ViewType viewType)
         {

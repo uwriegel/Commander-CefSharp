@@ -143,6 +143,15 @@ namespace Commander.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show &amp;Hidden.
+        /// </summary>
+        public static string MenuShowHidden {
+            get {
+                return ResourceManager.GetString("MenuShowHidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Blue.
         /// </summary>
         public static string MenuThemeBlue {

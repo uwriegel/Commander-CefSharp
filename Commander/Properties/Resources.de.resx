@@ -145,6 +145,9 @@
   <data name="MenuRefresh" xml:space="preserve">
     <value>&amp;Aktualisieren</value>
   </data>
+  <data name="MenuShowHidden" xml:space="preserve">
+    <value>&amp;Versteckte Dateien</value>
+  </data>
   <data name="MenuThemeBlue" xml:space="preserve">
     <value>&amp;Blau</value>
   </data>

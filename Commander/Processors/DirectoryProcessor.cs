@@ -16,13 +16,20 @@ namespace Commander.Processors
     {
         public static string Name { get; } = "directory";
 
-        public static Items Get(string path)
+        public static Items Get(string path, bool showHidden)
         {
             var di = new DirectoryInfo(path);
-            var directories = GetSafeItems(() => di.GetDirectories());
-            var files = GetSafeItems(() => di.GetFiles());
-            return new Items(di.FullName, directories.Select((n, i) => new DirectoryItem(i, n.Name, n.LastWriteTime, n.Attributes.HasFlag(FileAttributes.Hidden))),
-                files.Select((n, i) => new FileItem(i, n.Name, n.FullName, n.Extension, n.LastWriteTime, n.Length, n.Attributes.HasFlag(FileAttributes.Hidden))));
+            var directories =
+                GetSafeItems(() => di.GetDirectories())
+                .Where(n => showHidden ? true : !n.Attributes.HasFlag(FileAttributes.Hidden))
+                .Select((n, i) => new DirectoryItem(i, n.Name, n.LastWriteTime, n.Attributes.HasFlag(FileAttributes.Hidden)));
+                       
+            var files = 
+                GetSafeItems(() => di.GetFiles())
+                .Where(n => showHidden ? true : !n.Attributes.HasFlag(FileAttributes.Hidden))
+                .Select((n, i) => new FileItem(i, n.Name, n.FullName, n.Extension, n.LastWriteTime, n.Length, n.Attributes.HasFlag(FileAttributes.Hidden)));
+
+            return new Items(di.FullName, directories, files);
         }
 
         public static Items ExtendItems(this Items itemsToExtend) => 

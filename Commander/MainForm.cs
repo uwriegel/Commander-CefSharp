@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using CefSharp;
@@ -70,10 +68,10 @@ namespace Commander
         {
             InitializeComponent();
             browser.Load(commanderUrl);
-            browser.RegisterJsObject("CommanderLeft", new CommanderView(CommanderView.ID.Left, browser, new LeftHost()),
-                new BindingOptions { CamelCaseJavascriptNames = true });
-            browser.RegisterJsObject("CommanderRight", new CommanderView(CommanderView.ID.Right, browser, new RightHost()),
-                new BindingOptions { CamelCaseJavascriptNames = true });
+            viewLeft = new CommanderView(CommanderView.ID.Left, browser, new LeftHost());
+            viewRight = new CommanderView(CommanderView.ID.Right, browser, new RightHost());
+            browser.RegisterJsObject("CommanderLeft", viewLeft, new BindingOptions { CamelCaseJavascriptNames = true });
+            browser.RegisterJsObject("CommanderRight", viewRight, new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
 
@@ -92,8 +90,8 @@ namespace Commander
 
             if (Settings.Default.WindowLocation.X != -1 && Settings.Default.WindowLocation.Y != -1)
             {
-                this.StartPosition = FormStartPosition.Manual;
-                this.Location = Settings.Default.WindowLocation;
+                StartPosition = FormStartPosition.Manual;
+                Location = Settings.Default.WindowLocation;
             }
             Size = Settings.Default.WindowSize;
             if (Settings.Default.WindowState != FormWindowState.Minimized)
@@ -152,6 +150,11 @@ namespace Commander
             var itemView = new MenuItem(Resources.MenuView);
             menu.MenuItems.Add(itemView);
 
+            var itemShowHidden = new MenuItem(Resources.MenuShowHidden, OnShowHidden, Shortcut.CtrlH)
+            {
+                Checked = false
+            };
+            itemView.MenuItems.Add(itemShowHidden);
             var itemRefresh = new MenuItem(Resources.MenuRefresh, OnRefresh, Shortcut.CtrlR);
             itemView.MenuItems.Add(itemRefresh);
             itemView.MenuItems.Add("-");
@@ -160,9 +163,18 @@ namespace Commander
             itemView.MenuItems.Add(itemTheme);
             itemView.MenuItems.Add("-");
 
-            var itemThemeBlue = new MenuItem(Resources.MenuThemeBlue);
-            var itemThemeLightBlue = new MenuItem(Resources.MenuThemeLightBlue);
-            var itemThemeDark = new MenuItem(Resources.MenuThemeDark);
+            var itemThemeBlue = new MenuItem(Resources.MenuThemeBlue)
+            {
+                RadioCheck = true
+            };
+            var itemThemeLightBlue = new MenuItem(Resources.MenuThemeLightBlue)
+            {
+                RadioCheck = true
+            };
+            var itemThemeDark = new MenuItem(Resources.MenuThemeDark)
+            {
+                RadioCheck = true
+            };
             switch (Settings.Default.Theme)
             {
                 case Themes.LightBlue:
@@ -235,6 +247,13 @@ namespace Commander
 
         void OnRefresh(object src, EventArgs args) {}
 
+        void OnShowHidden(object src, EventArgs args)
+        {
+            (src as MenuItem).Checked = !(src as MenuItem).Checked;
+            viewLeft.ShowHidden = (src as MenuItem).Checked;
+            viewRight.ShowHidden = (src as MenuItem).Checked;
+        }
+
         #endregion
 
         #region Types
@@ -257,6 +276,8 @@ namespace Commander
 
         const string commanderUrl = "serve://commander/";
         readonly ChromiumWebBrowser browser = new ChromiumWebBrowser("");
+        readonly CommanderView viewLeft;
+        readonly CommanderView viewRight;
         Accelerator?[] accelerators;
 
         #endregion
