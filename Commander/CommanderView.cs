@@ -34,7 +34,7 @@ namespace Commander
             var path = host.RecentPath;
             var viewType = GetViewType(path);
             var columns = GetColumns(viewType);
-            await ExecuteScript("setColumns", columns);
+            await ExecuteScriptAsync("setColumns", columns);
             ChangePath(path);
         }
 
@@ -60,11 +60,17 @@ namespace Commander
             if (setColumns)
             {
                 var columns = GetColumns(viewType);
-                await ExecuteScript("setColumns", columns);
+                await ExecuteScriptAsync("setColumns", columns);
             }
 
             host.RecentPath = currentItems.Path;
             await ExecuteScriptWithParams("itemsChanged", length);
+
+            if (currentItems.ViewType == ViewType.Directory)
+            {
+                var extended = await Task.Factory.StartNew(() => currentItems.ExtendItems());
+                currentItems = extended;
+            }
         }
 
         public string GetItems()
@@ -118,7 +124,7 @@ namespace Commander
                     });
             }
         }
-        async Task ExecuteScript(string method, object param)
+        async Task ExecuteScriptAsync(string method, object param)
         {
             var sw = new Stopwatch();
             sw.Start();

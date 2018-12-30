@@ -9,6 +9,9 @@ namespace Commander.Model
 {
     struct Items
     {
+        public static Items UpdateFiles(Items itemsToUpdate, IEnumerable<FileItem> files)
+            => new Items(itemsToUpdate, files);
+
         public Items(string path, IEnumerable<DirectoryItem> directories, IEnumerable<FileItem> files)
         {
             Path = path;
@@ -25,6 +28,15 @@ namespace Commander.Model
             Drives = drives.ToArray();
             Directories = null;
             Files = null;
+        }
+
+        Items(Items itemsToUpdate, IEnumerable<FileItem> files)
+        {
+            Path = itemsToUpdate.Path;
+            ViewType = ViewType.Directory;
+            Drives = null;
+            Directories = itemsToUpdate.Directories;
+            Files = files.ToArray();
         }
 
         public ViewType ViewType { get; }

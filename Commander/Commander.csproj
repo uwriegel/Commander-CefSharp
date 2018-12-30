@@ -116,7 +116,6 @@
     </Compile>
     <Compile Include="Model\Column.cs" />
     <Compile Include="Model\Columns.cs" />
-    <Compile Include="Model\DataMemberAttribute.cs" />
     <Compile Include="Model\DirectoryItem.cs" />
     <Compile Include="Model\Drive.cs" />
     <Compile Include="Model\FileItem.cs" />
