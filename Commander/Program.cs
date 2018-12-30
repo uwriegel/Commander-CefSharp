@@ -5,10 +5,10 @@ namespace Commander
 {
     static class Program
     {
-        // TODO: GetVersion, GetExif
         // TODO: Sort by column
         // TODO: One path: delay 5s, the other not, cancel long call
         // TODO: Hide hidden
+        // TODO: Refresh
 
         /// <summary>
         /// The main entry point for the application.

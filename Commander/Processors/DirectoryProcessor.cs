@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -37,9 +38,7 @@ namespace Commander.Processors
                 new[] {
                     n.Name,
                     "",
-                    n.Date.ToString("g"),
-                    "",
-                    ""
+                    n.Date.ToString("g")
                 },
                 "Folder", currentIndex.IsSelected(i, ItemType.Directory), n.IsHidden)))
                 .Concat(items.Files.Select((n, i) => new ResponseItem(Enums.ItemType.File, ItemIndex.Create(ItemType.File, i),
@@ -47,7 +46,8 @@ namespace Commander.Processors
                     n.Name,
                     n.Extension,
                     n.Date.ToString("g"),
-                    n.Size.ToString("N0")
+                    n.Size.ToString("N0"),
+                    n.Version.GetVersion()
                 },
                 n.Icon, currentIndex.IsSelected(i, ItemType.File), n.IsHidden, n.HasExifDate)));
         
@@ -76,14 +76,17 @@ namespace Commander.Processors
                 return itemToExtend;
         }
 
+        static string GetFullName(this FileItem file, string path) => Path.Combine(path, file.Name + file.Extension);
+
         static FileItem UpdateVersion(this FileItem file, string path)
         {
-            return file;
+            var fvi = FileVersionInfo.GetVersionInfo(file.GetFullName(path));
+            return fvi.HasInfo() ? FileItem.UpdateVersion(file, fvi) : file;
         }
 
         static FileItem UpdateExif(this FileItem file, string path)
         {
-            using (var reader = new ExifReader(Path.Combine(path, file.Name + file.Extension)))
+            using (var reader = new ExifReader(file.GetFullName(path)))
             if (reader.GetTagValue<DateTime>(ExifTags.DateTimeOriginal, out var date))
                 return FileItem.UpdateDate(file, date);
             else
