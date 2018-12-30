@@ -146,7 +146,7 @@ namespace Commander
 
             var itemFile = new MenuItem(Resources.MenuFile);
             menu.MenuItems.Add(itemFile);
-            var itemRename = new MenuItem(Resources.MenuRename, (s,e) => { }, Shortcut.CtrlH);
+            var itemRename = new MenuItem(Resources.MenuRename, (s,e) => { }, Shortcut.F2);
             itemFile.MenuItems.Add(itemRename);
             itemFile.MenuItems.Add("-");
             var itemCopy = new MenuItem(Resources.MenuCopy, (s, e) => { }, Shortcut.F5);
