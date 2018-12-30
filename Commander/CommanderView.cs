@@ -43,7 +43,7 @@ namespace Commander
             var viewType = GetViewType(path);
             var setColumns = viewType != currentItems.ViewType;
 
-            var length = await ThreadTask<int>.RunAsync(() => 
+            var length = await Task.Factory.StartNew(() => 
             {
                 switch (viewType)
                 {
