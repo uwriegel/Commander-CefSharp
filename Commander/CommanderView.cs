@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -120,6 +121,31 @@ namespace Commander
             }
         }
 
+        public void ProcessItem()
+        {
+            string GetSelectedPath()
+            {
+                var index = ItemIndex.GetArrayIndex(currentIndex);
+                var name = currentItems.ViewType == ViewType.Root ? currentItems.Drives[index].Name : currentItems.Directories[index].Name;
+                return Path.Combine(currentItems.Path, name);
+            }
+
+            var itemType = ItemIndex.GetItemType(currentIndex);
+            switch (itemType)
+            {
+                case ItemType.Parent:
+                    ChangePath(Path.Combine(currentItems.Path, ".."));
+                    break;
+                case ItemType.Directory:
+                    ChangePath(GetSelectedPath());
+                    break;
+                case ItemType.File:
+                    break;
+                default:
+                    break;
+            }
+        }
+
         public string GetItems()
         {
             var sw = new Stopwatch();
@@ -213,7 +239,7 @@ namespace Commander
 
         ViewType GetViewType(string path)
         {
-            if (path == RootProcessor.Name)
+            if (path == RootProcessor.Name || (path.EndsWith("..") && path.Length == 5))
                 return ViewType.Root;
             else
                 return ViewType.Directory;

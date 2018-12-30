@@ -36,7 +36,7 @@ namespace Commander.Processors
             Items.UpdateFiles(itemsToExtend, itemsToExtend.Files.Select(n => n.ExtendItems(itemsToExtend.Path)));
 
         public static IEnumerable<ResponseItem> GetItems(Items items, int currentIndex)
-            => Enumerable.Repeat<ResponseItem>(new ResponseItem(Enums.ItemType.Parent, 0, 
+            => Enumerable.Repeat<ResponseItem>(new ResponseItem(Enums.ItemType.Parent, ItemIndex.Create(ItemType.Parent, 0), 
                 new[] 
                 {
                     ".."
