@@ -68,7 +68,7 @@ namespace Commander
             ChangePath(path);
         }
 
-        public async void ChangePath(string path)
+        public async void ChangePath(string path, string directoryToSelect = null)
         {
             if (path == null)
                 return;
@@ -104,7 +104,19 @@ namespace Commander
             Sort();
 
             host.RecentPath = currentItems.Path;
-            currentIndex = ItemIndex.GetDefault(currentItems.ViewType);
+            if (directoryToSelect == null)
+                currentIndex = ItemIndex.GetDefault(currentItems.ViewType);
+            else if (viewType == ViewType.Directory)
+            {
+                var folderToSelect = newItems.Directories.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
+                currentIndex = ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
+            }
+            else if (viewType == ViewType.Root)
+            {
+                var folderToSelect = newItems.Drives.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
+                currentIndex = ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
+            }
+
             await ExecuteScriptWithParams("itemsChanged");
 
             if (currentItems.ViewType == ViewType.Directory)
@@ -147,7 +159,8 @@ namespace Commander
             switch (itemType)
             {
                 case ItemType.Parent:
-                    ChangePath(Path.Combine(currentItems.Path, ".."));
+                    var info = new DirectoryInfo(currentItems.Path);
+                    ChangePath(Path.Combine(currentItems.Path, ".."), info.Name);
                     break;
                 case ItemType.Directory:
                     ChangePath(GetSelectedPath());
