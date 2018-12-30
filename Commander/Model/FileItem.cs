@@ -14,8 +14,9 @@ namespace Commander.Model
 
         public static FileItem UpdateVersion(FileItem itemToUpdate, FileVersionInfo version) => new FileItem(itemToUpdate, version);
 
-        public FileItem(string name, string fullname, string extension, DateTime date, long size, bool isHidden)
+        public FileItem(int index, string name, string fullname, string extension, DateTime date, long size, bool isHidden)
         {
+            Index = index;
             Name = name.GetNameOnly();
             Extension = extension;
             Date = date;
@@ -32,6 +33,7 @@ namespace Commander.Model
 
         FileItem(FileItem itemToUpdate, DateTime date)
         {
+            Index = itemToUpdate.Index;
             Name = itemToUpdate.Name;
             Extension = itemToUpdate.Extension;
             HasExifDate = true;
@@ -44,9 +46,10 @@ namespace Commander.Model
 
         FileItem(FileItem itemToUpdate, FileVersionInfo version)
         {
+            Index = itemToUpdate.Index;
             Name = itemToUpdate.Name;
             Extension = itemToUpdate.Extension;
-            HasExifDate = true;
+            HasExifDate = false;
             Date = itemToUpdate.Date;
             Size = itemToUpdate.Size;
             IsHidden = itemToUpdate.IsHidden;
@@ -54,6 +57,7 @@ namespace Commander.Model
             Version = version;
         }
 
+        public int Index { get; }
         public string Name { get; }
         public string Extension { get; }
         public string Icon { get; }

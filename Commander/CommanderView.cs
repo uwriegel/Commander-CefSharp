@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -53,19 +54,21 @@ namespace Commander
             var viewType = GetViewType(path);
             var setColumns = viewType != currentItems.ViewType;
 
-            var length = await Task.Factory.StartNew(() => 
+            await Task.Factory.StartNew(() => 
             {
                 switch (viewType)
                 {
                     case ViewType.Root:
+                        currentSorting = null;
                         currentItems = RootProcessor.Get();
                         break;
                     default:
                         currentItems = DirectoryProcessor.Get(path);
                         break;
                 }
-                return currentItems.GetLength();
             });
+
+            Sort();
 
             if (setColumns)
             {
@@ -75,13 +78,14 @@ namespace Commander
 
             host.RecentPath = currentItems.Path;
             currentIndex = ItemIndex.GetDefault(currentItems.ViewType);
-            await ExecuteScriptWithParams("itemsChanged", length);
+            await ExecuteScriptWithParams("itemsChanged");
 
             if (currentItems.ViewType == ViewType.Directory)
             {
                 var extended = await Task.Factory.StartNew(() => currentItems.ExtendItems());
                 currentItems = extended;
-                await ExecuteScriptWithParams("itemsChanged", length);
+                Sort();
+                await ExecuteScriptWithParams("itemsChanged");
             }
         }
 
@@ -94,13 +98,13 @@ namespace Commander
             switch (currentItems.ViewType)
             {
                 case ViewType.Root:
-                    resultItems = currentItems.Drives.Select((n, i) => 
-                        new ResponseItem(ItemType.Directory, ItemIndex.Create(ItemType.Directory, i), 
+                    resultItems = currentItems.Drives.Select(n => 
+                        new ResponseItem(ItemType.Directory, ItemIndex.Create(ItemType.Directory, n.Index), 
                         new[] {
                             n.Name,
                             n.Label,
                             n.Size.ToString("N0")
-                        }, "Drive", currentIndex.IsSelected(i, ItemType.Directory)));
+                        }, "Drive", currentIndex.IsSelected(n.Index, ItemType.Directory)));
                     break;
                 default:
                     resultItems = DirectoryProcessor.GetItems(currentItems, currentIndex);
@@ -116,6 +120,13 @@ namespace Commander
 
         public void SetIndex(int index) => currentIndex = index;
 
+        public async void Sort(int index, bool ascending)
+        {
+            currentSorting = (index, !ascending);
+            Sort();
+            await ExecuteScriptWithParams("itemsChanged");
+        }
+
         #endregion
 
         #region Methods
@@ -127,21 +138,22 @@ namespace Commander
                 case ViewType.Root:
                     return new Columns(RootProcessor.Name, new[]
                     {
-                        new Column(Resources.RootName),
-                        new Column(Resources.RootLabel),
+                        new Column(Resources.RootName, false),
+                        new Column(Resources.RootLabel, false),
                         new Column(Resources.RootSize, false, ColumnsType.Size)
                     });
                 default:
                     return new Columns(DirectoryProcessor.Name, new[]
                     {
-                        new Column(Resources.DirectoryName, true),
-                        new Column(Resources.DirectoryExtension, true),
+                        new Column(Resources.DirectoryName),
+                        new Column(Resources.DirectoryExtension),
                         new Column(Resources.DirectoryDate, true, ColumnsType.Date),
                         new Column(Resources.DirectorySize, true, ColumnsType.Size),
-                        new Column(Resources.DirectoryVersion, true)
+                        new Column(Resources.DirectoryVersion)
                     });
             }
         }
+
         async Task ExecuteScriptAsync(string method, object param)
         {
             var sw = new Stopwatch();
@@ -174,6 +186,39 @@ namespace Commander
                 return ViewType.Directory;
         }
 
+        void Sort()
+        {
+            if (currentSorting.HasValue && currentItems.Files != null)
+            {
+                IEnumerable<FileItem> sortedItems;
+                switch (currentSorting.Value.index)
+                {
+                    case 0:
+                        sortedItems = currentItems.Files.OrderBy(n => n.Name);
+                        break;
+                    case 1:
+                        sortedItems = currentItems.Files.OrderBy(n => n.Extension).ThenBy(n => n.Name);
+                        break;
+                    case 2:
+                        sortedItems = currentItems.Files.OrderBy(n => n.Date).ThenBy(n => n.Name);
+                        break;
+                    case 3:
+                        sortedItems = currentItems.Files.OrderBy(n => n.Size).ThenBy(n => n.Name);
+                        break;
+                    case 4:
+                        sortedItems = currentItems.Files.OrderBy(n => n.Version, FileVersion.Comparer).ThenBy(n => n.Name);
+                        break;
+                    default:
+                        sortedItems = currentItems.Files;
+                        break;
+                }
+                if (currentSorting.Value.descending)
+                    sortedItems = sortedItems.Reverse();
+
+                currentItems = Items.UpdateFiles(currentItems, sortedItems);
+            }
+        }
+
         #endregion
 
         #region Fields
@@ -184,6 +229,8 @@ namespace Commander
         
         Items currentItems;
         int currentIndex;
+
+        (int index, bool descending)? currentSorting = null;
 
         #endregion
     }

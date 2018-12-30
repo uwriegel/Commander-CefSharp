@@ -18,7 +18,7 @@ namespace Commander.Processors
             var drives = DriveInfo.GetDrives()
                 .Where(d => d.IsReady)
                 .OrderBy(d => d.Name)
-                .Select(n => new Drive(n.Name, n.VolumeLabel, n.TotalSize));
+                .Select((n, i) => new Drive(i, n.Name, n.VolumeLabel, n.TotalSize));
             return new Items(drives);
         }
     }

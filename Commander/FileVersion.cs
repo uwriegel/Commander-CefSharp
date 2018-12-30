@@ -9,5 +9,7 @@ namespace Commander
 
         public static string GetVersion(this FileVersionInfo fvi)
             => fvi.HasInfo() ? $"{fvi.FileMajorPart}.{fvi.FileMinorPart}.{fvi.FileBuildPart}.{fvi.FilePrivatePart}" : null;
+
+        public static VersionComparer Comparer = new VersionComparer();
     }
 }

@@ -21,8 +21,8 @@ namespace Commander.Processors
             var di = new DirectoryInfo(path);
             var directories = GetSafeItems(() => di.GetDirectories());
             var files = GetSafeItems(() => di.GetFiles());
-            return new Items(di.FullName, directories.Select(n => new DirectoryItem(n.Name, n.LastWriteTime, n.Attributes.HasFlag(FileAttributes.Hidden))),
-                files.Select(n => new FileItem(n.Name, n.FullName, n.Extension, n.LastWriteTime, n.Length, n.Attributes.HasFlag(FileAttributes.Hidden))));
+            return new Items(di.FullName, directories.Select((n, i) => new DirectoryItem(i, n.Name, n.LastWriteTime, n.Attributes.HasFlag(FileAttributes.Hidden))),
+                files.Select((n, i) => new FileItem(i, n.Name, n.FullName, n.Extension, n.LastWriteTime, n.Length, n.Attributes.HasFlag(FileAttributes.Hidden))));
         }
 
         public static Items ExtendItems(this Items itemsToExtend) => 
@@ -34,14 +34,14 @@ namespace Commander.Processors
                 {
                     ".."
                 }, "Folder", currentIndex.IsSelected(0, ItemType.Parent)), 1)
-                .Concat(items.Directories.Select((n, i) => new ResponseItem(Enums.ItemType.Directory, ItemIndex.Create(ItemType.Directory, i),
+                .Concat(items.Directories.Select(n => new ResponseItem(Enums.ItemType.Directory, ItemIndex.Create(ItemType.Directory, n.Index),
                 new[] {
                     n.Name,
                     "",
                     n.Date.ToString("g")
                 },
-                "Folder", currentIndex.IsSelected(i, ItemType.Directory), n.IsHidden)))
-                .Concat(items.Files.Select((n, i) => new ResponseItem(Enums.ItemType.File, ItemIndex.Create(ItemType.File, i),
+                "Folder", currentIndex.IsSelected(n.Index, ItemType.Directory), n.IsHidden)))
+                .Concat(items.Files.Select(n => new ResponseItem(Enums.ItemType.File, ItemIndex.Create(ItemType.File, n.Index),
                 new[] {
                     n.Name,
                     n.Extension,
@@ -49,7 +49,7 @@ namespace Commander.Processors
                     n.Size.ToString("N0"),
                     n.Version.GetVersion()
                 },
-                n.Icon, currentIndex.IsSelected(i, ItemType.File), n.IsHidden, n.HasExifDate)));
+                n.Icon, currentIndex.IsSelected(n.Index, ItemType.File), n.IsHidden, n.HasExifDate)));
         
         static IEnumerable<T> GetSafeItems<T>(Func<IEnumerable<T>> get) where T : FileSystemInfo
         {

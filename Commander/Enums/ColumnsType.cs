@@ -10,7 +10,6 @@ namespace Commander.Enums
     {
         String,
         Size,
-        Date,
-        Version
+        Date
     }
 }
