@@ -27,9 +27,13 @@ namespace Commander.Processors
         public static Items ExtendItems(this Items itemsToExtend) => 
             Items.UpdateFiles(itemsToExtend, itemsToExtend.Files.Select(n => n.ExtendItems(itemsToExtend.Path)));
 
-        public static IEnumerable<ResponseItem> GetItems(Items items)
-            => Enumerable.Repeat<ResponseItem>(new ResponseItem(Enums.ItemType.Parent, 0, new[] { ".." }, "Folder", false, false), 1)
-                .Concat(items.Directories.Select((n, i) => new ResponseItem(Enums.ItemType.Directory, IndexOperations.CombineIndexes((byte)ItemType.Directory, i),
+        public static IEnumerable<ResponseItem> GetItems(Items items, int currentIndex)
+            => Enumerable.Repeat<ResponseItem>(new ResponseItem(Enums.ItemType.Parent, 0, 
+                new[] 
+                {
+                    ".."
+                }, "Folder", currentIndex.IsSelected(0, ItemType.Parent)), 1)
+                .Concat(items.Directories.Select((n, i) => new ResponseItem(Enums.ItemType.Directory, ItemIndex.Create(ItemType.Directory, i),
                 new[] {
                     n.Name,
                     "",
@@ -37,15 +41,15 @@ namespace Commander.Processors
                     "",
                     ""
                 },
-                "Folder", false, n.IsHidden)))
-                .Concat(items.Files.Select((n, i) => new ResponseItem(Enums.ItemType.File, IndexOperations.CombineIndexes((byte)ItemType.File, i),
+                "Folder", currentIndex.IsSelected(i, ItemType.Directory), n.IsHidden)))
+                .Concat(items.Files.Select((n, i) => new ResponseItem(Enums.ItemType.File, ItemIndex.Create(ItemType.File, i),
                 new[] {
                     n.Name,
                     n.Extension,
                     n.Date.ToString("g"),
                     n.Size.ToString("N0")
                 },
-                n.Icon, false, n.IsHidden)));
+                n.Icon, currentIndex.IsSelected(i, ItemType.File), n.IsHidden, n.HasExifDate)));
         
         static IEnumerable<T> GetSafeItems<T>(Func<IEnumerable<T>> get) where T : FileSystemInfo
         {

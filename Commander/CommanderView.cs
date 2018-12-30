@@ -16,11 +16,17 @@ namespace Commander
 {
     class CommanderView
     {
+        #region Types
+
         public enum ID
         {
             Left,
             Right
         }
+
+        #endregion
+
+        #region Constructor
 
         public CommanderView(ID id, ChromiumWebBrowser browser, IHost host)
         {
@@ -28,6 +34,10 @@ namespace Commander
             this.browser = browser;
             this.host = host;
         }
+
+        #endregion
+
+        #region Interface
 
         public async void Ready()
         {
@@ -64,12 +74,14 @@ namespace Commander
             }
 
             host.RecentPath = currentItems.Path;
+            currentIndex = ItemIndex.GetDefault(currentItems.ViewType);
             await ExecuteScriptWithParams("itemsChanged", length);
 
             if (currentItems.ViewType == ViewType.Directory)
             {
                 var extended = await Task.Factory.StartNew(() => currentItems.ExtendItems());
                 currentItems = extended;
+                await ExecuteScriptWithParams("itemsChanged", length);
             }
         }
 
@@ -83,15 +95,15 @@ namespace Commander
             {
                 case ViewType.Root:
                     resultItems = currentItems.Drives.Select((n, i) => 
-                        new ResponseItem(ItemType.Directory, IndexOperations.CombineIndexes((byte)ItemType.Directory, i), 
+                        new ResponseItem(ItemType.Directory, ItemIndex.Create(ItemType.Directory, i), 
                         new[] {
                             n.Name,
                             n.Label,
                             n.Size.ToString("N0")
-                        }, "Drive", false, false));
+                        }, "Drive", currentIndex.IsSelected(i, ItemType.Directory)));
                     break;
                 default:
-                    resultItems = DirectoryProcessor.GetItems(currentItems);
+                    resultItems = DirectoryProcessor.GetItems(currentItems, currentIndex);
                     break;
             }
 
@@ -101,6 +113,12 @@ namespace Commander
             Debugger.Log(1, "Main", $"JSON conversion duration: {elapsed}");
             return result;
         }
+
+        public void SetIndex(int index) => currentIndex = index;
+
+        #endregion
+
+        #region Methods
 
         Columns GetColumns(ViewType viewType)
         {
@@ -156,10 +174,17 @@ namespace Commander
                 return ViewType.Directory;
         }
 
+        #endregion
+
+        #region Fields
+
         readonly ID id;
         readonly ChromiumWebBrowser browser;
         readonly IHost host;
         
         Items currentItems;
+        int currentIndex;
+
+        #endregion
     }
 }
