@@ -17,7 +17,7 @@ using Commander.Properties;
 
 namespace Commander
 {
-    // TODO: Set Parent: select latest item
+    // TODO: F9: 
     class CommanderView
     {
         #region Properties
