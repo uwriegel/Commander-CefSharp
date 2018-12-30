@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-
+using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
 
@@ -16,6 +17,7 @@ using Commander.Properties;
 
 namespace Commander
 {
+    // TODO: Set Parent: select latest item
     class CommanderView
     {
         #region Properties
@@ -45,9 +47,10 @@ namespace Commander
 
         #region Constructor
 
-        public CommanderView(ID id, ChromiumWebBrowser browser, IHost host)
+        public CommanderView(ID id, IntPtr mainWindow, ChromiumWebBrowser browser, IHost host)
         {
             this.id = id;
+            this.mainWindow = mainWindow;
             this.browser = browser;
             this.host = host;
         }
@@ -121,16 +124,26 @@ namespace Commander
             }
         }
 
-        public void ProcessItem()
+        public void ProcessItem(ProcessItemType type)
         {
+            var itemType = ItemIndex.GetItemType(currentIndex);
+
             string GetSelectedPath()
             {
                 var index = ItemIndex.GetArrayIndex(currentIndex);
-                var name = currentItems.ViewType == ViewType.Root ? currentItems.Drives[index].Name : currentItems.Directories[index].Name;
+
+                string GetFullName()
+                {
+                    if (itemType == ItemType.Directory)
+                        return currentItems.Directories[index].Name;
+                    else
+                        return currentItems.Files[index].Name + currentItems.Files[index].Extension;
+                }
+
+                var name = currentItems.ViewType == ViewType.Root ? currentItems.Drives[index].Name : GetFullName();
                 return Path.Combine(currentItems.Path, name);
             }
 
-            var itemType = ItemIndex.GetItemType(currentIndex);
             switch (itemType)
             {
                 case ItemType.Parent:
@@ -140,8 +153,37 @@ namespace Commander
                     ChangePath(GetSelectedPath());
                     break;
                 case ItemType.File:
+                    ProcessFile(GetSelectedPath(), type);
                     break;
                 default:
+                    break;
+            }
+        }
+
+        void ProcessFile(string file, ProcessItemType type)
+        {
+            switch (type)
+            {
+                case ProcessItemType.Show:
+                    var p = new Process();
+                    p.StartInfo.UseShellExecute = true;
+                    p.StartInfo.ErrorDialog = true;
+                    p.StartInfo.FileName = file;
+                    p.Start();
+                    break;
+                case ProcessItemType.Properties:
+                    var info = new ShellExecuteInfo()
+                    {
+                        lpVerb = "properties",
+                        lpFile = file,
+                        nShow = Api.SW_SHOW,
+                        fMask = Api.SEE_MASK_INVOKEIDLIST
+                    };
+                    info.cbSize = Marshal.SizeOf(info);
+                    Api.ShellExecuteEx(ref info);
+                    break;
+                case ProcessItemType.StartAs:
+                    p = Process.Start("rundll32.exe", $"shell32, OpenAs_RunDLL {file}");
                     break;
             }
         }
@@ -286,6 +328,7 @@ namespace Commander
         readonly ChromiumWebBrowser browser;
         readonly IHost host;
         readonly RequestFactory requestFactory = new RequestFactory();
+        readonly IntPtr mainWindow;
         
         Items currentItems;
         int currentIndex;

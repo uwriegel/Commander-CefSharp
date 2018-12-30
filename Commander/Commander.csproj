@@ -102,6 +102,7 @@
     <Compile Include="CommanderView.cs" />
     <Compile Include="Enums\ColumnsType.cs" />
     <Compile Include="Enums\ItemType.cs" />
+    <Compile Include="Enums\ProcessItemType.cs" />
     <Compile Include="Enums\ViewType.cs" />
     <Compile Include="ExifReader.cs" />
     <Compile Include="Extension\DateTimeExtensions.cs" />

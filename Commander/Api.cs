@@ -15,6 +15,31 @@ namespace Commander
         public string TypeName;
     }
 
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct ShellExecuteInfo
+    {
+        public int cbSize;
+        public uint fMask;
+        public IntPtr hwnd;
+        [MarshalAs(UnmanagedType.LPTStr)]
+        public string lpVerb;
+        [MarshalAs(UnmanagedType.LPTStr)]
+        public string lpFile;
+        [MarshalAs(UnmanagedType.LPTStr)]
+        public string lpParameters;
+        [MarshalAs(UnmanagedType.LPTStr)]
+        public string lpDirectory;
+        public int nShow;
+        public IntPtr hInstApp;
+        public IntPtr lpIDList;
+        [MarshalAs(UnmanagedType.LPTStr)]
+        public string lpClass;
+        public IntPtr hkeyClass;
+        public uint dwHotKey;
+        public IntPtr hIcon;
+        public IntPtr hProcess;
+    }
+
     [Flags]
     enum SHGetFileInfoConstants
     {
@@ -41,11 +66,19 @@ namespace Commander
     static class Api
     {
         public const int FileAttributeNormal = 0x80;
+        public const int SW_SHOW = 5;
+        public const uint SEE_MASK_INVOKEIDLIST = 12;
 
         [DllImport("shell32")]
         extern internal static IntPtr SHGetFileInfo(string pszPath, int dwFileAttributes, ref ShFileInfo psfi, int cbFileInfo, SHGetFileInfoConstants uFlags);
 
+        [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool ShellExecuteEx(ref ShellExecuteInfo lpExecInfo);
+
         [DllImport("user32.dll", SetLastError = true)]
         extern internal static bool DestroyIcon(IntPtr hIcon);
+
+        [DllImport("user32.dll")]
+        public static extern int SetActiveWindow(IntPtr hwnd);
     }
 }
