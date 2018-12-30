@@ -136,14 +136,53 @@
   <data name="Kirk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Kirk.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="MenuAll" xml:space="preserve">
+    <value>&amp;Alles</value>
+  </data>
+  <data name="MenuCopy" xml:space="preserve">
+    <value>&amp;Kopieren</value>
+  </data>
+  <data name="MenuCreateFolder" xml:space="preserve">
+    <value>&amp;Ordner anlegen</value>
+  </data>
+  <data name="MenuDelete" xml:space="preserve">
+    <value>&amp;Löschen</value>
+  </data>
   <data name="MenuDeveloperTools" xml:space="preserve">
     <value>&amp;Entwicklerwerkzeuge</value>
+  </data>
+  <data name="MenuExit" xml:space="preserve">
+    <value>&amp;Beenden</value>
+  </data>
+  <data name="MenuFavourites" xml:space="preserve">
+    <value>&amp;Favoriten</value>
   </data>
   <data name="MenuFile" xml:space="preserve">
     <value>&amp;Datei</value>
   </data>
+  <data name="MenuFullscreen" xml:space="preserve">
+    <value>&amp;Vollbild</value>
+  </data>
+  <data name="MenuMove" xml:space="preserve">
+    <value>&amp;Verschieben</value>
+  </data>
+  <data name="MenuNavigation" xml:space="preserve">
+    <value>&amp;Navigation</value>
+  </data>
+  <data name="MenuPreview" xml:space="preserve">
+    <value>&amp;Vorschau</value>
+  </data>
+  <data name="MenuProperties" xml:space="preserve">
+    <value>&amp;Eigenschaften</value>
+  </data>
   <data name="MenuRefresh" xml:space="preserve">
     <value>&amp;Aktualisieren</value>
+  </data>
+  <data name="MenuRename" xml:space="preserve">
+    <value>&amp;Umbenennen</value>
+  </data>
+  <data name="MenuSelection" xml:space="preserve">
+    <value>&amp;Selektion</value>
   </data>
   <data name="MenuShowHidden" xml:space="preserve">
     <value>&amp;Versteckte Dateien</value>
@@ -159,6 +198,9 @@
   </data>
   <data name="MenuThemes" xml:space="preserve">
     <value>&amp;Themen</value>
+  </data>
+  <data name="MenuUnselectAll" xml:space="preserve">
+    <value>Alle &amp;deselektieren</value>
   </data>
   <data name="MenuView" xml:space="preserve">
     <value>&amp;Ansicht</value>

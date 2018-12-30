@@ -146,6 +146,35 @@ namespace Commander
 
             var itemFile = new MenuItem(Resources.MenuFile);
             menu.MenuItems.Add(itemFile);
+            var itemRename = new MenuItem(Resources.MenuRename, (s,e) => { }, Shortcut.CtrlH);
+            itemFile.MenuItems.Add(itemRename);
+            itemFile.MenuItems.Add("-");
+            var itemCopy = new MenuItem(Resources.MenuCopy, (s, e) => { }, Shortcut.F5);
+            itemFile.MenuItems.Add(itemCopy);
+            var itemMove = new MenuItem(Resources.MenuMove, (s, e) => { }, Shortcut.F6);
+            itemFile.MenuItems.Add(itemMove);
+            var itemDelete = new MenuItem(Resources.MenuDelete, (s, e) => { }, Shortcut.Del);
+            itemFile.MenuItems.Add(itemDelete);
+            itemFile.MenuItems.Add("-");
+            var itemCreateFolder = new MenuItem(Resources.MenuCreateFolder, (s, e) => { }, Shortcut.F7);
+            itemFile.MenuItems.Add(itemCreateFolder);
+            var itemProperties = new MenuItem(Resources.MenuProperties, (s, e) => { });
+            itemFile.MenuItems.Add(itemProperties);
+            itemFile.MenuItems.Add("-");
+            var itemExit = new MenuItem(Resources.MenuExit, (s, e) => Close(), Shortcut.AltF4);
+            itemFile.MenuItems.Add(itemExit);
+
+            var itemNavigation = new MenuItem(Resources.MenuNavigation);
+            menu.MenuItems.Add(itemNavigation);
+            var itemFavourites = new MenuItem(Resources.MenuFavourites, (s, e) => { }, Shortcut.F1);
+            itemNavigation.MenuItems.Add(itemFavourites);
+
+            var itemSelection = new MenuItem(Resources.MenuSelection);
+            menu.MenuItems.Add(itemSelection);
+            var itemAll = new MenuItem(Resources.MenuAll, (s, e) => { });
+            itemSelection.MenuItems.Add(itemAll);
+            var itemUnselectAll = new MenuItem(Resources.MenuUnselectAll, (s, e) => { });
+            itemSelection.MenuItems.Add(itemUnselectAll);
 
             var itemView = new MenuItem(Resources.MenuView);
             menu.MenuItems.Add(itemView);
@@ -157,6 +186,11 @@ namespace Commander
             itemView.MenuItems.Add(itemShowHidden);
             var itemRefresh = new MenuItem(Resources.MenuRefresh, OnRefresh, Shortcut.CtrlR);
             itemView.MenuItems.Add(itemRefresh);
+            itemView.MenuItems.Add("-");
+
+            var itemPreview = new MenuItem(Resources.MenuPreview, (s, e) => { }, Shortcut.F3);
+            itemView.MenuItems.Add(itemPreview);
+
             itemView.MenuItems.Add("-");
 
             var itemTheme = new MenuItem(Resources.MenuThemes);
@@ -227,6 +261,11 @@ namespace Commander
             itemTheme.MenuItems.Add(itemThemeBlue);
             itemTheme.MenuItems.Add(itemThemeLightBlue);
             itemTheme.MenuItems.Add(itemThemeDark);
+
+            var itemFullscreen = new MenuItem(Resources.MenuFullscreen, (s, e) => { }, Shortcut.F11);
+            itemView.MenuItems.Add(itemFullscreen);
+                       
+            itemView.MenuItems.Add("-");
 
             var itemDevTools = new MenuItem(Resources.MenuDeveloperTools, OnDevTools, Shortcut.F12);
             itemView.MenuItems.Add(itemDevTools);

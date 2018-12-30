@@ -116,11 +116,65 @@ namespace Commander.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &amp;All.
+        /// </summary>
+        public static string MenuAll {
+            get {
+                return ResourceManager.GetString("MenuAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Copy.
+        /// </summary>
+        public static string MenuCopy {
+            get {
+                return ResourceManager.GetString("MenuCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create &amp;Folder.
+        /// </summary>
+        public static string MenuCreateFolder {
+            get {
+                return ResourceManager.GetString("MenuCreateFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Delete.
+        /// </summary>
+        public static string MenuDelete {
+            get {
+                return ResourceManager.GetString("MenuDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Developer Tools.
         /// </summary>
         public static string MenuDeveloperTools {
             get {
                 return ResourceManager.GetString("MenuDeveloperTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Exit.
+        /// </summary>
+        public static string MenuExit {
+            get {
+                return ResourceManager.GetString("MenuExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Favourites.
+        /// </summary>
+        public static string MenuFavourites {
+            get {
+                return ResourceManager.GetString("MenuFavourites", resourceCulture);
             }
         }
         
@@ -134,11 +188,74 @@ namespace Commander.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &amp;Fullscreen.
+        /// </summary>
+        public static string MenuFullscreen {
+            get {
+                return ResourceManager.GetString("MenuFullscreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Move.
+        /// </summary>
+        public static string MenuMove {
+            get {
+                return ResourceManager.GetString("MenuMove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Navigation.
+        /// </summary>
+        public static string MenuNavigation {
+            get {
+                return ResourceManager.GetString("MenuNavigation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Preview.
+        /// </summary>
+        public static string MenuPreview {
+            get {
+                return ResourceManager.GetString("MenuPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Properties.
+        /// </summary>
+        public static string MenuProperties {
+            get {
+                return ResourceManager.GetString("MenuProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Refresh.
         /// </summary>
         public static string MenuRefresh {
             get {
                 return ResourceManager.GetString("MenuRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Rename.
+        /// </summary>
+        public static string MenuRename {
+            get {
+                return ResourceManager.GetString("MenuRename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Selection.
+        /// </summary>
+        public static string MenuSelection {
+            get {
+                return ResourceManager.GetString("MenuSelection", resourceCulture);
             }
         }
         
@@ -184,6 +301,15 @@ namespace Commander.Properties {
         public static string MenuThemes {
             get {
                 return ResourceManager.GetString("MenuThemes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Unselect All.
+        /// </summary>
+        public static string MenuUnselectAll {
+            get {
+                return ResourceManager.GetString("MenuUnselectAll", resourceCulture);
             }
         }
         
