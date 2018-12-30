@@ -68,30 +68,36 @@ namespace Commander
         {
             if (path == null)
                 return;
+
+            var request = requestFactory.Create();
+
             var viewType = GetViewType(path);
             var setColumns = viewType != currentItems.ViewType;
 
-            await Task.Factory.StartNew(() => 
+            var newItems = await Task.Factory.StartNew(() => 
             {
                 switch (viewType)
                 {
                     case ViewType.Root:
                         currentSorting = null;
-                        currentItems = RootProcessor.Get();
-                        break;
+                        return RootProcessor.Get();
                     default:
-                        currentItems = DirectoryProcessor.Get(path, ShowHidden);
-                        break;
+                        return DirectoryProcessor.Get(path, ShowHidden);
                 }
             });
 
-            Sort();
+            if (request.IsCancelled)
+                return;
 
             if (setColumns)
             {
                 var columns = GetColumns(viewType);
                 await ExecuteScriptAsync("setColumns", columns);
             }
+
+            currentItems = newItems;
+
+            Sort();
 
             host.RecentPath = currentItems.Path;
             currentIndex = ItemIndex.GetDefault(currentItems.ViewType);
@@ -100,8 +106,16 @@ namespace Commander
             if (currentItems.ViewType == ViewType.Directory)
             {
                 var extended = await Task.Factory.StartNew(() => currentItems.ExtendItems());
+
+                if (request.IsCancelled)
+                    return;
+
                 currentItems = extended;
                 Sort();
+
+                if (request.IsCancelled)
+                    return;
+
                 await ExecuteScriptWithParams("itemsChanged");
             }
         }
@@ -245,6 +259,7 @@ namespace Commander
         readonly ID id;
         readonly ChromiumWebBrowser browser;
         readonly IHost host;
+        readonly RequestFactory requestFactory = new RequestFactory();
         
         Items currentItems;
         int currentIndex;

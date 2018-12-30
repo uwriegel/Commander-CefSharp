@@ -132,6 +132,8 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Request\Request.cs" />
+    <Compile Include="Request\RequestFactory.cs" />
     <Compile Include="Themes.cs" />
     <Compile Include="ThreadTask.cs" />
     <Compile Include="VersionComparer.cs" />
