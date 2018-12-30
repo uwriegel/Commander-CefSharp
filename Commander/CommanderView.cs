@@ -76,8 +76,13 @@ namespace Commander
             switch (currentItems.ViewType)
             {
                 case ViewType.Root:
-                    resultItems = currentItems.Drives.Select((n, i) => new ResponseItem(ItemType.Directory, i, new[] { n.Name, n.Label, n.Size.ToString("N0") },
-                        "Drive", false, false));
+                    resultItems = currentItems.Drives.Select((n, i) => 
+                        new ResponseItem(ItemType.Directory, IndexOperations.CombineIndexes((byte)ItemType.Directory, i), 
+                        new[] {
+                            n.Name,
+                            n.Label,
+                            n.Size.ToString("N0")
+                        }, "Drive", false, false));
                     break;
                 default:
                     resultItems = DirectoryProcessor.GetItems(currentItems);

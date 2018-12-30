@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Commander.Enums;
 using Commander.Extension;
 using Commander.Model;
 
@@ -23,29 +24,24 @@ namespace Commander.Processors
         }
 
         public static IEnumerable<ResponseItem> GetItems(Items items)
-        {
-            var directories = items.Directories.Select((n, i) => new ResponseItem(Enums.ItemType.Directory, i + 1,
+            => Enumerable.Repeat<ResponseItem>(new ResponseItem(Enums.ItemType.Parent, 0, new[] { ".." }, "Folder", false, false), 1)
+                .Concat(items.Directories.Select((n, i) => new ResponseItem(Enums.ItemType.Directory, IndexOperations.CombineIndexes((byte)ItemType.Directory, i),
                 new[] {
                     n.Name,
                     "",
                     n.Date.ToString("g"),
                     "",
                     ""
-                }, 
-                "Folder", false, n.IsHidden)).ToArray();
-            var files = items.Files.Select((n, i) => new ResponseItem(Enums.ItemType.File, i + 1 + directories.Length,
+                },
+                "Folder", false, n.IsHidden)))
+                .Concat(items.Files.Select((n, i) => new ResponseItem(Enums.ItemType.File, IndexOperations.CombineIndexes((byte)ItemType.File, i),
                 new[] {
                     n.Name,
                     n.Extension,
                     n.Date.ToString("g"),
                     n.Size.ToString("N0")
                 },
-                n.Icon, false, n.IsHidden)).ToArray();
-
-            return Enumerable.Repeat<ResponseItem>(new ResponseItem(Enums.ItemType.Parent, 0, new[] { ".." }, "Folder", false, false), 1)
-                .Concat(directories)
-                .Concat(files);
-        }
+                n.Icon, false, n.IsHidden)));
         
         static IEnumerable<T> GetSafeItems<T>(Func<IEnumerable<T>> get) where T : FileSystemInfo
         {

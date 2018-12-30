@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Commander.Enums
 {
-    enum ItemType
+    enum ItemType : byte
     {
         Undefined,
         Parent,
