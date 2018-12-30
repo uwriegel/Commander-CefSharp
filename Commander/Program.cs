@@ -11,7 +11,6 @@ namespace Commander
         [STAThread]
         static void Main()
         {
-            // TODO: Menu structure, so Electron can bew removed
             Cef.Initialize();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
