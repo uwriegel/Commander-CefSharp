@@ -104,18 +104,25 @@ namespace Commander
             Sort();
 
             host.RecentPath = currentItems.Path;
-            if (directoryToSelect == null)
-                currentIndex = ItemIndex.GetDefault(currentItems.ViewType);
-            else if (viewType == ViewType.Directory)
+
+            int GetCurrentIndex()
             {
-                var folderToSelect = newItems.Directories.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
-                currentIndex = ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
+                if (directoryToSelect == null)
+                    return ItemIndex.GetDefault(currentItems.ViewType);
+                else if (viewType == ViewType.Directory)
+                {
+                    var folderToSelect = newItems.Directories.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
+                    return ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
+                }
+                else if (viewType == ViewType.Root)
+                {
+                    var folderToSelect = newItems.Drives.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
+                    return ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
+                }
+                else
+                    return 0;
             }
-            else if (viewType == ViewType.Root)
-            {
-                var folderToSelect = newItems.Drives.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
-                currentIndex = ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
-            }
+            SetIndex(GetCurrentIndex());
 
             await ExecuteScriptWithParams("itemsChanged");
 
@@ -139,34 +146,22 @@ namespace Commander
         public void ProcessItem(ProcessItemType type)
         {
             var itemType = ItemIndex.GetItemType(currentIndex);
-
-            string GetSelectedPath()
-            {
-                var index = ItemIndex.GetArrayIndex(currentIndex);
-
-                string GetFullName()
-                {
-                    if (itemType == ItemType.Directory)
-                        return currentItems.Directories[index].Name;
-                    else
-                        return currentItems.Files[index].Name + currentItems.Files[index].Extension;
-                }
-
-                var name = currentItems.ViewType == ViewType.Root ? currentItems.Drives[index].Name : GetFullName();
-                return Path.Combine(currentItems.Path, name);
-            }
+            var item = GetCurrentItemPath(currentIndex);
 
             switch (itemType)
             {
                 case ItemType.Parent:
                     var info = new DirectoryInfo(currentItems.Path);
-                    ChangePath(Path.Combine(currentItems.Path, ".."), info.Name);
+                    ChangePath(item, info.Name);
                     break;
                 case ItemType.Directory:
-                    ChangePath(GetSelectedPath());
+                    if (type == ProcessItemType.Properties)
+                        ProcessFile(item, type);
+                    else
+                        ChangePath(item);
                     break;
                 case ItemType.File:
-                    ProcessFile(GetSelectedPath(), type);
+                    ProcessFile(item, type);
                     break;
                 default:
                     break;
@@ -230,7 +225,11 @@ namespace Commander
             return result;
         }
 
-        public void SetIndex(int index) => currentIndex = index;
+        public async void SetIndex(int index)
+        {
+            currentIndex = index;
+            await ExecuteScriptAsync("setCurrentItem", GetCurrentItemPath(currentIndex));
+        }
 
         public async void Sort(int index, bool ascending)
         {
@@ -279,6 +278,38 @@ namespace Commander
 
             var elapsed2 = sw.Elapsed;
             Debugger.Log(1, "Main", $"Script execution duration: {elapsed}, {elapsed2}");
+        }
+
+        string GetCurrentItemPath(int index)
+        {
+            var itemType = ItemIndex.GetItemType(index);
+            var arrayIndex = ItemIndex.GetArrayIndex(index);
+
+            string GetDirectoryItemPath()
+            {
+                switch (itemType)
+                {
+                    case ItemType.Directory:
+                        return currentItems.Directories[arrayIndex].Name;
+                    case ItemType.File:
+                        return currentItems.Files[arrayIndex].Name + currentItems.Files[arrayIndex].Extension;
+                    case ItemType.Parent:
+                        var info = new DirectoryInfo(currentItems.Path);
+                        return info.Parent?.FullName ?? "root";
+                    default:
+                        return null;
+                }
+            }
+
+            string GetDirectory()
+            {
+                var directory = GetDirectoryItemPath();
+                return directory == "root" ? "root" : Path.Combine(currentItems.Path, directory);
+            }
+
+            return currentItems.ViewType == ViewType.Root 
+                ? currentItems.Drives[arrayIndex].Name 
+                : GetDirectory();
         }
 
         async Task ExecuteScriptWithParams(string method, params object[] parameters)
