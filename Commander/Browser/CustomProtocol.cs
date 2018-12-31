@@ -24,6 +24,12 @@ namespace Commander
                 SetIcon(ext, callback);
                 return true;
             }
+            else if (test.StartsWith("commander/file?path="))
+            {
+                var file = Uri.UnescapeDataString(test.Substring(20));
+                Serve(file, request.Url, callback);
+                return true;
+            }
 
             if (test.StartsWith("commander"))
             {
@@ -31,13 +37,7 @@ namespace Commander
                 if (file.Length == 0)
                     file = "index.html";
                 file = @"Commander\" + file;
-                Stream = File.OpenRead(file);
-                MimeType = RetrieveMimeType(request.Url);
-                StatusCode = 200;
-
-                ResponseLength = Stream.Length;
-
-                callback.Continue();
+                Serve(file, request.Url, callback);
                 return true;
             }
             else
@@ -54,6 +54,18 @@ namespace Commander
                 var ext = url.Substring(pos + 1).ToLower();
                 return GetMimeType(ext);
             }
+        }
+
+        async void Serve(string file, string url, ICallback callback)
+        {
+            await Task.Factory.StartNew(() =>
+            {
+                Stream = File.OpenRead(file);
+                MimeType = RetrieveMimeType(url);
+                StatusCode = 200;
+                ResponseLength = Stream.Length;
+                callback.Continue();
+            });
         }
 
         async void SetIcon(string ext, ICallback callback)
