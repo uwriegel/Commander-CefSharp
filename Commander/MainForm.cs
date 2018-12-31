@@ -77,68 +77,7 @@ namespace Commander
 
         #endregion
 
-        #region Methods
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        void InitializeComponent()
-        {
-            SuspendLayout();
-
-            CreateMenu(this);
-
-            if (Settings.Default.WindowLocation.X != -1 && Settings.Default.WindowLocation.Y != -1)
-            {
-                StartPosition = FormStartPosition.Manual;
-                Location = Settings.Default.WindowLocation;
-            }
-            Size = Settings.Default.WindowSize;
-            if (Settings.Default.WindowState != FormWindowState.Minimized)
-                WindowState = Settings.Default.WindowState;
-
-            KeyPreview = true;
-            browser.LoadHandler = this;
-            browser.KeyboardHandler = this;
-            browser.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
-            | AnchorStyles.Left
-            | AnchorStyles.Right;
-            browser.Location = new System.Drawing.Point(0, 0);
-            browser.Size = ClientSize;
-            browser.TabIndex = 0;
-
-            // 
-            // MainForm
-            // 
-            AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            AutoScaleMode = AutoScaleMode.Font;
-            Icon = Resources.Kirk;
-
-            Controls.Add(browser);
-            Name = "MainForm";
-            Text = "Commander";
-
-            ResumeLayout(false);
-
-            FormClosing += (object sender, FormClosingEventArgs e) =>
-            {
-                if (WindowState == FormWindowState.Normal)
-                {
-                    Settings.Default.WindowLocation = Location;
-                    Settings.Default.WindowSize = Size;
-                }
-                else
-                {
-                    Settings.Default.WindowLocation = RestoreBounds.Location;
-                    Settings.Default.WindowSize = RestoreBounds.Size;
-                }
-
-                Settings.Default.Save();
-                Settings.Default.WindowState = WindowState;
-            };
-
-            browser.Focus();
-        }
+        #region Menu
 
         void CreateMenu(Control parent)
         {
@@ -146,7 +85,7 @@ namespace Commander
 
             var itemFile = new MenuItem(Resources.MenuFile);
             menu.MenuItems.Add(itemFile);
-            var itemRename = new MenuItem(Resources.MenuRename, (s,e) => { }, Shortcut.F2);
+            var itemRename = new MenuItem(Resources.MenuRename, (s, e) => { }, Shortcut.F2);
             itemFile.MenuItems.Add(itemRename);
             itemFile.MenuItems.Add("-");
             var itemCopy = new MenuItem(Resources.MenuCopy, (s, e) => { }, Shortcut.F5);
@@ -188,7 +127,10 @@ namespace Commander
             itemView.MenuItems.Add(itemRefresh);
             itemView.MenuItems.Add("-");
 
-            var itemPreview = new MenuItem(Resources.MenuPreview, (s, e) => { }, Shortcut.F3);
+            var itemPreview = new MenuItem(Resources.MenuPreview, OnViewer, Shortcut.F3)
+            {
+                Checked = false
+            };
             itemView.MenuItems.Add(itemPreview);
 
             itemView.MenuItems.Add("-");
@@ -264,7 +206,7 @@ namespace Commander
 
             var itemFullscreen = new MenuItem(Resources.MenuFullscreen, (s, e) => { }, Shortcut.F11);
             itemView.MenuItems.Add(itemFullscreen);
-                       
+
             itemView.MenuItems.Add("-");
 
             var itemDevTools = new MenuItem(Resources.MenuDeveloperTools, OnDevTools, Shortcut.F12);
@@ -284,13 +226,84 @@ namespace Commander
 
         void OnDevTools(object src, EventArgs args) => browser.GetBrowser().ShowDevTools();
 
-        void OnRefresh(object src, EventArgs args) {}
+        void OnViewer(object src, EventArgs args)
+        {
+            (src as MenuItem).Checked = !(src as MenuItem).Checked;
+            browser.ExecuteScriptAsync($"commander.setViewer", (src as MenuItem).Checked);
+        }
+
+        void OnRefresh(object src, EventArgs args) { }
 
         void OnShowHidden(object src, EventArgs args)
         {
             (src as MenuItem).Checked = !(src as MenuItem).Checked;
             viewLeft.ShowHidden = (src as MenuItem).Checked;
             viewRight.ShowHidden = (src as MenuItem).Checked;
+        }
+               
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        void InitializeComponent()
+        {
+            SuspendLayout();
+
+            CreateMenu(this);
+
+            if (Settings.Default.WindowLocation.X != -1 && Settings.Default.WindowLocation.Y != -1)
+            {
+                StartPosition = FormStartPosition.Manual;
+                Location = Settings.Default.WindowLocation;
+            }
+            Size = Settings.Default.WindowSize;
+            if (Settings.Default.WindowState != FormWindowState.Minimized)
+                WindowState = Settings.Default.WindowState;
+
+            KeyPreview = true;
+            browser.LoadHandler = this;
+            browser.KeyboardHandler = this;
+            browser.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
+            | AnchorStyles.Left
+            | AnchorStyles.Right;
+            browser.Location = new System.Drawing.Point(0, 0);
+            browser.Size = ClientSize;
+            browser.TabIndex = 0;
+
+            // 
+            // MainForm
+            // 
+            AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Icon = Resources.Kirk;
+
+            Controls.Add(browser);
+            Name = "MainForm";
+            Text = "Commander";
+
+            ResumeLayout(false);
+
+            FormClosing += (object sender, FormClosingEventArgs e) =>
+            {
+                if (WindowState == FormWindowState.Normal)
+                {
+                    Settings.Default.WindowLocation = Location;
+                    Settings.Default.WindowSize = Size;
+                }
+                else
+                {
+                    Settings.Default.WindowLocation = RestoreBounds.Location;
+                    Settings.Default.WindowSize = RestoreBounds.Size;
+                }
+
+                Settings.Default.Save();
+                Settings.Default.WindowState = WindowState;
+            };
+
+            browser.Focus();
         }
 
         #endregion

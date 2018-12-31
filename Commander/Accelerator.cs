@@ -26,6 +26,12 @@ namespace Commander
                     Ctrl = true;
                     Shift = false;
                     break;
+                case Shortcut.F3:
+                    Key = 114;
+                    Alt = false;
+                    Ctrl = false;
+                    Shift = false;
+                    break;
                 case Shortcut.F12:
                     Key = 123;
                     Alt = false;
