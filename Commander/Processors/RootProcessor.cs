@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Commander.Model;
 
-#nullable enable
 namespace Commander.Processors
 {
     static class RootProcessor

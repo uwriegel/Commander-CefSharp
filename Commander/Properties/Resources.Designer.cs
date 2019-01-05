@@ -251,6 +251,15 @@ namespace Commander.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open same folder.
+        /// </summary>
+        public static string MenuSameFolder {
+            get {
+                return ResourceManager.GetString("MenuSameFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &amp;Selection.
         /// </summary>
         public static string MenuSelection {

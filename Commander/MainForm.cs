@@ -107,6 +107,8 @@ namespace Commander
             menu.MenuItems.Add(itemNavigation);
             var itemFavourites = new MenuItem(Resources.MenuFavourites, (s, e) => { }, Shortcut.F1);
             itemNavigation.MenuItems.Add(itemFavourites);
+            var itemSameFolder = new MenuItem(Resources.MenuSameFolder, (s, e) => OpenSame(), Shortcut.F9);
+            itemNavigation.MenuItems.Add(itemSameFolder);
 
             var itemSelection = new MenuItem(Resources.MenuSelection);
             menu.MenuItems.Add(itemSelection);
@@ -123,7 +125,7 @@ namespace Commander
                 Checked = false
             };
             itemView.MenuItems.Add(itemShowHidden);
-            var itemRefresh = new MenuItem(Resources.MenuRefresh, OnRefresh, Shortcut.CtrlR);
+            var itemRefresh = new MenuItem(Resources.MenuRefresh, (s, e) => OnRefresh(), Shortcut.CtrlR);
             itemView.MenuItems.Add(itemRefresh);
             itemView.MenuItems.Add("-");
 
@@ -232,7 +234,9 @@ namespace Commander
             browser.ExecuteScriptAsync($"commander.setViewer", (src as MenuItem).Checked);
         }
 
-        void OnRefresh(object src, EventArgs args) { }
+        void OnRefresh() { }
+
+        void OpenSame() { }
 
         void OnShowHidden(object src, EventArgs args)
         {

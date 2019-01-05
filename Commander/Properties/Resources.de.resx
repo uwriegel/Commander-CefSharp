@@ -181,6 +181,9 @@
   <data name="MenuRename" xml:space="preserve">
     <value>&amp;Umbenennen</value>
   </data>
+  <data name="MenuSameFolder" xml:space="preserve">
+    <value>Gleichen Ordner öffnen</value>
+  </data>
   <data name="MenuSelection" xml:space="preserve">
     <value>&amp;Selektion</value>
   </data>
