@@ -17,14 +17,11 @@ namespace Commander
         public Viewer(Form parent) => this.parent = parent;
 
         public void SetViewerRatio(double ratio)
-        {
-            Debugger.Log(1, "Main", $"Viewer Ratio: {ratio}\r\n");
-            parent.Invoke((Action)(() =>
+            => parent.Invoke((Action)(() =>
             {
                 viewer.Height = (int)(parent.ClientSize.Height * ratio);
                 viewer.Location = new Point(0, parent.ClientSize.Height - viewer.Height - statusHeight);
             }));
-        }
 
         public void SetStatusRatio(double ratio) => parent.Invoke((Action)(() => statusHeight = (int)(parent.ClientSize.Height * ratio)));
 
@@ -38,10 +35,7 @@ namespace Commander
                     Size = new Size(parent.ClientSize.Width, 0),
                     Location = new Point(0, parent.ClientSize.Height),
                     Parent = parent,
-                    Anchor = (System.Windows.Forms.AnchorStyles)
-                                System.Windows.Forms.AnchorStyles.Left
-                                | System.Windows.Forms.AnchorStyles.Right
-                                | System.Windows.Forms.AnchorStyles.Bottom
+                    Anchor = (AnchorStyles) AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
                 };
                 parent.Controls.Add(viewer);
                 parent.Controls.SetChildIndex(viewer, 0);
