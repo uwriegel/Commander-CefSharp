@@ -42,16 +42,14 @@ namespace Commander
                                 | System.Windows.Forms.AnchorStyles.Right
                                 | System.Windows.Forms.AnchorStyles.Bottom
                 };
-
-                var cefSharp = Api.FindWindowEx(parent.Handle, IntPtr.Zero, null, null);
-                var cef = Api.FindWindowEx(cefSharp, IntPtr.Zero, null, null);
-                var chrome = Api.FindWindowEx(cef, IntPtr.Zero, null, null);
-                var browser = Api.FindWindowEx(chrome, IntPtr.Zero, "Intermediate D3D Window",  null);
-                var styles = (WindowStyles)Api.GetWindowLong(viewer.Handle, WindowLongValue.Style);
-                viewer.Handle.SetTop();
+                parent.Controls.Add(viewer);
+                parent.Controls.SetChildIndex(viewer, 0);
             }
             else
+            {
+                parent.Controls.Remove(viewer);
                 viewer.Dispose();
+            }
         }
 
         readonly Form parent;
