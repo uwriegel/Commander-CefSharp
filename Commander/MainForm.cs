@@ -23,8 +23,8 @@ namespace Commander
         {
             if (frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url == commanderUrl)
             {
-                browser.EvaluateScriptAsync($"themes.theme = '{Settings.Default.Theme}'");
-                BeginInvoke((Action)(() => browser.Focus()));
+                Browser.EvaluateScriptAsync($"themes.theme = '{Settings.Default.Theme}'");
+                BeginInvoke((Action)(() => Browser.Focus()));
             }
 
         }
@@ -63,18 +63,24 @@ namespace Commander
 
         #endregion
 
+        #region Properties
+
+        public ChromiumWebBrowser Browser { get; } = new ChromiumWebBrowser("");
+
+        #endregion
+
         #region Constructor
 
         public MainForm()
         {
             InitializeComponent();
             viewer = new Viewer(this);
-            browser.Load(commanderUrl);
-            viewLeft = new CommanderView(CommanderView.ID.Left, Handle, browser, new LeftHost());
-            viewRight = new CommanderView(CommanderView.ID.Right, Handle, browser, new RightHost());
-            browser.RegisterJsObject("CommanderLeft", viewLeft, new BindingOptions { CamelCaseJavascriptNames = true });
-            browser.RegisterJsObject("CommanderRight", viewRight, new BindingOptions { CamelCaseJavascriptNames = true });
-            browser.RegisterJsObject("Program", viewer, new BindingOptions { CamelCaseJavascriptNames = true });
+            Browser.Load(commanderUrl);
+            viewLeft = new CommanderView(CommanderView.ID.Left, Handle, Browser, new LeftHost());
+            viewRight = new CommanderView(CommanderView.ID.Right, Handle, Browser, new RightHost());
+            Browser.RegisterJsObject("CommanderLeft", viewLeft, new BindingOptions { CamelCaseJavascriptNames = true });
+            Browser.RegisterJsObject("CommanderRight", viewRight, new BindingOptions { CamelCaseJavascriptNames = true });
+            Browser.RegisterJsObject("Program", viewer, new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
 
@@ -176,7 +182,7 @@ namespace Commander
                     itemThemeBlue.Checked = true;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = false;
-                    await browser.EvaluateScriptAsync($"themes.theme = '{Themes.Blue}'");
+                    await Browser.EvaluateScriptAsync($"themes.theme = '{Themes.Blue}'");
                     Settings.Default.Theme = Themes.Blue;
                 }
                 else if (src == itemThemeLightBlue)
@@ -184,7 +190,7 @@ namespace Commander
                     itemThemeBlue.Checked = false;
                     itemThemeLightBlue.Checked = true;
                     itemThemeDark.Checked = false;
-                    await browser.EvaluateScriptAsync($"themes.theme = '{Themes.LightBlue}'");
+                    await Browser.EvaluateScriptAsync($"themes.theme = '{Themes.LightBlue}'");
                     Settings.Default.Theme = Themes.LightBlue;
                 }
                 else if (src == itemThemeDark)
@@ -192,7 +198,7 @@ namespace Commander
                     itemThemeBlue.Checked = false;
                     itemThemeLightBlue.Checked = false;
                     itemThemeDark.Checked = true;
-                    await browser.EvaluateScriptAsync($"themes.theme = '{Themes.Dark}'");
+                    await Browser.EvaluateScriptAsync($"themes.theme = '{Themes.Dark}'");
                     Settings.Default.Theme = Themes.Dark;
                 }
                 Settings.Default.Save();
@@ -229,13 +235,13 @@ namespace Commander
             return indirectShortcuts.Append(menuItem);
         }
 
-        void OnDevTools(object src, EventArgs args) => browser.GetBrowser().ShowDevTools();
+        void OnDevTools(object src, EventArgs args) => Browser.GetBrowser().ShowDevTools();
 
         void OnViewer(object src, EventArgs args)
         {
             (src as MenuItem).Checked = !(src as MenuItem).Checked;
             viewer.Show((src as MenuItem).Checked);
-            browser.ExecuteScriptAsync($"commander.setViewer", (src as MenuItem).Checked);
+            Browser.ExecuteScriptAsync($"commander.setViewer", (src as MenuItem).Checked);
         }
 
         void OnRefresh() { }
@@ -248,10 +254,11 @@ namespace Commander
             viewLeft.ShowHidden = (src as MenuItem).Checked;
             viewRight.ShowHidden = (src as MenuItem).Checked;
         }
-               
+
         #endregion
 
         #region Methods
+
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -272,14 +279,14 @@ namespace Commander
                 WindowState = Settings.Default.WindowState;
 
             KeyPreview = true;
-            browser.LoadHandler = this;
-            browser.KeyboardHandler = this;
-            browser.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
+            Browser.LoadHandler = this;
+            Browser.KeyboardHandler = this;
+            Browser.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
             | AnchorStyles.Left
             | AnchorStyles.Right;
-            browser.Location = new System.Drawing.Point(0, 0);
-            browser.Size = ClientSize;
-            browser.TabIndex = 0;
+            Browser.Location = new System.Drawing.Point(0, 0);
+            Browser.Size = ClientSize;
+            Browser.TabIndex = 0;
 
             // 
             // MainForm
@@ -288,7 +295,7 @@ namespace Commander
             AutoScaleMode = AutoScaleMode.Font;
             Icon = Resources.Kirk;
 
-            Controls.Add(browser);
+            Controls.Add(Browser);
             Name = "MainForm";
             Text = "Commander";
 
@@ -311,7 +318,7 @@ namespace Commander
                 Settings.Default.WindowState = WindowState;
             };
 
-            browser.Focus();
+            Browser.Focus();
         }
 
         #endregion
@@ -335,7 +342,6 @@ namespace Commander
         #region Fields
 
         const string commanderUrl = "serve://commander/";
-        readonly ChromiumWebBrowser browser = new ChromiumWebBrowser("");
         readonly CommanderView viewLeft;
         readonly CommanderView viewRight;
         readonly Viewer viewer;
