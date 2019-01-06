@@ -115,9 +115,6 @@
     <Compile Include="Extension\MenuItemCollectionExtensions.cs" />
     <Compile Include="Extension\StringExtension.cs" />
     <Compile Include="FileVersion.cs" />
-    <Compile Include="GripPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="IHost.cs" />
     <Compile Include="ItemIndex.cs" />
     <Compile Include="Json.cs" />
