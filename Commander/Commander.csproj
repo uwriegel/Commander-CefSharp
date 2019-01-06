@@ -104,13 +104,20 @@
     <Compile Include="Enums\ColumnsType.cs" />
     <Compile Include="Enums\ItemType.cs" />
     <Compile Include="Enums\ProcessItemType.cs" />
+    <Compile Include="Enums\SetWindowPosFlags.cs" />
     <Compile Include="Enums\ViewType.cs" />
+    <Compile Include="Enums\WindowLongValue.cs" />
+    <Compile Include="Enums\WindowStyles.cs" />
     <Compile Include="ExifReader.cs" />
     <Compile Include="Extension\DateTimeExtensions.cs" />
+    <Compile Include="Extension\IntPtrExtension.cs" />
     <Compile Include="Extension\ItemsExtensions.cs" />
     <Compile Include="Extension\MenuItemCollectionExtensions.cs" />
     <Compile Include="Extension\StringExtension.cs" />
     <Compile Include="FileVersion.cs" />
+    <Compile Include="GripPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="IHost.cs" />
     <Compile Include="ItemIndex.cs" />
     <Compile Include="Json.cs" />
@@ -139,6 +146,7 @@
     <Compile Include="Themes.cs" />
     <Compile Include="ThreadTask.cs" />
     <Compile Include="VersionComparer.cs" />
+    <Compile Include="Viewer.cs" />
     <EmbeddedResource Include="Properties\Resources.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.de.Designer.cs</LastGenOutput>

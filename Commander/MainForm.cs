@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -47,7 +48,7 @@ namespace Commander
 
                 if (accelerator.HasValue)
                 {
-                    accelerator.Value.MenuItem.PerformClick();
+                    Invoke((Action)(() => accelerator.Value.MenuItem.PerformClick()));
                     return true;
                 }
                 else
@@ -67,11 +68,13 @@ namespace Commander
         public MainForm()
         {
             InitializeComponent();
+            viewer = new Viewer(this);
             browser.Load(commanderUrl);
             viewLeft = new CommanderView(CommanderView.ID.Left, Handle, browser, new LeftHost());
             viewRight = new CommanderView(CommanderView.ID.Right, Handle, browser, new RightHost());
             browser.RegisterJsObject("CommanderLeft", viewLeft, new BindingOptions { CamelCaseJavascriptNames = true });
             browser.RegisterJsObject("CommanderRight", viewRight, new BindingOptions { CamelCaseJavascriptNames = true });
+            browser.RegisterJsObject("Program", viewer, new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
 
@@ -231,6 +234,7 @@ namespace Commander
         void OnViewer(object src, EventArgs args)
         {
             (src as MenuItem).Checked = !(src as MenuItem).Checked;
+            viewer.Show((src as MenuItem).Checked);
             browser.ExecuteScriptAsync($"commander.setViewer", (src as MenuItem).Checked);
         }
 
@@ -334,6 +338,7 @@ namespace Commander
         readonly ChromiumWebBrowser browser = new ChromiumWebBrowser("");
         readonly CommanderView viewLeft;
         readonly CommanderView viewRight;
+        readonly Viewer viewer;
         Accelerator?[] accelerators;
 
         #endregion

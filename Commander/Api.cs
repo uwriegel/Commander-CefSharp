@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Commander.Enums;
+using System;
 using System.Runtime.InteropServices;
 
 namespace Commander
@@ -80,5 +81,21 @@ namespace Commander
 
         [DllImport("user32.dll")]
         public static extern int SetActiveWindow(IntPtr hwnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+        public static extern uint GetWindowLong(IntPtr hWnd, WindowLongValue nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+        public static extern uint SetWindowLong(IntPtr hWnd, WindowLongValue nIndex, uint value);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, SetWindowPosFlags uFlags);
     }
 }
