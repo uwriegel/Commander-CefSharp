@@ -1,0 +1,9 @@
+<div class="container" (focusin)="onFocusIn($event)" >
+    <input #input value="{{currentPath}}" (change)="onInputChange()" (mouseup)="onMouseUp($event)" (keydown)="onInputKeydown($event)" appSelectAll >
+    <app-table-view class="tableView" [itemHeight]="themes.itemHeight" [columnHeight]="themes.columnHeight" [columns]="columns" 
+        [items]="items" [id]="id" tabindex="1" [itemType]="'item'"
+        (onSort)="onColumnSort($event)" (onCurrentIndexChanged)="onCurrentIndexChanged($event)" 
+        (focus)="onFocus()" (click)="onClick($event)" (dblclick)="onDblClick($event)" (keydown)="onKeydown($event)">
+    </app-table-view>
+    <input class="restrictor" *ngIf="restrictValue.length" @flyInOut value="{{restrictValue}}" disabled>
+</div>

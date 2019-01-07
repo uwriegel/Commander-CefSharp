@@ -1,0 +1,18 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+}
+
+.tableContainer {
+    margin: 10px 30px 0px 30px;
+    border-color: darkgray;
+    border-width: 1px;
+    border-style: solid;
+}
+
+button {
+    margin: 5px 10px;
+    width: 90px;
+}

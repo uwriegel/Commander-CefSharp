@@ -1,0 +1,10 @@
+<div #scrollbar [@visibility]="{value: visibility, params:{offset: columnsHeight}}" class="scrollbar" (window:resize)="onResize()" (mousedown)="scrollbarMouseDown($event)" (mouseup)="mouseup()" 
+    (click)="onClick($event)" (onmouseleave)="onMouseLeave()" [style.top.px]="columnsHeight">
+    <div class="scrollbarUp" (mousedown)="upMouseDown()" (mouseup)="mouseup()">
+        <div class="scrollbarUpImg"></div>
+    </div>
+    <div #grip class="scrollbarGrip" (mousedown)="gripMouseDown($event)" (mouseup)="mouseup()"></div>
+    <div class="scrollbarDown" (mousedown)="downMouseDown()" (mouseup)="mouseup()">
+        <div class="scrollbarDownImg"></div>
+    </div>
+</div>

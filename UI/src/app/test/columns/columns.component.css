@@ -1,0 +1,24 @@
+:host {
+    height: 60px;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+table {
+    width: 100%;
+    box-sizing: border-box;
+    outline-width: 0px;
+    table-layout: fixed;
+    border-spacing: 0px;
+}
+
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    user-select: none;
+}
+
+
+

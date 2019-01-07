@@ -1,0 +1,17 @@
+<div class="shader" *ngIf="isShowing" [@fadeInOut]></div>
+<div class="dialogContainer" (keydown)="onKeyDown($event)" (document:focusin)="onFocusIn($event)" *ngIf="isShowing" [@flyInOut]>
+    <div class="dialog">
+        <div class="text">{{text}}</div>
+        <input #input tabindex="4" appDefaultButton [defaultButton]="defaultButton" *ngIf="withInput" appSelectAll [selectNameOnly]="selectNameOnly">
+        <div class="buttons">
+            <div #ok tabindex="1" class="dialogButton pointer-def" *ngIf="buttons == 2"
+                (keydown)="onKeyDownOk($event)" (click)="okClick()">Ja</div>
+            <div #ok tabindex="1" class="dialogButton  pointer-def" *ngIf="buttons == 0 || buttons == 1"
+                (keydown)="onKeyDownOk($event)" (click)="okClick()">OK</div>
+            <div #no tabindex="2" class="dialogButton  pointer-def" *ngIf="buttons == 2"
+                (keydown)="onKeyDownNo($event)" (click)="noClick()">Nein</div>
+            <div tabindex="3" class="dialogButton  pointer-def" *ngIf="buttons == 1 || buttons == 2"
+                (keydown)="onKeyDownCancel($event)" (click)="cancelClick()">Abbrechen</div>
+        </div>
+    </div>
+</div>

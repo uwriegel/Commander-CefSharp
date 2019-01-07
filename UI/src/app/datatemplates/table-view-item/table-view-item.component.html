@@ -1,0 +1,15 @@
+<td>
+    <div class="iconName">
+        <img [src]="item.icon" alt="" *ngIf="item.icon != 'Folder' && item.icon != 'Drive'">
+        <app-folder *ngIf="item.icon == 'Folder'"></app-folder>
+        <app-drive *ngIf="item.icon == 'Drive'"></app-drive>
+        <span class="nameValue">{{item.items[0]}}</span>
+    </div>
+</td>
+<td [class.rightAligned]="column.columnsType == 1"
+    [class.isExif]="item.isExif && column.columnsType == 2"
+    *ngFor="let column of columns?.values| slice:1; let i = index">
+    {{item.items[i+1]}}
+</td>
+
+

@@ -1,0 +1,21 @@
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    user-select: none;
+    color: bisque;
+    background-color: brown;
+}
+
+.nameValue {
+    overflow: hidden;
+    margin-top: 1px;
+    margin-left: 3px;
+    text-overflow: ellipsis;
+}
+
+.size {
+    padding-right: 10px;
+    text-align: right;
+}
+

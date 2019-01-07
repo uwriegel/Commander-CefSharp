@@ -1,0 +1,14 @@
+<table #table tabindex="1" [style.clip]="table.parentElement.clientHeight | clipHeight"
+     (keydown)="onKeyDown($event)" (mousewheel)=scrollbar.onMouseWheel($event) (mousedown)="onMouseDown($event)" (focusin)="onFocusIn($event)">
+    <thead app-columns [id]="id" [columns]="columns" (onSort)="onColumnSort($event)" (onColumnsChanged)="onColumnsChanged($event)"></thead>
+    <tbody>
+        <ng-container *ngFor="let item of items | virtualList: scrollbar | async" [ngSwitch]="itemType">
+            <tr class="pointer-def" app-table-view-item [item]=item [columns]="columns" *ngSwitchCase="'item'" 
+            [class.isCurrent]="item.isCurrent" [class.isSelected]="item.isSelected" [class.isHidden]="item.isHidden"></tr>
+            <tr class="pointer-def" app-table-view-test-item [item]=item *ngSwitchCase="'testItem'" 
+            [class.isCurrent]="item.isCurrent" [class.isSelected]="item.isSelected" [class.isHidden]="item.isHidden"></tr>
+        </ng-container>   
+    </tbody>
+</table>    
+<app-scrollbar #scrollbar [list]=table [itemHeight]="itemHeight" [columnsHeight]="columnHeight"></app-scrollbar>
+

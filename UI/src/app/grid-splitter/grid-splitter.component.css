@@ -1,0 +1,40 @@
+:host {
+    display: flex;
+    flex-grow: 1;
+}
+
+.control {
+    display: flex;
+    flex-grow: 1;
+}
+
+
+.control.isVertical {
+    flex-direction: column;
+}
+
+.control.isVertical>.splitter {
+    cursor: ns-resize;
+}
+
+.control {
+    display: flex;
+    flex-grow: 1;
+}
+.container {
+    display: flex;
+    flex-grow: 1;
+}
+.splitter {
+    background-color: var(--grip-color);
+    transition: background-color 0.4s;
+    flex: 0 0 6px;
+    cursor: ew-resize;
+}
+.splitter:hover {
+    background-color: darkgray;
+}
+
+.splitter:active {
+    background-color: #6b6969;
+}

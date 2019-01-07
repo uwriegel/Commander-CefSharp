@@ -1,0 +1,9 @@
+<div class="control" [class.isVertical]="isVertical">
+    <div class="container">
+        <ng-content select=".first"></ng-content>
+    </div>
+    <div #splitter class="splitter" (mousedown)="onSplitterMouseDown($event)" [class.hidden]="!isLastVisible"></div>
+    <div class="container" [class.hidden]="!isLastVisible">
+        <ng-content select=".last" *ngIf="isLastVisible"></ng-content>
+    </div>
+</div>

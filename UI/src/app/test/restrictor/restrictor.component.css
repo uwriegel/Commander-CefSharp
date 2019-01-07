@@ -1,0 +1,33 @@
+:host {
+    height: 100vh;
+    width: 100vw;
+    display: frex
+}
+div {
+    flex-grow: 1;
+    margin: 30px;
+    position: relative;
+}
+ul {
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+    position: relative;
+    width: calc(100vw - 60px);
+}
+
+.restricter {
+    width: 70%;
+    height: 15px;
+    bottom: 10px;
+    position: absolute;
+    left: 5px;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 1px 3px;
+    border-style: solid;
+    border-color: gray;
+    color: rgba(0, 0, 0, 0.75);
+    background-color: white;
+    box-shadow: 3px 5px 12px 3px rgba(136, 136, 136, 0.55);    
+}

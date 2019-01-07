@@ -1,0 +1,9 @@
+<div id="listBox">
+    <ul #ul (keydown)="onKeyDown($event)" (mousewheel)=scrollbar.onMouseWheel($event) tabindex="1">
+        <ng-container *ngFor="let item of items | virtualList: scrollbar | async">
+            <li [class.isCurrent]="item.isCurrent">{{item.items[0]}}</li>
+        </ng-container> 
+    </ul>
+    <app-scrollbar #scrollbar [list]=ul [itemHeight]=14></app-scrollbar>
+</div>
+<button (click)="onNew()">Einträge</button>

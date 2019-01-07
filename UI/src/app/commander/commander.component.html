@@ -1,0 +1,9 @@
+<app-grid-splitter [isVertical]="true" [isLastVisible]="isViewVisible" (onRatioChanged)="onRatioChanged()" (window:resize)="onResize()">
+    <app-grid-splitter class="first">
+        <app-commander-view [id]="'left'" [commander]="commanderViewLeft" #leftView class="first" (gotFocus)="gotFocus($event)"></app-commander-view>
+        <app-commander-view [id]="'right'" [commander]="commanderViewRight" #rightView class="last" (gotFocus)="gotFocus($event)"></app-commander-view>
+    </app-grid-splitter>
+    <app-viewer #viewer class="viewer last" [viewerRatio]="viewerRatio"  [item]="focusedView?.currentItem"></app-viewer>
+</app-grid-splitter>
+<div #status class="status">{{focusedView?.currentItem}}</div>
+

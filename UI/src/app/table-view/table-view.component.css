@@ -1,0 +1,52 @@
+:host {
+    position: relative;
+    flex-grow: 1;
+}
+
+table {
+    box-sizing: border-box;
+    width: 100%;
+    outline-width: 0px;
+    overflow-y: hidden;
+    table-layout: fixed;
+    border-spacing: 0px;
+    position: absolute;
+}
+
+tr.isCurrent {
+    outline-color: lightgray;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+}
+
+tr.isSelected {
+    color: white;
+    background-color: blue;
+}
+
+tr.isHidden {
+    opacity: 0.5;
+}
+
+table:focus tr.isCurrent {
+    outline-color: red;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+}
+
+tr {
+    transition: background-color 0.3s;
+}
+
+.highlight {
+    background-color: lightgreen;
+}
+
+tr:focus {
+    outline-color: red;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+}

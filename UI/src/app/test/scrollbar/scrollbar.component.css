@@ -1,0 +1,43 @@
+:host {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+
+#listBox {
+    flex-grow: 1;
+    margin: 40px;
+    position: relative;
+    outline-color: lightgray;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+}
+
+ul {
+    outline-style: none;
+    position: absolute;
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+    clip: rect(0px, auto, auto, 0px);
+}
+
+button {
+    margin: 10px;
+}
+
+li.isCurrent {
+    outline-color: lightgray;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+}
+
+ul:focus li.isCurrent {
+    outline-color: red;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+}

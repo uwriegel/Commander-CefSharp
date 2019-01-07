@@ -1,0 +1,97 @@
+:host {
+    position: fixed;
+}
+
+.shader {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.50);
+}
+
+.dialogContainer {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.dialog {
+    padding: 30px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 5px 4px 8px 2px rgba(0, 0, 0, 0.35), 0px 0px 20px 2px rgba(0, 0, 0, 0.25);
+}
+
+.text {
+    max-width: 450px;
+}
+
+input {
+    box-sizing: border-box;
+    max-width: 300px;
+    width: 100%;
+    margin-top: 10px;
+    outline-style: solid;
+    outline-color: lightgray;
+    outline-offset: 0px;
+    border-width: 0px;
+    outline-width: thin;
+    transition: outline-color 400ms;     
+}
+
+input:focus {
+    outline-color: blue;
+}
+
+.buttons {
+    display: flex;
+    margin-top: 20px;
+}
+
+.dialogButton {
+    display: inline-block;
+    background-color: blue;
+    user-select: none;
+    color: white;
+    text-align: center;
+    width: 80px;
+    height: 20px;
+    line-height: 20px;
+    transition: background-color 0.3s, outline-color 400ms;
+    border-radius: 3px;
+    margin-left: 5px;
+}
+
+.dialogButton:first-child {
+    margin-left: auto;
+}
+
+.dialogButton:hover {
+    background-color: #7979ff;
+}
+
+.dialogButton.isDefaultButton{
+    outline-color: gray;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: 1px;
+}
+
+
+.dialogButton:active, .buttonActive {
+    background-color: #01018e;
+}
+
+.dialogButton:focus {
+    outline-color: blue;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: 1px;
+}
+

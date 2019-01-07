@@ -1,0 +1,10 @@
+<app-table-view [id]="'left'" class="tableContainer" [columns]="columns" 
+    [itemHeight]="themes.itemHeight" [columnHeight]="themes.columnHeight"
+    [itemType]="itemType" [items]="items" (onCurrentIndexChanged)="onCurrentIndexChanged($event)"
+    (onSort)="onSort($event)"></app-table-view>
+<div>
+    <button (click)="onRoot()">Root</button>
+    <button (click)="onC()">C:</button>
+    <button (click)="onSystem32()">System32</button>
+    <button (click)="onPics()">Pictures</button>
+</div>
