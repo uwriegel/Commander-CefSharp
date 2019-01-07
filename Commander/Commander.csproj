@@ -208,7 +208,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy $(SolutionDir)..\CommanderUI\dist\Commander\* $(TargetDir)Commander /I /S /Y
+    <PostBuildEvent>xcopy $(SolutionDir)UI\dist\Commander\* $(TargetDir)Commander /I /S /Y
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
