@@ -1,1 +1,28 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+    overflow: hidden;
+    padding: 0px;
+    margin: 0px;
+    background-color: var(--background-color);
+    color: var(--color);
+}
+
+input {
+    background-color: var(--background-color);
+    color: var(--color);
+}
+
+.pointer-def {
+    cursor: default;
+}
+
+.hidden {
+    display: none !Important;
+}
+
+svg .path {
+    fill: darkgray;
+}
+
+tr.isSelected svg .path {
+    fill: white;
+}
