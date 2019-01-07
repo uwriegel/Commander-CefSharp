@@ -179,10 +179,7 @@ namespace Commander
 
         #region Exif data catalog and retrieval methods
 
-        public bool GetTagValue<T>(ExifTags tag, out T result)
-        {
-            return GetTagValue((ushort)tag, out result);
-        }
+        public bool GetTagValue<T>(ExifTags tag, out T result) => GetTagValue((ushort)tag, out result);
 
         /// <summary>
         /// Retrieves an Exif value with the requested tag ID
@@ -451,29 +448,17 @@ namespace Commander
         /// Gets a 2 byte unsigned integer from the file
         /// </summary>
         /// <returns></returns>
-        ushort ReadUShort()
-        {
-            return ToUShort(ReadBytes(2));
-        }
+        ushort ReadUShort() => ToUShort(ReadBytes(2));
 
         /// <summary>
         /// Gets a 4 byte unsigned integer from the file
         /// </summary>
         /// <returns></returns>
-        uint ReadUint()
-        {
-            return ToUint(ReadBytes(4));
-        }
+        uint ReadUint() => ToUint(ReadBytes(4));
 
-        string ReadString(int chars)
-        {
-            return Encoding.ASCII.GetString(ReadBytes(chars));
-        }
+        string ReadString(int chars) => Encoding.ASCII.GetString(ReadBytes(chars));
 
-        byte[] ReadBytes(int byteCount)
-        {
-            return reader.ReadBytes(byteCount);
-        }
+        byte[] ReadBytes(int byteCount) => reader.ReadBytes(byteCount);
 
         /// <summary>
         /// Reads some bytes from the specified TIFF offset
@@ -607,10 +592,8 @@ namespace Commander
         }
 
         sbyte ToSByte(byte[] data)
-        {
             // An sbyte should just be a byte with an offset range.
-            return (sbyte)(data[0] - byte.MaxValue);
-        }
+            => (sbyte)(data[0] - byte.MaxValue);
 
         /// <summary>
         /// Retrieves an array from a byte array using the supplied converter
