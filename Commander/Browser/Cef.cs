@@ -32,7 +32,8 @@ namespace Commander
             settings.RegisterScheme(new CefCustomScheme
             {
                 SchemeName = CustomProtocolFactory.SchemeName,
-                SchemeHandlerFactory = new CustomProtocolFactory()
+                SchemeHandlerFactory = new CustomProtocolFactory(),
+                IsCSPBypassing = true
             });
 
             var res = CefSharp.Cef.Initialize(settings);

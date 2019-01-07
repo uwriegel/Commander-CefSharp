@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core'
 
 @Component({
     selector: 'app-frame-viewer',
@@ -7,8 +7,13 @@ import { Component, OnInit, Input } from '@angular/core'
 })
 export class FrameViewerComponent implements OnInit {
 
+    @ViewChild("frame")
+    frame: ElementRef
+
     @Input()
-    file: string
+    set file(value: string) {
+        (this.frame.nativeElement as HTMLFrameElement).src = value
+    }
 
     constructor() { }
 

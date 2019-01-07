@@ -26,7 +26,6 @@ namespace Commander
                 Browser.EvaluateScriptAsync($"themes.theme = '{Settings.Default.Theme}'");
                 BeginInvoke((Action)(() => Browser.Focus()));
             }
-
         }
 
         public void OnLoadError(IWebBrowser browserControl, LoadErrorEventArgs loadErrorArgs) { }
