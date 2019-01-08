@@ -49,7 +49,6 @@ export class TableViewComponent {
     }
 
     onFocusIn(evt: Event) {
-        console.log("Hab ihn bekommen")
     }
 
     focus() { 

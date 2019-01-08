@@ -80,7 +80,8 @@ namespace Commander
             Browser.RegisterJsObject("CommanderLeft", viewLeft, new BindingOptions { CamelCaseJavascriptNames = true });
             Browser.RegisterJsObject("CommanderRight", viewRight, new BindingOptions { CamelCaseJavascriptNames = true });
             Browser.RegisterJsObject("Viewer", viewer, new BindingOptions { CamelCaseJavascriptNames = true });
-            Browser.RegisterJsObject("CommanderControl", new CommanderControl(), new BindingOptions { CamelCaseJavascriptNames = true });
+            commander = new CommanderControl(viewLeft, viewRight);
+            Browser.RegisterJsObject("CommanderControl", commander, new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
 
@@ -246,7 +247,7 @@ namespace Commander
 
         void OnRefresh() { }
 
-        void OpenSame() { }
+        void OpenSame() { commander.AdaptPath(); }
 
         void OnShowHidden(object src, EventArgs args)
         {
@@ -344,6 +345,7 @@ namespace Commander
         const string commanderUrl = "serve://commander/";
         readonly CommanderView viewLeft;
         readonly CommanderView viewRight;
+        readonly CommanderControl commander;
         readonly Viewer viewer;
         Accelerator?[] accelerators;
 

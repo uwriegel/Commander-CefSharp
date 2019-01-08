@@ -33,6 +33,8 @@ namespace Commander
         }
         bool _showHidden;
 
+        public string Path { get => currentItems.Path; }
+
         #endregion
 
         #region Types
@@ -221,7 +223,7 @@ namespace Commander
             var response = new Response(currentItems.Path, resultItems);
             var result = Json.Serialize(response);
             var elapsed = sw.Elapsed;
-            Debugger.Log(1, "Main", $"JSON conversion duration: {elapsed}");
+            Debugger.Log(1, "Main", $"JSON conversion duration: {elapsed}\n");
             return result;
         }
 
@@ -277,7 +279,7 @@ namespace Commander
             await browser.EvaluateScriptAsync($"{host.Class}.{method}({json})");
 
             var elapsed2 = sw.Elapsed;
-            Debugger.Log(1, "Main", $"Script execution duration: {elapsed}, {elapsed2}");
+            Debugger.Log(1, "Main", $"Script execution duration: {elapsed}, {elapsed2}\n");
         }
 
         string GetCurrentItemPath(int index)
@@ -304,7 +306,7 @@ namespace Commander
             string GetDirectory()
             {
                 var directory = GetDirectoryItemPath();
-                return directory == "root" ? "root" : Path.Combine(currentItems.Path, directory);
+                return directory == "root" ? "root" : System.IO.Path.Combine(currentItems.Path, directory);
             }
 
             return currentItems.ViewType == ViewType.Root 
@@ -320,7 +322,7 @@ namespace Commander
             await browser.EvaluateScriptAsync($"{host.Class}.{method}", parameters);
 
             var elapsed = sw.Elapsed;
-            Debugger.Log(1, "Main", $"Script execution duration: {elapsed}");
+            Debugger.Log(1, "Main", $"Script execution duration: {elapsed}\n");
         }
 
         ViewType GetViewType(string path)

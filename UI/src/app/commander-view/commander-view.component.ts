@@ -53,11 +53,14 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
     @Input() commander: IProcessor
     @Input() 
     set id(value: string) {
+        this._id = value
         if (value == 'left') 
             commanderViewLeft = this
         else if (value == 'right') 
             commanderViewRight = this
     }
+    get id() { return this._id }
+    private _id = ""
 
     setColumns(columns: Columns) { 
         this.columns = columns
@@ -108,7 +111,7 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
 
     focus() { this.tableView.focus() }
 
-    onMouseUp(evt: MouseEvent) {
+    onMouseUp() {
         setTimeout(() => this.input.nativeElement.select())
     }
 
@@ -209,7 +212,7 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
 
     onFocus() { this.focus() }
 
-    onFocusIn(evt: Event) { this.gotFocus.emit(this) }
+    onFocusIn() { this.gotFocus.emit(this) }
 
     onInputChange() {
         this.commander.changePath(this.input.nativeElement.value)
@@ -326,11 +329,11 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
                 this.tableView.focus()
             }
         })
-        backSpaces.subscribe(evt => {
+        backSpaces.subscribe(() => {
             if (this.restrictValue.length > 0) {
-                this.restrictValue = this.restrictValue.substr(0, this.restrictValue.length - 1)
-                const items = originalItems.filter(n => n.items[0].toLowerCase().startsWith(this.restrictValue))
-                this._items = items
+                this.restrictValue = this.restrictValue.substr(0, this.restrictValue.length - 1);
+                const items = originalItems.filter(n => n.items[0].toLowerCase().startsWith(this.restrictValue));
+                this._items = items;
             }
         })
 
