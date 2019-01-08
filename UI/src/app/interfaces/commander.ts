@@ -4,8 +4,12 @@ export interface ICommander {
     setViewer(on: boolean)
 }
 
-export interface IProgram {
+export interface IViewer {
     setStatusRatio(ratio: number): any
     setViewerRatio(ratio: number) : any
     setFile(file: string): any
+}
+
+export interface IControl {
+    onFocus(id: string): any
 }

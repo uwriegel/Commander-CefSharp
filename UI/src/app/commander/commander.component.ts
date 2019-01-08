@@ -2,7 +2,7 @@ import { Component, ViewChild, OnInit, NgZone, HostListener, AfterViewInit, Inpu
 import { CommanderViewComponent } from '../commander-view/commander-view.component'
 import { DialogComponent } from '../dialog/dialog.component'
 import { IProcessor } from '../interfaces/commander-view'
-import { ICommander } from '../interfaces/commander'
+import { ICommander, IControl } from '../interfaces/commander'
 import { ViewerComponent } from '../viewers/viewer/viewer.component';
 
 @Component({
@@ -63,17 +63,20 @@ export class CommanderComponent implements OnInit, AfterViewInit, ICommander {
     }
 
     gotFocus(view: CommanderViewComponent) { 
-        this.focusedView = view 
-        console.log(this.focusedView.id)
+        this.focusedView = view
+        CommanderControl.onFocus(this.focusedView.id)
     }
 
     onRatioChanged() {
         this.leftView.onResize()
         this.rightView.onResize()
-        this.viewerRatio = (this.viewer.appElement.nativeElement as HTMLElement).clientHeight / document.body.clientHeight
+        if (this.viewer)
+            this.viewerRatio = (this.viewer.appElement.nativeElement as HTMLElement).clientHeight / document.body.clientHeight
     }
 }
 
 declare var CommanderLeft : IProcessor
 declare var CommanderRight : IProcessor
-declare var commander : ICommander
+declare var commander: ICommander
+declare var CommanderControl: IControl
+

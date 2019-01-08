@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ElementRef } from '@angular/core'
-import { IProgram } from 'src/app/interfaces/commander'
+import { IViewer } from 'src/app/interfaces/commander'
 
 @Component({
     selector: 'app-viewer',
@@ -29,12 +29,12 @@ export class ViewerComponent implements OnInit {
     private _item = ""
 
     @Input()
-    set statusRatio(ratio: number) { Program.setStatusRatio(ratio) }
+    set statusRatio(ratio: number) { Viewer.setStatusRatio(ratio) }
 
     @Input()
     set viewerRatio(ratio: number) {
         if (ratio)
-            Program.setViewerRatio(ratio)
+            Viewer.setViewerRatio(ratio)
     }
     
     constructor(public appElement: ElementRef) { }
@@ -61,4 +61,4 @@ export class ViewerComponent implements OnInit {
     }
 }
 
-declare var Program : IProgram
+declare var Viewer : IViewer

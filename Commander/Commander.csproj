@@ -100,6 +100,7 @@
     <Compile Include="Browser\Cef.cs" />
     <Compile Include="Browser\CustomProtocol.cs" />
     <Compile Include="Browser\CustomProtocolFactory.cs" />
+    <Compile Include="CommanderControl.cs" />
     <Compile Include="CommanderView.cs" />
     <Compile Include="Enums\ColumnsType.cs" />
     <Compile Include="Enums\ItemType.cs" />
