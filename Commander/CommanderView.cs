@@ -17,7 +17,6 @@ using Commander.Properties;
 
 namespace Commander
 {
-    // TODO: F9: 
     class CommanderView
     {
         #region Properties

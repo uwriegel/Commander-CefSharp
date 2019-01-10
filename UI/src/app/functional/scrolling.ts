@@ -1,7 +1,7 @@
 export const repeatKey = (repeated: boolean, process: () => void) => {
     let isLooping = false
     let lastTime: Date
-    const scrollDelay = 5
+    const scrollDelay = 25
 
     let processLoop = () => {
         lastTime = new Date()

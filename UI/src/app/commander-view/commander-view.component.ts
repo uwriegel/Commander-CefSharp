@@ -240,7 +240,6 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
                 break
             case 13: // Return
                 this.processItem(evt.altKey ? ProcessItemType.Properties : (evt.ctrlKey ? ProcessItemType.StartAs : ProcessItemType.Show))
-                console.log("return")
                 break
             case 32: // _                
                 this.toggleSelection(this.tableView.getCurrentItem())
@@ -326,6 +325,7 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
                 this.items.forEach(n => n.isCurrent = false)    
                 this._items = items
                 items[0].isCurrent = true
+                this.onCurrentIndexChanged(0)
                 this.tableView.focus()
             }
         })
