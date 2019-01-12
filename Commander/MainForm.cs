@@ -21,7 +21,7 @@ namespace Commander
 
         public void OnFrameLoadEnd(IWebBrowser browserControl, FrameLoadEndEventArgs frameLoadEndArgs)
         {
-            if (frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url == commanderUrl)
+            if (frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url == Program.CommanderUrl)
             {
                 Browser.EvaluateScriptAsync($"themes.theme = '{Settings.Default.Theme}'");
                 BeginInvoke((Action)(() => Browser.Focus()));
@@ -74,7 +74,7 @@ namespace Commander
         {
             InitializeComponent();
             viewer = new Viewer(this);
-            Browser.Load(commanderUrl);
+            Browser.Load(Program.CommanderUrl);
             viewLeft = new CommanderView(CommanderView.ID.Left, Handle, Browser, new LeftHost());
             viewRight = new CommanderView(CommanderView.ID.Right, Handle, Browser, new RightHost());
             Browser.RegisterJsObject("CommanderLeft", viewLeft, new BindingOptions { CamelCaseJavascriptNames = true });
@@ -342,7 +342,6 @@ namespace Commander
 
         #region Fields
 
-        const string commanderUrl = "serve://commander/";
         readonly CommanderView viewLeft;
         readonly CommanderView viewRight;
         readonly CommanderControl commander;

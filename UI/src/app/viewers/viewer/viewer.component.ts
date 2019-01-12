@@ -47,7 +47,10 @@ export class ViewerComponent implements OnInit {
                 || this.item.toLowerCase().endsWith(".png")
                 || this.item.toLowerCase().endsWith(".jpeg")
             this.isFrame = this.item.toLowerCase().endsWith(".pdf")
+            // TODO: not shown when serving with Angular
             this.file = "file?path=" + this.item
+            //this.file = "file:///" + this.item
+            
             //if (item.toLowerCase().endsWith(".pdf"))
             //    Program.setFile(item)
             //else

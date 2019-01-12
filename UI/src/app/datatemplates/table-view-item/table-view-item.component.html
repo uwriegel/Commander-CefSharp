@@ -1,6 +1,6 @@
 <td>
     <div class="iconName">
-        <img [src]="item.icon" alt="" *ngIf="item.icon != 'Folder' && item.icon != 'Drive'">
+        <img [src]="item.icon | sanitize" alt="" *ngIf="item.icon != 'Folder' && item.icon != 'Drive'">
         <app-folder *ngIf="item.icon == 'Folder'"></app-folder>
         <app-drive *ngIf="item.icon == 'Drive'"></app-drive>
         <span class="nameValue">{{item.items[0]}}</span>

@@ -25,10 +25,8 @@ namespace Commander.Model
             IsHidden = isHidden;
             Version = null;
 
-            if (string.Compare(extension, ".exe", true) == 0)
-                Icon = "icon?path=" + fullname;
-            else
-                Icon = "icon?path=" + extension;
+            Icon = (Program.IsAngularServing ? "serve://commander/" : "") +
+                (string.Compare(extension, ".exe", true) == 0 ? "icon?path=" + fullname : "icon?path=" + extension);
         }
 
         FileItem(FileItem itemToUpdate, DateTime date)

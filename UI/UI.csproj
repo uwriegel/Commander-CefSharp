@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="ng build" />
+    <Exec Command="ng build --prod" />
   </Target>
 
 </Project>
