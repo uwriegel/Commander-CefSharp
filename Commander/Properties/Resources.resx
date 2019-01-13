@@ -208,6 +208,9 @@
   <data name="MenuView" xml:space="preserve">
     <value>&amp;View</value>
   </data>
+  <data name="MenuZoom" xml:space="preserve">
+    <value>&amp;Zoom</value>
+  </data>
   <data name="RootLabel" xml:space="preserve">
     <value>Label</value>
   </data>

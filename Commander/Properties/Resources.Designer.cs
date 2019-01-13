@@ -332,6 +332,15 @@ namespace Commander.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &amp;Zoom.
+        /// </summary>
+        public static string MenuZoom {
+            get {
+                return ResourceManager.GetString("MenuZoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Label.
         /// </summary>
         public static string RootLabel {

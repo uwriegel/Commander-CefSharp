@@ -66,6 +66,17 @@ namespace Commander
 
         public ChromiumWebBrowser Browser { get; } = new ChromiumWebBrowser("");
 
+        public int ZoolLevel
+        {
+            get => @zoolLevel;
+            set
+            {
+                @zoolLevel = value;
+                Browser.SetZoomLevel(Math.Log(value / 100.0) / Math.Log(1.2));
+            }
+        }
+        int @zoolLevel;
+
         #endregion
 
         #region Constructor
@@ -215,6 +226,101 @@ namespace Commander
             itemTheme.MenuItems.Add(itemThemeBlue);
             itemTheme.MenuItems.Add(itemThemeLightBlue);
             itemTheme.MenuItems.Add(itemThemeDark);
+
+            // TODO: One function for all zool levels
+            var itemZoom = new MenuItem(Resources.MenuZoom);
+            itemView.MenuItems.Add(itemZoom);
+            var itemZoom50 = new MenuItem("50%", (s, e) =>
+            {
+                ZoolLevel = 50;
+                foreach (var item in itemZoom.MenuItems.OfType<MenuItem>())
+                    item.Checked = false;
+                (s as MenuItem).Checked = true;
+            })
+            {
+                RadioCheck = true
+            };
+            itemZoom.MenuItems.Add(itemZoom50);
+            var itemZoom75 = new MenuItem("75%", (s, e) => {
+                ZoolLevel = 75;
+                foreach (var item in itemZoom.MenuItems.OfType<MenuItem>())
+                    item.Checked = false;
+                (s as MenuItem).Checked = true;
+            })
+            {
+                RadioCheck = true
+            };
+            itemZoom.MenuItems.Add(itemZoom75);
+            var itemZoom100 = new MenuItem("100%", (s, e) => {
+                ZoolLevel = 100;
+                foreach (var item in itemZoom.MenuItems.OfType<MenuItem>())
+                    item.Checked = false;
+                (s as MenuItem).Checked = true;
+            })
+            {
+                RadioCheck = true
+            };
+            itemZoom.MenuItems.Add(itemZoom100);
+            var itemZoom150 = new MenuItem("150%", (s, e) => {
+                ZoolLevel = 150;
+                foreach (var item in itemZoom.MenuItems.OfType<MenuItem>())
+                    item.Checked = false;
+                (s as MenuItem).Checked = true;
+            })
+            {
+                RadioCheck = true
+            };
+            itemZoom.MenuItems.Add(itemZoom150);
+            var itemZoom200 = new MenuItem("200%", (s, e) => {
+                ZoolLevel = 200;
+                foreach (var item in itemZoom.MenuItems.OfType<MenuItem>())
+                    item.Checked = false;
+                (s as MenuItem).Checked = true;
+            })
+            {
+                RadioCheck = true
+            };
+            itemZoom.MenuItems.Add(itemZoom200);
+            var itemZoom250 = new MenuItem("250%", (s, e) => {
+                ZoolLevel = 250;
+                foreach (var item in itemZoom.MenuItems.OfType<MenuItem>())
+                    item.Checked = false;
+                (s as MenuItem).Checked = true;
+            })
+            {
+                RadioCheck = true
+            };
+            itemZoom.MenuItems.Add(itemZoom250);
+            var itemZoom300 = new MenuItem("300%", (s, e) => {
+                ZoolLevel = 300;
+                foreach (var item in itemZoom.MenuItems.OfType<MenuItem>())
+                    item.Checked = false;
+                (s as MenuItem).Checked = true;
+            })
+            {
+                RadioCheck = true
+            };
+            itemZoom.MenuItems.Add(itemZoom300);
+            var itemZoom350 = new MenuItem("350%", (s, e) => {
+                ZoolLevel = 350;
+                foreach (var item in itemZoom.MenuItems.OfType<MenuItem>())
+                    item.Checked = false;
+                (s as MenuItem).Checked = true;
+            })
+            {
+                RadioCheck = true
+            };
+            itemZoom.MenuItems.Add(itemZoom350);
+            var itemZoom400 = new MenuItem("400%", (s, e) => {
+                ZoolLevel = 400;
+                foreach (var item in itemZoom.MenuItems.OfType<MenuItem>())
+                    item.Checked = false;
+                (s as MenuItem).Checked = true;
+            })
+            {
+                RadioCheck = true
+            };
+            itemZoom.MenuItems.Add(itemZoom400);
 
             var itemFullscreen = new MenuItem(Resources.MenuFullscreen, (s, e) => { }, Shortcut.F11);
             itemView.MenuItems.Add(itemFullscreen);
