@@ -15,15 +15,24 @@ namespace Commander
 {
     public class MainForm : Form, ILoadHandler, IKeyboardHandler
     {
+        // TODO: ContextMenu
         #region ILoadHandler
 
         public void OnFrameLoadStart(IWebBrowser browserControl, FrameLoadStartEventArgs frameLoadStartArgs) { }
 
-        public void OnFrameLoadEnd(IWebBrowser browserControl, FrameLoadEndEventArgs frameLoadEndArgs)
+        public async void OnFrameLoadEnd(IWebBrowser browserControl, FrameLoadEndEventArgs frameLoadEndArgs)
         {
             if (frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url == Program.CommanderUrl)
             {
-                Browser.EvaluateScriptAsync($"themes.theme = '{Settings.Default.Theme}'");
+                await Browser.EvaluateScriptAsync($"themes.theme = '{Settings.Default.Theme}'");
+                await Browser.EvaluateScriptAsync(@"document.addEventListener('mousewheel', e => {
+    if (e.ctrlKey) {
+        MouseWheelZoomControl.onMouseWheel(e.wheelDelta)
+        e.stopPropagation()
+        e.preventDefault()
+    }
+}, true)");
+
                 BeginInvoke((Action)(() => Browser.Focus()));
             }
         }
@@ -71,6 +80,10 @@ namespace Commander
             get => @zoolLevel;
             set
             {
+                if (value > 400)
+                    value = 400;
+                if (value < 50)
+                    value = 50;
                 @zoolLevel = value;
                 Browser.SetZoomLevel(Math.Log(value / 100.0) / Math.Log(1.2));
             }
@@ -93,6 +106,7 @@ namespace Commander
             Browser.RegisterJsObject("Viewer", viewer, new BindingOptions { CamelCaseJavascriptNames = true });
             commander = new CommanderControl(viewLeft, viewRight);
             Browser.RegisterJsObject("CommanderControl", commander, new BindingOptions { CamelCaseJavascriptNames = true });
+            Browser.RegisterJsObject("MouseWheelZoomControl", new MouseWheelZoomControl(this), new BindingOptions { CamelCaseJavascriptNames = true });
             accelerators = GetMenuItems(Menu.MenuItems.ToIEnumerable()).Select(n => (Accelerator?)new Accelerator(n)).ToArray();
         }
 
@@ -227,50 +241,51 @@ namespace Commander
             itemTheme.MenuItems.Add(itemThemeLightBlue);
             itemTheme.MenuItems.Add(itemThemeDark);
 
-            // TODO: Initialize Menu with actual ZoomLevel
             var itemZoom = new MenuItem(Resources.MenuZoom);
+            zoomItems = itemZoom.MenuItems.OfType<MenuItem>();
             itemView.MenuItems.Add(itemZoom);
-            var itemZoom50 = new MenuItem("50%", (s, e) => OnZoom(itemZoom.MenuItems.OfType<MenuItem>(), s as MenuItem, 50))
+            var itemZoom50 = new MenuItem("50%", (s, e) => OnZoom(s as MenuItem, 50))
             {
                 RadioCheck = true
             };
             itemZoom.MenuItems.Add(itemZoom50);
-            var itemZoom75 = new MenuItem("75%", (s, e) => OnZoom(itemZoom.MenuItems.OfType<MenuItem>(), s as MenuItem, 75))
+            var itemZoom75 = new MenuItem("75%", (s, e) => OnZoom(s as MenuItem, 75))
             {
                 RadioCheck = true
             };
             itemZoom.MenuItems.Add(itemZoom75);
-            var itemZoom100 = new MenuItem("100%", (s, e) => OnZoom(itemZoom.MenuItems.OfType<MenuItem>(), s as MenuItem, 100))
+            var itemZoom100 = new MenuItem("100%", (s, e) => OnZoom(s as MenuItem, 100))
             {
+                Checked = true,
                 RadioCheck = true
             };
             itemZoom.MenuItems.Add(itemZoom100);
-            var itemZoom150 = new MenuItem("150%", (s, e) => OnZoom(itemZoom.MenuItems.OfType<MenuItem>(), s as MenuItem, 150))
+            var itemZoom150 = new MenuItem("150%", (s, e) => OnZoom(s as MenuItem, 150))
             {
                 RadioCheck = true
             };
             itemZoom.MenuItems.Add(itemZoom150);
-            var itemZoom200 = new MenuItem("200%", (s, e) => OnZoom(itemZoom.MenuItems.OfType<MenuItem>(), s as MenuItem, 200))
+            var itemZoom200 = new MenuItem("200%", (s, e) => OnZoom(s as MenuItem, 200))
             {
                 RadioCheck = true
             };
             itemZoom.MenuItems.Add(itemZoom200);
-            var itemZoom250 = new MenuItem("250%", (s, e) => OnZoom(itemZoom.MenuItems.OfType<MenuItem>(), s as MenuItem, 250))
+            var itemZoom250 = new MenuItem("250%", (s, e) => OnZoom(s as MenuItem, 250))
             {
                 RadioCheck = true
             };
             itemZoom.MenuItems.Add(itemZoom250);
-            var itemZoom300 = new MenuItem("300%", (s, e) => OnZoom(itemZoom.MenuItems.OfType<MenuItem>(), s as MenuItem, 300))
+            var itemZoom300 = new MenuItem("300%", (s, e) => OnZoom(s as MenuItem, 300))
             {
                 RadioCheck = true
             };
             itemZoom.MenuItems.Add(itemZoom300);
-            var itemZoom350 = new MenuItem("350%", (s, e) => OnZoom(itemZoom.MenuItems.OfType<MenuItem>(), s as MenuItem, 350))
+            var itemZoom350 = new MenuItem("350%", (s, e) => OnZoom(s as MenuItem, 350))
             {
                 RadioCheck = true
             };
             itemZoom.MenuItems.Add(itemZoom350);
-            var itemZoom400 = new MenuItem("400%", (s, e) => OnZoom(itemZoom.MenuItems.OfType<MenuItem>(), s as MenuItem, 400))
+            var itemZoom400 = new MenuItem("400%", (s, e) => OnZoom(s as MenuItem, 400))
             {
                 RadioCheck = true
             };
@@ -285,6 +300,12 @@ namespace Commander
             itemView.MenuItems.Add(itemDevTools);
 
             Menu = menu;
+        }
+
+        void ClearZoomMenu()
+        {
+            foreach (var zoomItem in zoomItems)
+                zoomItem.Checked = false;
         }
 
         IEnumerable<MenuItem> GetMenuItems(IEnumerable<MenuItem> menuItems)
@@ -316,13 +337,15 @@ namespace Commander
             viewRight.ShowHidden = (src as MenuItem).Checked;
         }
 
-        void OnZoom(IEnumerable<MenuItem> menuItems, MenuItem thisMenuItem, int zoomLevel)
+        void OnZoom(MenuItem thisMenuItem, int zoomLevel)
         {
             ZoolLevel = zoomLevel;
-            foreach (var item in menuItems)
+            foreach (var item in zoomItems)
                 item.Checked = false;
             thisMenuItem.Checked = true;
         }
+
+        IEnumerable<MenuItem> zoomItems;
 
         #endregion
 
@@ -393,6 +416,18 @@ namespace Commander
         #endregion
 
         #region Types
+
+        class MouseWheelZoomControl
+        {
+            public void OnMouseWheel(double delta)
+            {
+                mainForm.ZoolLevel += delta > 0 ? 10 : -10;
+                mainForm.ClearZoomMenu();
+            }
+
+            public MouseWheelZoomControl(MainForm mainForm) => this.mainForm = mainForm;
+            private readonly MainForm mainForm;
+        }
 
         class LeftHost : IHost
         {

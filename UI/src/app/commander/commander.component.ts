@@ -34,7 +34,8 @@ export class CommanderComponent implements OnInit, AfterViewInit, ICommander {
     }
 
     onResize() {
-        this.viewerRatio = (this.viewer.appElement.nativeElement as HTMLElement).clientHeight / document.body.clientHeight
+        if (this.viewer)
+            this.viewerRatio = (this.viewer.appElement.nativeElement as HTMLElement).clientHeight / document.body.clientHeight
     }
 
     constructor(private zone: NgZone) { commander = this }
@@ -42,8 +43,9 @@ export class CommanderComponent implements OnInit, AfterViewInit, ICommander {
     ngOnInit() { }
 
     ngAfterViewInit() { 
-        setTimeout(() => this.leftView.focus()) 
-        this.viewer.statusRatio = (this.status.nativeElement as HTMLElement).clientHeight / document.body.clientHeight
+        setTimeout(() => this.leftView.focus())
+        if (this.viewer)
+            this.viewer.statusRatio = (this.status.nativeElement as HTMLElement).clientHeight / document.body.clientHeight
     }
 
     @HostListener('keydown', ['$event']) 
