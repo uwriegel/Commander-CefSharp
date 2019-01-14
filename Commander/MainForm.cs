@@ -130,7 +130,8 @@ namespace Commander
             var itemDelete = new MenuItem(Resources.MenuDelete, (s, e) => { }, Shortcut.Del);
             itemFile.MenuItems.Add(itemDelete);
             itemFile.MenuItems.Add("-");
-            var itemCreateFolder = new MenuItem(Resources.MenuCreateFolder, (s, e) => { }, Shortcut.F7);
+            var itemCreateFolder = new MenuItem(Resources.MenuCreateFolder, 
+                async (s, e) => await commander.FocusedView.CreateFolder(), Shortcut.F7);
             itemFile.MenuItems.Add(itemCreateFolder);
             var itemProperties = new MenuItem(Resources.MenuProperties, (s, e) => { });
             itemFile.MenuItems.Add(itemProperties);

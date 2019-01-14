@@ -62,6 +62,9 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
     get id() { return this._id }
     private _id = ""
 
+    @Input()
+    dialog: DialogComponent
+
     setColumns(columns: Columns) { 
         this.columns = columns
     }
@@ -117,55 +120,60 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
 
     onResize() { this.tableView.onResize() }
 
-    createFolder(dialog: DialogComponent) {
-        // if (this.currentPath != "root") {
-        //     dialog.buttons = Buttons.OkCancel
-        //     dialog.text = "Möchtest Du einen neuen Ordner anlegen?"
-        //     dialog.withInput = true
-        //     const item = this.tableView.getCurrentItem()
-        //     dialog.inputText = item.items[0] != ".." ? item.items[0] : ""
-        //     const subscription = dialog.show().subscribe(result => {
-        //         subscription.unsubscribe()
-        //         if (result.result == DialogResultValue.Ok) {
-        //             // const subscription = this.itemProcessor.createFolder(`${this.path}\\${result.text}`)
-        //             //     .subscribe(obs => {
-        //             //         subscription.unsubscribe()
-        //             //         this.refresh()
-        //             //         this.focus()
-        //             //     }, err => {
-        //             //         subscription.unsubscribe()
-        //             //         switch (err) {
-        //             //             case 183:
-        //             //                 dialog.text = "Der Ordner existiert bereits!"
-        //             //                 break
-        //             //             case 123:
-        //             //                 dialog.text = "Die Syntax für den Dateinamen, Verzeichnisnamen oder die Datenträgerbezeichnung ist falsch!"
-        //             //                 break
-        //             //             case 1223:
-        //             //                 this.focus()    
-        //             //                 return
-        //             //             default:
-        //             //                 dialog.text = `Fehler: ${err}`
-        //             //                 break
-        //             //         }
-                            
-        //             //         const subscriptionDialog = dialog.show().subscribe(result => {
-        //             //             subscriptionDialog.unsubscribe()
-        //             //             this.focus()
-        //             //         })
-        //             //     })
-        //         }
-        //         else
-        //             this.focus()
-        //     })
-        // }
-        // else {
-        //     dialog.text = "Du kannst hier keinen Ordner anlegen!"
-        //     const subscription = dialog.show().subscribe(() => {
-        //         subscription.unsubscribe()
-        //         this.focus()
-        //     })
-        // }
+    createFolder(path: string) {
+        this.zone.run(() => {
+            // TODO: strings language
+            // TODO: strings language
+            // TODO: call only in the right folder
+            // TODO: selection name 
+            this.dialog.buttons = Buttons.OkCancel
+            this.dialog.text = "Möchtest Du einen neuen Ordner anlegen?"
+            this.dialog.withInput = true
+            //dialog.inputText = item.items[0] != ".." ? item.items[0] : ""
+            this.dialog.inputText = ""
+            const subscription = this.dialog.show().subscribe(result => {
+                subscription.unsubscribe()
+                //         if (result.result == DialogResultValue.Ok) {
+                //             // const subscription = this.itemProcessor.createFolder(`${this.path}\\${result.text}`)
+                //             //     .subscribe(obs => {
+                //             //         subscription.unsubscribe()
+                //             //         this.refresh()
+                //             //         this.focus()
+                //             //     }, err => {
+                //             //         subscription.unsubscribe()
+                //             //         switch (err) {
+                //             //             case 183:
+                //             //                 dialog.text = "Der Ordner existiert bereits!"
+                //             //                 break
+                //             //             case 123:
+                //             //                 dialog.text = "Die Syntax für den Dateinamen, Verzeichnisnamen oder die Datenträgerbezeichnung ist falsch!"
+                //             //                 break
+                //             //             case 1223:
+                //             //                 this.focus()    
+                //             //                 return
+                //             //             default:
+                //             //                 dialog.text = `Fehler: ${err}`
+                //             //                 break
+                //             //         }
+
+                //             //         const subscriptionDialog = dialog.show().subscribe(result => {
+                //             //             subscriptionDialog.unsubscribe()
+                //             //             this.focus()
+                //             //         })
+                //             //     })
+                //         }
+                //         else
+                //             this.focus()
+                //     })
+            })
+            // else {
+            //     dialog.text = "Du kannst hier keinen Ordner anlegen!"
+            //     const subscription = dialog.show().subscribe(() => {
+            //         subscription.unsubscribe()
+            //         this.focus()
+            //     })
+            // }
+        })
     }
 
     delete(dialog: DialogComponent) {

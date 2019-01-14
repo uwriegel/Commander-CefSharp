@@ -245,6 +245,9 @@ namespace Commander
 
         public void Refresh() => ChangePath(currentItems.Path);
 
+        public async Task CreateFolder() 
+            => await ExecuteScriptWithParams("createFolder", Path);
+
         Columns GetColumns(ViewType viewType)
         {
             switch (viewType)

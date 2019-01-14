@@ -17,7 +17,9 @@ namespace Commander
 
         public void AdaptPath() => Other.ChangePath(focusedView.Path);
 
-        CommanderView Other { get => focusedView == leftView ? rightView : leftView; }
+        public CommanderView FocusedView { get => focusedView; }
+
+        public CommanderView Other { get => focusedView == leftView ? rightView : leftView; }
 
         public void OnFocus(string id) => focusedView = id == "left" ? leftView : rightView;
 
