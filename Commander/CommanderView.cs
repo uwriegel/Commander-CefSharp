@@ -239,14 +239,23 @@ namespace Commander
             await ExecuteScriptWithParams("itemsChanged");
         }
 
+        public void CreateFolder(string item)
+        {
+
+        }
+
         #endregion
 
         #region Methods
 
         public void Refresh() => ChangePath(currentItems.Path);
 
-        public async Task CreateFolder() 
-            => await ExecuteScriptWithParams("createFolder", Path);
+        // TODO: call only in the right folder
+        // TODO: selection name 
+        // TODO: Dialog resources (Abbrechen) 
+        public async Task CreateFolder()
+            //TODO: dialog.inputText = item.items[0] != ".." ? item.items[0] : ""
+            => await ExecuteScriptWithParams("createFolder", Path, Resources.dialogCreateFolder);
 
         Columns GetColumns(ViewType viewType)
         {

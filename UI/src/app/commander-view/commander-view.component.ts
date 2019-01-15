@@ -120,20 +120,16 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
 
     onResize() { this.tableView.onResize() }
 
-    createFolder(path: string) {
+    createFolder(path: string, text: string) {
         this.zone.run(() => {
-            // TODO: strings language
-            // TODO: strings language
-            // TODO: call only in the right folder
-            // TODO: selection name 
             this.dialog.buttons = Buttons.OkCancel
-            this.dialog.text = "Möchtest Du einen neuen Ordner anlegen?"
+            this.dialog.text = text
             this.dialog.withInput = true
-            //dialog.inputText = item.items[0] != ".." ? item.items[0] : ""
             this.dialog.inputText = ""
             const subscription = this.dialog.show().subscribe(result => {
                 subscription.unsubscribe()
-                //         if (result.result == DialogResultValue.Ok) {
+                if (result.result == DialogResultValue.Ok) {
+                    this.commander.createFolder(result.text)
                 //             // const subscription = this.itemProcessor.createFolder(`${this.path}\\${result.text}`)
                 //             //     .subscribe(obs => {
                 //             //         subscription.unsubscribe()
@@ -161,10 +157,9 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
                 //             //             this.focus()
                 //             //         })
                 //             //     })
-                //         }
-                //         else
-                //             this.focus()
-                //     })
+                }
+                else
+                    this.focus()
             })
             // else {
             //     dialog.text = "Du kannst hier keinen Ordner anlegen!"

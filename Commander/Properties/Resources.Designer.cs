@@ -61,6 +61,15 @@ namespace Commander.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to create a new folder?.
+        /// </summary>
+        public static string dialogCreateFolder {
+            get {
+                return ResourceManager.GetString("dialogCreateFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
         public static string DirectoryDate {

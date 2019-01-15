@@ -14,6 +14,7 @@ export interface IProcessor {
     processItem(processItemType: ProcessItemType): any
     setIndex(index: number): any
     sort(index: number, ascending: boolean): any
+    createFolder(item: string): any
 }
 
 export interface ICommanderView {
