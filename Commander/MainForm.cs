@@ -13,9 +13,8 @@ using Commander.Properties;
 
 namespace Commander
 {
-    public class MainForm : Form, ILoadHandler, IKeyboardHandler
+    public class MainForm : Form, ILoadHandler, IKeyboardHandler, IContextMenuHandler
     {
-        // TODO: ContextMenu
         #region ILoadHandler
 
         public void OnFrameLoadStart(IWebBrowser browserControl, FrameLoadStartEventArgs frameLoadStartArgs) { }
@@ -59,6 +58,18 @@ namespace Commander
                     Invoke((Action)(() => accelerator.Value.MenuItem.PerformClick()));
                     return true;
                 }
+                else if (fullScreenForm != null && windowsKeyCode == (int)Keys.Escape)
+                {
+                    BeginInvoke((Action)(() =>
+                    {
+                        fullScreenForm.Controls.Remove(Browser);
+                        Controls.Add(Browser);
+                        Browser.Size = ClientSize;
+                        fullScreenForm.Close();
+                        fullScreenForm = null;
+                    }));
+                    return true;
+                }
                 else
                     return false;
             }
@@ -67,6 +78,19 @@ namespace Commander
         }
 
         public bool OnKeyEvent(IWebBrowser chromiumWebBrowser, IBrowser browser, KeyType type, int windowsKeyCode, int nativeKeyCode, CefEventFlags modifiers, bool isSystemKey)
+            => false;
+
+        #endregion
+
+        #region IContextMenuHandler
+
+        public void OnBeforeContextMenu(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IContextMenuParams parameters, IMenuModel model)
+            => model.Clear();
+        public bool OnContextMenuCommand(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IContextMenuParams parameters, CefMenuCommand commandId, CefEventFlags eventFlags)
+            => false;
+        public void OnContextMenuDismissed(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame) { }
+
+        public bool RunContextMenu(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IContextMenuParams parameters, IMenuModel model, IRunContextMenuCallback callback)
             => false;
 
         #endregion
@@ -99,6 +123,9 @@ namespace Commander
             InitializeComponent();
             viewer = new Viewer(this);
             Browser.Load(Program.CommanderUrl);
+            Browser.MenuHandler = this;
+            Browser.LoadHandler = this;
+            Browser.KeyboardHandler = this;
             viewLeft = new CommanderView(CommanderView.ID.Left, Handle, Browser, new LeftHost());
             viewRight = new CommanderView(CommanderView.ID.Right, Handle, Browser, new RightHost());
             Browser.RegisterJsObject("CommanderLeft", viewLeft, new BindingOptions { CamelCaseJavascriptNames = true });
@@ -292,7 +319,7 @@ namespace Commander
             };
             itemZoom.MenuItems.Add(itemZoom400);
 
-            var itemFullscreen = new MenuItem(Resources.MenuFullscreen, (s, e) => { }, Shortcut.F11);
+            var itemFullscreen = new MenuItem(Resources.MenuFullscreen, (s, e) => ToFullScreen(), Shortcut.F11);
             itemView.MenuItems.Add(itemFullscreen);
 
             itemView.MenuItems.Add("-");
@@ -372,8 +399,6 @@ namespace Commander
                 WindowState = Settings.Default.WindowState;
 
             KeyPreview = true;
-            Browser.LoadHandler = this;
-            Browser.KeyboardHandler = this;
             Browser.Anchor = AnchorStyles.Top | AnchorStyles.Bottom
             | AnchorStyles.Left
             | AnchorStyles.Right;
@@ -414,6 +439,21 @@ namespace Commander
             Browser.Focus();
         }
 
+        void ToFullScreen()
+        {
+            if (fullScreenForm == null)
+            {
+                fullScreenForm = new Form();
+                Controls.Remove(Browser);
+                fullScreenForm.Controls.Add(Browser);
+                fullScreenForm.WindowState = FormWindowState.Normal;
+                fullScreenForm.FormBorderStyle = FormBorderStyle.None;
+                Browser.Size = fullScreenForm.ClientSize;
+                fullScreenForm.Bounds = Screen.PrimaryScreen.Bounds;
+                fullScreenForm.Show();
+            }
+        }
+
         #endregion
 
         #region Types
@@ -451,6 +491,7 @@ namespace Commander
         readonly CommanderControl commander;
         readonly Viewer viewer;
         Accelerator?[] accelerators;
+        Form fullScreenForm;
 
         #endregion
     }
