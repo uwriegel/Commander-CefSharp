@@ -33,6 +33,11 @@ export class CommanderComponent implements OnInit, AfterViewInit, ICommander {
         this.zone.run(() => this.isViewVisible = on)
     }
 
+    showDialog(text: string) {
+        this.dialog.text = text
+        this.zone.run(async () => await this.dialog.show())
+    }
+
     onResize() {
         if (this.viewer)
             this.viewerRatio = (this.viewer.appElement.nativeElement as HTMLElement).clientHeight / document.body.clientHeight

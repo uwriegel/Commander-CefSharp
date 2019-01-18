@@ -109,6 +109,7 @@
     <Compile Include="Enums\ViewType.cs" />
     <Compile Include="Enums\WindowLongValue.cs" />
     <Compile Include="Enums\WindowStyles.cs" />
+    <Compile Include="Exceptions\AlreadyExistsException.cs" />
     <Compile Include="ExifReader.cs" />
     <Compile Include="Extension\DateTimeExtensions.cs" />
     <Compile Include="Extension\IntPtrExtension.cs" />

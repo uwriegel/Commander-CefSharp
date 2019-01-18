@@ -115,6 +115,15 @@ namespace Commander.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This folder already exists!.
+        /// </summary>
+        public static string FolderAlreadyExists {
+            get {
+                return ResourceManager.GetString("FolderAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         public static System.Drawing.Icon Kirk {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Commander.Enums;
+using Commander.Exceptions;
 using Commander.Extension;
 using Commander.Model;
 using static Commander.ExifReader;
@@ -57,7 +58,22 @@ namespace Commander.Processors
                     n.Version.GetVersion()
                 },
                 n.Icon, currentIndex.IsSelected(n.Index, ItemType.File), n.IsHidden, n.HasExifDate)));
-        
+
+        public static void CreateFolder(string path, string name)
+        {
+            var newFolder = Path.Combine(path, name);
+            if (Directory.Exists(newFolder))
+                throw new AlreadyExistsException();
+            try
+            {
+                Directory.CreateDirectory(newFolder);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // TODO: 
+            }
+        }
+
         static IEnumerable<T> GetSafeItems<T>(Func<IEnumerable<T>> get) where T : FileSystemInfo
         {
             try

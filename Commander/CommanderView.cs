@@ -10,6 +10,7 @@ using CefSharp;
 using CefSharp.WinForms;
 
 using Commander.Enums;
+using Commander.Exceptions;
 using Commander.Extension;
 using Commander.Model;
 using Commander.Processors;
@@ -239,9 +240,24 @@ namespace Commander
             await ExecuteScriptWithParams("itemsChanged");
         }
 
-        public void CreateFolder(string item)
+        public async void CreateFolder(string item)
         {
-
+            try
+            {
+                var viewType = GetViewType(Path);
+                switch (viewType)
+                {
+                    case ViewType.Directory:
+                        DirectoryProcessor.CreateFolder(Path, item);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (AlreadyExistsException)
+            {
+                await browser.EvaluateScriptAsync($"commander.showDialog", Resources.FolderAlreadyExists);
+            }
         }
 
         #endregion

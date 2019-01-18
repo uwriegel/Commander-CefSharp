@@ -223,4 +223,7 @@
   <data name="RootSize" xml:space="preserve">
     <value>Size</value>
   </data>
+  <data name="FolderAlreadyExists" xml:space="preserve">
+    <value>This folder already exists!</value>
+  </data>
 </root>
