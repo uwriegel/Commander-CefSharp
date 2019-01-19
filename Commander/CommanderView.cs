@@ -253,6 +253,7 @@ namespace Commander
                     default:
                         break;
                 }
+                ChangePath(Path, item);
             }
             catch (AlreadyExistsException)
             {
@@ -267,7 +268,6 @@ namespace Commander
         public void Refresh() => ChangePath(currentItems.Path);
 
         // TODO: call only in the right folder
-        // TODO: selection name 
         // TODO: Dialog resources (Abbrechen) 
         public async Task CreateFolder()
             //TODO: dialog.inputText = item.items[0] != ".." ? item.items[0] : ""

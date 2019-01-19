@@ -62,13 +62,15 @@ export class DialogComponent {
     selectNameOnly = false
     noIsDefault = false
 
-    show(): Observable<DialogResult> { 
+    show(): Observable<DialogResult> {
+        if (!this.focusedElement)
+            this.focusedElement = document.activeElement as HTMLElement
         this.isShowing = true 
         setTimeout(() => {
             this.defaultButton = this.noIsDefault ? this.no : this.ok
             if (this.inputText)
                 this.input.nativeElement.value = this.inputText
-            this.withInput 
+            this.withInput
             ? this.input.nativeElement.focus() 
             : this.noIsDefault
                 ? this.no.nativeElement.focus()
@@ -117,12 +119,14 @@ export class DialogComponent {
         this.buttons = Buttons.Ok
         this.selectNameOnly = false
         this.noIsDefault = false
-        this.isShowing = false 
+        this.isShowing = false
         const result = { 
             result: resultValue,
             text: this.input ? this.input.nativeElement.value : null
         }
         setTimeout(() => {
+            this.focusedElement.focus()
+            this.focusedElement = null
             this.dialogFinisher.next(result)
         }, 150)
     }
@@ -130,4 +134,5 @@ export class DialogComponent {
     private dialogFinisher: Subject<DialogResult>
     isShowing = false
     private defaultButton: ElementRef
+    private focusedElement: HTMLElement
 }
