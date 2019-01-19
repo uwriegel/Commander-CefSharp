@@ -150,7 +150,8 @@ namespace Commander
             var itemRename = new MenuItem(Resources.MenuRename, (s, e) => { }, Shortcut.F2);
             itemFile.MenuItems.Add(itemRename);
             itemFile.MenuItems.Add("-");
-            var itemCopy = new MenuItem(Resources.MenuCopy, (s, e) => { }, Shortcut.F5);
+            var itemCopy = new MenuItem(Resources.MenuCopy, 
+                async (s, e) => await commander.FocusedView.Copy(commander.Other), Shortcut.F5);
             itemFile.MenuItems.Add(itemCopy);
             var itemMove = new MenuItem(Resources.MenuMove, (s, e) => { }, Shortcut.F6);
             itemFile.MenuItems.Add(itemMove);

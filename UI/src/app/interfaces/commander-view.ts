@@ -15,10 +15,14 @@ export interface IProcessor {
     setIndex(index: number): any
     sort(index: number, ascending: boolean): any
     createFolder(item: string): any
+    copy(targetPath: string): any
+    setSelected(items: number[]): any
 }
 
 export interface ICommanderView {
     setColumns(columns: Columns): any
     itemsChanged(): any
     setCurrentItem(item: string): any
+    createFolder(text: string): any
+    copy(targetPath: string, text: string): any 
 }

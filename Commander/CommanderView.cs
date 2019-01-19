@@ -261,6 +261,20 @@ namespace Commander
             }
         }
 
+        public async void Copy(string targetPath)
+        {
+            var fileop = new SHFILEOPSTRUCT()
+            {
+                fFlags = FILEOP_FLAGS.FOF_NOCONFIRMATION | FILEOP_FLAGS.FOF_NOCONFIRMMKDIR | FILEOP_FLAGS.FOF_MULTIDESTFILES,
+                hwnd = mainWindow,
+                lpszProgressTitle = "Commander",
+                wFunc = FileFuncFlags.FO_COPY,
+            };
+        }
+
+        public void SetSelected(object[] objects)
+            => selectedIndexes = objects?.Cast<int>().ToArray();
+
         #endregion
 
         #region Methods
@@ -271,7 +285,10 @@ namespace Commander
         // TODO: Dialog resources (Abbrechen) 
         public async Task CreateFolder()
             //TODO: dialog.inputText = item.items[0] != ".." ? item.items[0] : ""
-            => await ExecuteScriptWithParams("createFolder", Path, Resources.dialogCreateFolder);
+            => await ExecuteScriptWithParams("createFolder", Resources.dialogCreateFolder);
+
+        public async Task Copy(CommanderView otherView)
+            => await ExecuteScriptWithParams("copy", otherView.Path, Resources.dialogCopy);
 
         Columns GetColumns(ViewType viewType)
         {
@@ -407,6 +424,7 @@ namespace Commander
         int currentIndex;
 
         (int index, bool descending)? currentSorting = null;
+        int[] selectedIndexes;
 
         #endregion
     }

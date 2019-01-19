@@ -120,7 +120,7 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
 
     onResize() { this.tableView.onResize() }
 
-    createFolder(path: string, text: string) {
+    createFolder(text: string) {
         this.zone.run(() => {
             this.dialog.buttons = Buttons.OkCancel
             this.dialog.text = text
@@ -130,44 +130,26 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
                 subscription.unsubscribe()
                 if (result.result == DialogResultValue.Ok) {
                     this.commander.createFolder(result.text)
-                //             // const subscription = this.itemProcessor.createFolder(`${this.path}\\${result.text}`)
-                //             //     .subscribe(obs => {
-                //             //         subscription.unsubscribe()
-                //             //         this.refresh()
-                //             //         this.focus()
-                //             //     }, err => {
-                //             //         subscription.unsubscribe()
-                //             //         switch (err) {
-                //             //             case 183:
-                //             //                 dialog.text = "Der Ordner existiert bereits!"
-                //             //                 break
-                //             //             case 123:
-                //             //                 dialog.text = "Die Syntax für den Dateinamen, Verzeichnisnamen oder die Datenträgerbezeichnung ist falsch!"
-                //             //                 break
-                //             //             case 1223:
-                //             //                 this.focus()    
-                //             //                 return
-                //             //             default:
-                //             //                 dialog.text = `Fehler: ${err}`
-                //             //                 break
-                //             //         }
-
-                //             //         const subscriptionDialog = dialog.show().subscribe(result => {
-                //             //             subscriptionDialog.unsubscribe()
-                //             //             this.focus()
-                //             //         })
-                //             //     })
+                    // TODO: dialog.text = "Der Ordner existiert bereits!"
+                    // TODO: dialog.text = "Die Syntax für den Dateinamen, Verzeichnisnamen oder die Datenträgerbezeichnung ist falsch!"
                 }
                 else
                     this.focus()
             })
-            // else {
-            //     dialog.text = "Du kannst hier keinen Ordner anlegen!"
-            //     const subscription = dialog.show().subscribe(() => {
-            //         subscription.unsubscribe()
-            //         this.focus()
-            //     })
-            // }
+        })
+    }
+
+    copy(targetPath: string, text: string) {
+        this.zone.run(() => {
+            this.dialog.buttons = Buttons.OkCancel
+            this.dialog.text = text
+            const subscription = this.dialog.show().subscribe(result => {
+                subscription.unsubscribe()
+                if (result.result == DialogResultValue.Ok)
+                    this.commander.copy(targetPath)
+                else
+                    this.focus()
+            })
         })
     }
 
@@ -276,15 +258,17 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
                 ? above ? index <= currentItemIndex : index >= currentItemIndex ? this.isItemSelectable(item) : false
                 : false
         })
+        this.selectionChanged()
     }
 
     private toggleSelection(item: Item) {
+        let result = false
         if (this.isItemSelectable(item)) {
             item.isSelected = !item.isSelected
-            return true
+            result = true
         }
-        else
-            return false
+        this.selectionChanged()
+        return result
     }
 
     private isItemSelectable(item: Item) {
@@ -312,6 +296,11 @@ export class CommanderViewComponent implements AfterViewInit, ICommanderView {
     }
 
     private processItem(processItemType: ProcessItemType) { this.commander.processItem(processItemType) }
+
+    private selectionChanged() {
+        const items = this.tableView.getAllItems().filter(n => n.isSelected).map(n => n.index) 
+        this.commander.setSelected(items)
+    }
 
     private initializeRestrict() {
         const inputChars = this.keyDownEvents.pipe(filter(n => !n.altKey && !n.ctrlKey && !n.shiftKey && n.key.length > 0 && n.key.length < 2))

@@ -60,6 +60,14 @@ export class TableViewComponent implements OnInit, ICommanderView {
         this.commander.sort(sortEvent.index, sortEvent.ascending)
     }
 
+    createFolder(text: string) {
+
+    }
+
+    copy(targetPath: string, text: string) {
+
+    }
+
     private commander = CommanderLeft
 }
 

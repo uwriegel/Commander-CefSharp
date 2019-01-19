@@ -69,6 +69,14 @@ export class ScrollbarComponent implements OnInit, ICommanderView {
         evt.preventDefault() // prevent the default action (scroll / move caret)
     }
 
+    createFolder(text: string) {
+
+    }
+
+    copy(targetPath: string, text: string) {
+
+    }
+
     private getCurrentIndex(defaultValue?: number) { 
         const index = this.items.findIndex(n => n.isCurrent) 
         if (index != -1 || defaultValue == null)

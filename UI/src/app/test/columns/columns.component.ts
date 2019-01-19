@@ -33,6 +33,14 @@ export class TestColumnsComponent implements ICommanderView {
     onChange(path: string) {
         CommanderLeft.changePath(path)
     }
+
+    createFolder(text: string) {
+
+    }
+
+    copy(targetPath: string, text: string) {
+
+    }
 }
 
 declare var CommanderLeft : IProcessor

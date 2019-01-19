@@ -61,6 +61,15 @@ namespace Commander.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to copy the selected files?.
+        /// </summary>
+        public static string dialogCopy {
+            get {
+                return ResourceManager.GetString("dialogCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to create a new folder?.
         /// </summary>
         public static string dialogCreateFolder {

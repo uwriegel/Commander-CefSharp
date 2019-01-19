@@ -226,4 +226,7 @@
   <data name="FolderAlreadyExists" xml:space="preserve">
     <value>Dieser Ordner existiert bereits!</value>
   </data>
+  <data name="dialogCopy" xml:space="preserve">
+    <value>Möchtest Du die ausgewählten Dateien kopieren?</value>
+  </data>
 </root>

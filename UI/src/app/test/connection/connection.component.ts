@@ -34,6 +34,14 @@ export class ConnectionComponent implements OnInit, ICommanderView {
     onGet(url: string) {
         CommanderLeft.changePath(url)
     }
+
+    createFolder(text: string) {
+
+    }
+
+    copy(targetPath: string, text: string) {
+
+    }
 }
 
 declare var CommanderLeft : IProcessor
