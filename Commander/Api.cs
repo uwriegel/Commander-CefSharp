@@ -172,6 +172,9 @@ namespace Commander
         [DllImport("shell32")]
         extern internal static IntPtr SHGetFileInfo(string pszPath, int dwFileAttributes, ref ShFileInfo psfi, int cbFileInfo, SHGetFileInfoConstants uFlags);
 
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        public static extern int SHFileOperation([In] ref SHFILEOPSTRUCT lpFileOp);
+
         [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool ShellExecuteEx(ref ShellExecuteInfo lpExecInfo);
 

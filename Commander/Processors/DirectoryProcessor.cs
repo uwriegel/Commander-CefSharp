@@ -74,6 +74,20 @@ namespace Commander.Processors
             }
         }
 
+        public static async Task Copy(this Items currentItems, IEnumerable<(int index, ItemType Type)> selectedItems, string targetPath, IntPtr mainWindow)
+        {
+            var fileop = new SHFILEOPSTRUCT()
+            {
+                fFlags = FILEOP_FLAGS.FOF_NOCONFIRMATION | FILEOP_FLAGS.FOF_NOCONFIRMMKDIR | FILEOP_FLAGS.FOF_MULTIDESTFILES,
+                hwnd = mainWindow,
+                lpszProgressTitle = "Commander",
+                wFunc = FileFuncFlags.FO_COPY,
+                pFrom = CreateFileOperationPaths(selectedItems.Select(n => currentItems.GetItemPath(n))),
+                pTo = CreateFileOperationPaths(Enumerable.Repeat<string>(targetPath, selectedItems.Count()))
+            };
+            var ret = Api.SHFileOperation(ref fileop);
+        }
+
         static IEnumerable<T> GetSafeItems<T>(Func<IEnumerable<T>> get) where T : FileSystemInfo
         {
             try
@@ -114,6 +128,31 @@ namespace Commander.Processors
                 return FileItem.UpdateDate(file, date);
             else
                 return file;
+        }
+
+        static string CreateFileOperationPaths(IEnumerable<string> paths)
+        {
+            var sb = new StringBuilder();
+            foreach (var path in paths)
+            {
+                sb.Append(path);
+                sb.Append("\x0");
+            }
+            sb.Append("\x0");
+            return sb.ToString();
+        }
+
+        static string GetItemPath(this Items currentItems, (int index, ItemType Type) item)
+        {
+            switch (item.Type)
+            {
+                case ItemType.File:
+                    return currentItems.Files[item.index].GetFullName(currentItems.Path);
+                case ItemType.Directory:
+                    return Path.Combine(currentItems.Path, currentItems.Directories[item.index].Name);
+                default:
+                    return null;
+            }
         }
     }
 }

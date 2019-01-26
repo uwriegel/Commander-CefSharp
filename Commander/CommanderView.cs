@@ -263,13 +263,14 @@ namespace Commander
 
         public async void Copy(string targetPath)
         {
-            var fileop = new SHFILEOPSTRUCT()
+            var selectedItems = GetSelectedItems();
+            switch (selectedItems.FirstOrDefault().Type)
             {
-                fFlags = FILEOP_FLAGS.FOF_NOCONFIRMATION | FILEOP_FLAGS.FOF_NOCONFIRMMKDIR | FILEOP_FLAGS.FOF_MULTIDESTFILES,
-                hwnd = mainWindow,
-                lpszProgressTitle = "Commander",
-                wFunc = FileFuncFlags.FO_COPY,
-            };
+                case ItemType.Directory:
+                case ItemType.File:
+                    await DirectoryProcessor.Copy(currentItems, selectedItems, targetPath, mainWindow);
+                    break;
+            }
         }
 
         public void SetSelected(object[] objects)
@@ -376,6 +377,10 @@ namespace Commander
             else
                 return ViewType.Directory;
         }
+
+        IEnumerable<(int index, ItemType Type)> GetSelectedItems()
+            => (selectedIndexes ?? (new[] { currentIndex }))
+                .Select(n => (index: ItemIndex.GetArrayIndex(n), type: ItemIndex.GetItemType(n))).ToArray();
 
         void Sort()
         {
