@@ -83,7 +83,7 @@ namespace Commander.Processors
                 lpszProgressTitle = "Commander",
                 wFunc = FileFuncFlags.FO_COPY,
                 pFrom = CreateFileOperationPaths(selectedItems.Select(n => currentItems.GetItemPath(n))),
-                pTo = CreateFileOperationPaths(Enumerable.Repeat<string>(targetPath, selectedItems.Count()))
+                pTo = CreateFileOperationPaths(selectedItems.Select(n => currentItems.GetTargetItemPath(n, targetPath)))
             };
             var ret = Api.SHFileOperation(ref fileop);
         }
@@ -150,6 +150,19 @@ namespace Commander.Processors
                     return currentItems.Files[item.index].GetFullName(currentItems.Path);
                 case ItemType.Directory:
                     return Path.Combine(currentItems.Path, currentItems.Directories[item.index].Name);
+                default:
+                    return null;
+            }
+        }
+
+        static string GetTargetItemPath(this Items currentItems, (int index, ItemType Type) item, string targetPath)
+        {
+            switch (item.Type)
+            {
+                case ItemType.File:
+                    return Path.Combine(targetPath, currentItems.Files[item.index].Name + "." + currentItems.Files[item.index].Extension);
+                case ItemType.Directory:
+                    return Path.Combine(targetPath, currentItems.Directories[item.index].Name);
                 default:
                     return null;
             }
