@@ -35,6 +35,8 @@ namespace Commander
 
         public string Path { get => currentItems.Path; }
 
+        internal CommanderView Other { get; set; }
+
         #endregion
 
         #region Types
@@ -268,7 +270,8 @@ namespace Commander
             {
                 case ItemType.Directory:
                 case ItemType.File:
-                    await DirectoryProcessor.Copy(currentItems, selectedItems, targetPath, mainWindow);
+                    if (await DirectoryProcessor.Copy(currentItems, selectedItems, targetPath, mainWindow, browser))
+                        Other.Refresh();
                     break;
             }
         }

@@ -189,119 +189,127 @@ namespace Commander
         /// <returns></returns>
         public bool GetTagValue<T>(ushort tagID, out T result)
         {
-            var tagData = GetTagBytes(tagID, out var tiffDataType, out var numberOfComponents);
-            if (tagData == null)
+            try
+            {
+                var tagData = GetTagBytes(tagID, out var tiffDataType, out var numberOfComponents);
+                if (tagData == null)
+                {
+                    result = default;
+                    return false;
+                }
+
+                var fieldLength = GetTIFFFieldLength(tiffDataType);
+
+                // Convert the data to the appropriate datatype. Note the weird boxing via object.
+                // The compiler doesn't like it otherwise.
+                switch (tiffDataType)
+                {
+                    case 1:
+                        // unsigned byte
+                        if (numberOfComponents == 1)
+                            result = (T)(object)tagData[0];
+                        else
+                            result = (T)(object)tagData;
+                        return true;
+                    case 2:
+                        // ascii string
+                        var str = Encoding.ASCII.GetString(tagData);
+
+                        // There may be a null character within the string
+                        var nullCharIndex = str.IndexOf('\0');
+                        if (nullCharIndex != -1)
+                            str = str.Substring(0, nullCharIndex);
+
+                        // Special processing for dates.
+                        if (typeof(T) == typeof(DateTime))
+                        {
+                            result =
+                                (T)(object)DateTime.ParseExact(str, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture);
+                            return true;
+                        }
+
+                        result = (T)(object)str;
+                        return true;
+                    case 3:
+                        // unsigned short
+                        if (numberOfComponents == 1)
+                            result = (T)(object)ToUShort(tagData);
+                        else
+                            result = (T)(object)GetArray(tagData, fieldLength, ToUShort);
+                        return true;
+                    case 4:
+                        // unsigned long
+                        if (numberOfComponents == 1)
+                            result = (T)(object)ToUint(tagData);
+                        else
+                            result = (T)(object)GetArray(tagData, fieldLength, ToUint);
+                        return true;
+                    case 5:
+                        // unsigned rational
+                        if (numberOfComponents == 1)
+                            result = (T)(object)ToURational(tagData);
+                        else
+                            result = (T)(object)GetArray(tagData, fieldLength, ToURational);
+                        return true;
+                    case 6:
+                        // signed byte
+                        if (numberOfComponents == 1)
+                            result = (T)(object)ToSByte(tagData);
+                        else
+                            result = (T)(object)GetArray(tagData, fieldLength, ToSByte);
+                        return true;
+                    case 7:
+                        // undefined. Treat it as an unsigned integer.
+                        if (numberOfComponents == 1)
+                            result = (T)(object)ToUint(tagData);
+                        else
+                            result = (T)(object)GetArray(tagData, fieldLength, ToUint);
+                        return true;
+                    case 8:
+                        // Signed short
+                        if (numberOfComponents == 1)
+                            result = (T)(object)ToShort(tagData);
+                        else
+                            result = (T)(object)GetArray(tagData, fieldLength, ToShort);
+                        return true;
+                    case 9:
+                        // Signed long
+                        if (numberOfComponents == 1)
+                            result = (T)(object)ToInt(tagData);
+                        else
+                            result = (T)(object)GetArray(tagData, fieldLength, ToInt);
+                        return true;
+                    case 10:
+                        // signed rational
+                        if (numberOfComponents == 1)
+                            result = (T)(object)ToRational(tagData);
+                        else
+                            result = (T)(object)GetArray(tagData, fieldLength, ToRational);
+                        return true;
+                    case 11:
+                        // single float
+                        if (numberOfComponents == 1)
+                            result = (T)(object)ToSingle(tagData);
+                        else
+                            result = (T)(object)GetArray(tagData, fieldLength, ToSingle);
+                        return true;
+                    case 12:
+                        // double float
+                        if (numberOfComponents == 1)
+                            result = (T)(object)ToDouble(tagData);
+                        else
+                            result = (T)(object)GetArray(tagData, fieldLength, ToDouble);
+                        return true;
+                    default:
+                        //throw new Exception(string.Format("Unknown TIFF datatype: {0}", tiffDataType));
+                        result = default;
+                        return false;
+                }
+            }
+            catch
             {
                 result = default;
                 return false;
-            }
-
-            var fieldLength = GetTIFFFieldLength(tiffDataType);
-
-            // Convert the data to the appropriate datatype. Note the weird boxing via object.
-            // The compiler doesn't like it otherwise.
-            switch (tiffDataType)
-            {
-                case 1:
-                    // unsigned byte
-                    if (numberOfComponents == 1)
-                        result = (T)(object)tagData[0];
-                    else
-                        result = (T)(object)tagData;
-                    return true;
-                case 2:
-                    // ascii string
-                    var str = Encoding.ASCII.GetString(tagData);
-
-                    // There may be a null character within the string
-                    var nullCharIndex = str.IndexOf('\0');
-                    if (nullCharIndex != -1)
-                        str = str.Substring(0, nullCharIndex);
-
-                    // Special processing for dates.
-                    if (typeof(T) == typeof(DateTime))
-                    {
-                        result =
-                            (T)(object)DateTime.ParseExact(str, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture);
-                        return true;
-                    }
-
-                    result = (T)(object)str;
-                    return true;
-                case 3:
-                    // unsigned short
-                    if (numberOfComponents == 1)
-                        result = (T)(object)ToUShort(tagData);
-                    else
-                        result = (T)(object)GetArray(tagData, fieldLength, ToUShort);
-                    return true;
-                case 4:
-                    // unsigned long
-                    if (numberOfComponents == 1)
-                        result = (T)(object)ToUint(tagData);
-                    else
-                        result = (T)(object)GetArray(tagData, fieldLength, ToUint);
-                    return true;
-                case 5:
-                    // unsigned rational
-                    if (numberOfComponents == 1)
-                        result = (T)(object)ToURational(tagData);
-                    else
-                        result = (T)(object)GetArray(tagData, fieldLength, ToURational);
-                    return true;
-                case 6:
-                    // signed byte
-                    if (numberOfComponents == 1)
-                        result = (T)(object)ToSByte(tagData);
-                    else
-                        result = (T)(object)GetArray(tagData, fieldLength, ToSByte);
-                    return true;
-                case 7:
-                    // undefined. Treat it as an unsigned integer.
-                    if (numberOfComponents == 1)
-                        result = (T)(object)ToUint(tagData);
-                    else
-                        result = (T)(object)GetArray(tagData, fieldLength, ToUint);
-                    return true;
-                case 8:
-                    // Signed short
-                    if (numberOfComponents == 1)
-                        result = (T)(object)ToShort(tagData);
-                    else
-                        result = (T)(object)GetArray(tagData, fieldLength, ToShort);
-                    return true;
-                case 9:
-                    // Signed long
-                    if (numberOfComponents == 1)
-                        result = (T)(object)ToInt(tagData);
-                    else
-                        result = (T)(object)GetArray(tagData, fieldLength, ToInt);
-                    return true;
-                case 10:
-                    // signed rational
-                    if (numberOfComponents == 1)
-                        result = (T)(object)ToRational(tagData);
-                    else
-                        result = (T)(object)GetArray(tagData, fieldLength, ToRational);
-                    return true;
-                case 11:
-                    // single float
-                    if (numberOfComponents == 1)
-                        result = (T)(object)ToSingle(tagData);
-                    else
-                        result = (T)(object)GetArray(tagData, fieldLength, ToSingle);
-                    return true;
-                case 12:
-                    // double float
-                    if (numberOfComponents == 1)
-                        result = (T)(object)ToDouble(tagData);
-                    else
-                        result = (T)(object)GetArray(tagData, fieldLength, ToDouble);
-                    return true;
-                default:
-                    //throw new Exception(string.Format("Unknown TIFF datatype: {0}", tiffDataType));
-                    result = default;
-                    return false;
             }
         }
 

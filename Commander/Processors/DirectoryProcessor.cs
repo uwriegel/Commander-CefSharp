@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Commander.Enums;
 using Commander.Exceptions;
 using Commander.Extension;
@@ -13,6 +14,7 @@ using static Commander.ExifReader;
 
 namespace Commander.Processors
 {
+    // Error copying: Show MessageBox
     static class DirectoryProcessor
     {
         public static string Name { get; } = "directory";
@@ -74,7 +76,7 @@ namespace Commander.Processors
             }
         }
 
-        public static async Task Copy(this Items currentItems, IEnumerable<(int index, ItemType Type)> selectedItems, string targetPath, IntPtr mainWindow)
+        public static async Task<bool> Copy(this Items currentItems, IEnumerable<(int index, ItemType Type)> selectedItems, string targetPath, IntPtr mainWindow, Control dispatcher)
         {
             var fileop = new SHFILEOPSTRUCT()
             {
@@ -85,7 +87,8 @@ namespace Commander.Processors
                 pFrom = CreateFileOperationPaths(selectedItems.Select(n => currentItems.GetItemPath(n))),
                 pTo = CreateFileOperationPaths(selectedItems.Select(n => currentItems.GetTargetItemPath(n, targetPath)))
             };
-            var ret = Api.SHFileOperation(ref fileop);
+            // Wait till animation has finished
+            return await dispatcher.DeferredExecution(() => Api.SHFileOperation(ref fileop) == 0, 400);
         }
 
         static IEnumerable<T> GetSafeItems<T>(Func<IEnumerable<T>> get) where T : FileSystemInfo

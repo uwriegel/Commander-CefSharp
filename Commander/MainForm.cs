@@ -128,6 +128,8 @@ namespace Commander
             Browser.KeyboardHandler = this;
             viewLeft = new CommanderView(CommanderView.ID.Left, Handle, Browser, new LeftHost());
             viewRight = new CommanderView(CommanderView.ID.Right, Handle, Browser, new RightHost());
+            viewLeft.Other = viewRight;
+            viewRight.Other = viewLeft;
             Browser.RegisterJsObject("CommanderLeft", viewLeft, new BindingOptions { CamelCaseJavascriptNames = true });
             Browser.RegisterJsObject("CommanderRight", viewRight, new BindingOptions { CamelCaseJavascriptNames = true });
             Browser.RegisterJsObject("Viewer", viewer, new BindingOptions { CamelCaseJavascriptNames = true });
@@ -189,7 +191,7 @@ namespace Commander
                 Checked = false
             };
             itemView.MenuItems.Add(itemShowHidden);
-            var itemRefresh = new MenuItem(Resources.MenuRefresh, (s, e) => OnRefresh(), Shortcut.CtrlR);
+            var itemRefresh = new MenuItem(Resources.MenuRefresh, (s, e) => commander.FocusedView.Refresh(), Shortcut.CtrlR);
             itemView.MenuItems.Add(itemRefresh);
             itemView.MenuItems.Add("-");
 
@@ -354,8 +356,6 @@ namespace Commander
             viewer.Show((src as MenuItem).Checked);
             Browser.ExecuteScriptAsync($"commander.setViewer", (src as MenuItem).Checked);
         }
-
-        void OnRefresh() { }
 
         void OpenSame() { commander.AdaptPath(); }
 

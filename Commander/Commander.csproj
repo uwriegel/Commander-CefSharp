@@ -111,6 +111,7 @@
     <Compile Include="Enums\WindowStyles.cs" />
     <Compile Include="Exceptions\AlreadyExistsException.cs" />
     <Compile Include="ExifReader.cs" />
+    <Compile Include="Extension\ControlExtension.cs" />
     <Compile Include="Extension\DateTimeExtensions.cs" />
     <Compile Include="Extension\IntPtrExtension.cs" />
     <Compile Include="Extension\ItemsExtensions.cs" />
