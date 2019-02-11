@@ -1,10 +1,11 @@
-﻿// Learn more about F# at http://fsharp.org
-// See the 'F# Tutorial' project for more help.
+﻿open System.Windows.Forms
+
+open Commander
 
 [<EntryPoint>]
 let main argv = 
-    printfn "%A" argv
-    0 // return an integer exit code
-    // TODO: Resources
-    // TODO: Settings
-    // TOD: Cef
+    Application.EnableVisualStyles()
+    Application.SetCompatibleTextRenderingDefault false
+    Application.Run(new MainForm())
+    0 
+ 
