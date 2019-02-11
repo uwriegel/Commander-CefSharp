@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommanderCs", "CommanderCs\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UI", "UI\UI.csproj", "{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Commander", "Commander\Commander.fsproj", "{54038847-86CD-4926-AFD1-6175D58943B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -30,6 +32,14 @@ Global
 		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Release|x64.Build.0 = Release|Any CPU
 		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Release|x86.ActiveCfg = Release|Any CPU
 		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Release|x86.Build.0 = Release|Any CPU
+		{54038847-86CD-4926-AFD1-6175D58943B2}.Debug|x64.ActiveCfg = Debug|x64
+		{54038847-86CD-4926-AFD1-6175D58943B2}.Debug|x64.Build.0 = Debug|x64
+		{54038847-86CD-4926-AFD1-6175D58943B2}.Debug|x86.ActiveCfg = Debug|x86
+		{54038847-86CD-4926-AFD1-6175D58943B2}.Debug|x86.Build.0 = Debug|x86
+		{54038847-86CD-4926-AFD1-6175D58943B2}.Release|x64.ActiveCfg = Release|x64
+		{54038847-86CD-4926-AFD1-6175D58943B2}.Release|x64.Build.0 = Release|x64
+		{54038847-86CD-4926-AFD1-6175D58943B2}.Release|x86.ActiveCfg = Release|x86
+		{54038847-86CD-4926-AFD1-6175D58943B2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
