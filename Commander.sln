@@ -9,31 +9,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UI", "UI\UI.csproj", "{D9B1
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
-		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{13BDEE9E-F3E7-497C-893F-914F846CB144}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{13BDEE9E-F3E7-497C-893F-914F846CB144}.Debug|x64.ActiveCfg = Debug|x64
 		{13BDEE9E-F3E7-497C-893F-914F846CB144}.Debug|x64.Build.0 = Debug|x64
 		{13BDEE9E-F3E7-497C-893F-914F846CB144}.Debug|x86.ActiveCfg = Debug|x86
 		{13BDEE9E-F3E7-497C-893F-914F846CB144}.Debug|x86.Build.0 = Debug|x86
-		{13BDEE9E-F3E7-497C-893F-914F846CB144}.Release|Any CPU.ActiveCfg = Release|x86
 		{13BDEE9E-F3E7-497C-893F-914F846CB144}.Release|x64.ActiveCfg = Release|x64
 		{13BDEE9E-F3E7-497C-893F-914F846CB144}.Release|x64.Build.0 = Release|x64
 		{13BDEE9E-F3E7-497C-893F-914F846CB144}.Release|x86.ActiveCfg = Release|x86
 		{13BDEE9E-F3E7-497C-893F-914F846CB144}.Release|x86.Build.0 = Release|x86
-		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Debug|x86.Build.0 = Debug|Any CPU
-		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Release|x64.ActiveCfg = Release|Any CPU
 		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Release|x64.Build.0 = Release|Any CPU
 		{D9B1B6C8-C22B-469C-97EB-860E6A9CBD16}.Release|x86.ActiveCfg = Release|Any CPU
