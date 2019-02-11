@@ -74,76 +74,83 @@ namespace Commander
 
         public async void ChangePath(string path, string directoryToSelect = null)
         {
-            if (path == null)
-                return;
-
-            var request = requestFactory.Create();
-
-            var viewType = GetViewType(path);
-            var setColumns = viewType != currentItems.ViewType;
-
-            var newItems = await Task.Factory.StartNew(() => 
+            try
             {
-                switch (viewType)
+                if (path == null)
+                    return;
+
+                var request = requestFactory.Create();
+
+                var viewType = GetViewType(path);
+                var setColumns = viewType != currentItems.ViewType;
+
+                var newItems = await Task.Factory.StartNew(() =>
                 {
-                    case ViewType.Root:
-                        currentSorting = null;
-                        return RootProcessor.Get();
-                    default:
-                        return DirectoryProcessor.Get(path, ShowHidden);
-                }
-            });
-
-            if (request.IsCancelled)
-                return;
-
-            if (setColumns)
-            {
-                var columns = GetColumns(viewType);
-                await ExecuteScriptAsync("setColumns", columns);
-            }
-
-            currentItems = newItems;
-
-            Sort();
-
-            host.RecentPath = currentItems.Path;
-
-            int GetCurrentIndex()
-            {
-                if (directoryToSelect == null)
-                    return ItemIndex.GetDefault(currentItems.ViewType);
-                else if (viewType == ViewType.Directory)
-                {
-                    var folderToSelect = newItems.Directories.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
-                    return ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
-                }
-                else if (viewType == ViewType.Root)
-                {
-                    var folderToSelect = newItems.Drives.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
-                    return ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
-                }
-                else
-                    return 0;
-            }
-            SetIndex(GetCurrentIndex());
-
-            await ExecuteScriptWithParams("itemsChanged");
-
-            if (currentItems.ViewType == ViewType.Directory)
-            {
-                var extended = await Task.Factory.StartNew(() => currentItems.ExtendItems());
+                    switch (viewType)
+                    {
+                        case ViewType.Root:
+                            currentSorting = null;
+                            return RootProcessor.Get();
+                        default:
+                            return DirectoryProcessor.Get(path, ShowHidden);
+                    }
+                });
 
                 if (request.IsCancelled)
                     return;
 
-                currentItems = extended;
+                if (setColumns)
+                {
+                    var columns = GetColumns(viewType);
+                    await ExecuteScriptAsync("setColumns", columns);
+                }
+
+                currentItems = newItems;
+
                 Sort();
 
-                if (request.IsCancelled)
-                    return;
+                host.RecentPath = currentItems.Path;
+
+                int GetCurrentIndex()
+                {
+                    if (directoryToSelect == null)
+                        return ItemIndex.GetDefault(currentItems.ViewType);
+                    else if (viewType == ViewType.Directory)
+                    {
+                        var folderToSelect = newItems.Directories.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
+                        return ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
+                    }
+                    else if (viewType == ViewType.Root)
+                    {
+                        var folderToSelect = newItems.Drives.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
+                        return ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
+                    }
+                    else
+                        return 0;
+                }
+                SetIndex(GetCurrentIndex());
 
                 await ExecuteScriptWithParams("itemsChanged");
+
+                if (currentItems.ViewType == ViewType.Directory)
+                {
+                    var extended = await Task.Factory.StartNew(() => currentItems.ExtendItems());
+
+                    if (request.IsCancelled)
+                        return;
+
+                    currentItems = extended;
+                    Sort();
+
+                    if (request.IsCancelled)
+                        return;
+
+                    await ExecuteScriptWithParams("itemsChanged");
+                }
+            }
+            catch
+            {
+                ChangePath("root");
             }
         }
 

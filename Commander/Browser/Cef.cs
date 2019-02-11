@@ -20,10 +20,8 @@ namespace Commander
                 BrowserSubprocessPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "CefSharp.BrowserSubprocess.exe"),
                 Locale = Thread.CurrentThread.CurrentCulture.Name,
                 CachePath = cachePath,
-#if DEBUG
                 //LogSeverity = LogSeverity.Verbose,
                 LogFile = Path.Combine(cachePath, "debug.log")
-#endif
             };
 
             settings.CefCommandLineArgs.Add("enable-media-stream", "enable-media-stream");

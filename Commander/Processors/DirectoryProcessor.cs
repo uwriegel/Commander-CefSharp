@@ -26,8 +26,8 @@ namespace Commander.Processors
                 GetSafeItems(() => di.GetDirectories())
                 .Where(n => showHidden ? true : !n.Attributes.HasFlag(FileAttributes.Hidden))
                 .Select((n, i) => new DirectoryItem(i, n.Name, n.LastWriteTime, n.Attributes.HasFlag(FileAttributes.Hidden)));
-                       
-            var files = 
+
+            var files =
                 GetSafeItems(() => di.GetFiles())
                 .Where(n => showHidden ? true : !n.Attributes.HasFlag(FileAttributes.Hidden))
                 .Select((n, i) => new FileItem(i, n.Name, n.FullName, n.Extension, n.LastWriteTime, n.Length, n.Attributes.HasFlag(FileAttributes.Hidden)));
@@ -35,12 +35,12 @@ namespace Commander.Processors
             return new Items(di.FullName, directories, files);
         }
 
-        public static Items ExtendItems(this Items itemsToExtend) => 
+        public static Items ExtendItems(this Items itemsToExtend) =>
             Items.UpdateFiles(itemsToExtend, itemsToExtend.Files.Select(n => n.ExtendItems(itemsToExtend.Path)));
 
         public static IEnumerable<ResponseItem> GetItems(Items items, int currentIndex)
-            => Enumerable.Repeat<ResponseItem>(new ResponseItem(Enums.ItemType.Parent, ItemIndex.Create(ItemType.Parent, 0), 
-                new[] 
+            => Enumerable.Repeat<ResponseItem>(new ResponseItem(Enums.ItemType.Parent, ItemIndex.Create(ItemType.Parent, 0),
+                new[]
                 {
                     ".."
                 }, "Folder", currentIndex.IsSelected(0, ItemType.Parent)), 1)
@@ -78,14 +78,19 @@ namespace Commander.Processors
 
         public static async Task<bool> Copy(this Items currentItems, IEnumerable<(int index, ItemType Type)> selectedItems, string targetPath, IntPtr mainWindow, Control dispatcher)
         {
+            var pathes = selectedItems
+                .Select(n => currentItems.GetItemPathes(n, targetPath))
+                .Where(n => n.HasValue)
+                .Select(n => n.Value);
+
             var fileop = new SHFILEOPSTRUCT()
             {
                 fFlags = FILEOP_FLAGS.FOF_NOCONFIRMATION | FILEOP_FLAGS.FOF_NOCONFIRMMKDIR | FILEOP_FLAGS.FOF_MULTIDESTFILES,
                 hwnd = mainWindow,
                 lpszProgressTitle = "Commander",
                 wFunc = FileFuncFlags.FO_COPY,
-                pFrom = CreateFileOperationPaths(selectedItems.Select(n => currentItems.GetItemPath(n))),
-                pTo = CreateFileOperationPaths(selectedItems.Select(n => currentItems.GetTargetItemPath(n, targetPath)))
+                pFrom = CreateFileOperationPaths(pathes.Select(n => n.sourcePath)),
+                pTo = CreateFileOperationPaths(pathes.Select(n => n.targetPath))
             };
             // Wait till animation has finished
             return await dispatcher.DeferredExecution(() => Api.SHFileOperation(ref fileop) == 0, 400);
@@ -127,10 +132,10 @@ namespace Commander.Processors
         static FileItem UpdateExif(this FileItem file, string path)
         {
             using (var reader = new ExifReader(file.GetFullName(path)))
-            if (reader.GetTagValue<DateTime>(ExifTags.DateTimeOriginal, out var date))
-                return FileItem.UpdateDate(file, date);
-            else
-                return file;
+                if (reader.GetTagValue<DateTime>(ExifTags.DateTimeOriginal, out var date))
+                    return FileItem.UpdateDate(file, date);
+                else
+                    return file;
         }
 
         static string CreateFileOperationPaths(IEnumerable<string> paths)
@@ -145,30 +150,25 @@ namespace Commander.Processors
             return sb.ToString();
         }
 
-        static string GetItemPath(this Items currentItems, (int index, ItemType Type) item)
+        static (string sourcePath, string targetPath)? GetItemPathes(this Items currentItems, (int index, ItemType Type) item, string targetPath)
         {
             switch (item.Type)
             {
                 case ItemType.File:
-                    return currentItems.Files[item.index].GetFullName(currentItems.Path);
+                    return (currentItems.Files[item.index].GetFullName(currentItems.Path),
+                        Path.Combine(targetPath, currentItems.Files[item.index].Name + "." + currentItems.Files[item.index].Extension));
                 case ItemType.Directory:
-                    return Path.Combine(currentItems.Path, currentItems.Directories[item.index].Name);
+                    return (Path.Combine(currentItems.Path, currentItems.Directories[item.index].Name),
+                        Path.Combine(targetPath, currentItems.Directories[item.index].Name));
                 default:
                     return null;
             }
         }
 
-        static string GetTargetItemPath(this Items currentItems, (int index, ItemType Type) item, string targetPath)
+        static IEnumerable<int> GetConflicts(IEnumerable<(string sourcePath, string targetPath)> pathes)
         {
-            switch (item.Type)
-            {
-                case ItemType.File:
-                    return Path.Combine(targetPath, currentItems.Files[item.index].Name + "." + currentItems.Files[item.index].Extension);
-                case ItemType.Directory:
-                    return Path.Combine(targetPath, currentItems.Directories[item.index].Name);
-                default:
-                    return null;
-            }
+            var items = pathes.Where(n => File.Exists(n.targetPath));
+            return null;
         }
     }
 }
