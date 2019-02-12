@@ -15,8 +15,10 @@ type MainForm () as this =
 
     do 
         this.SuspendLayout()
+
+        let browserAccess = Browser.createBrowser browser
         
-        this.Menu <- createMenu this
+        this.Menu <- createMenu this browserAccess
 
         let location = Settings.Default.WindowLocation
         if location.X <> -1 && location.Y <> -1 then

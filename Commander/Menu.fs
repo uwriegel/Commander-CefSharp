@@ -4,7 +4,9 @@ open System.Windows.Forms
 open Resources
 open System
 
-let createMenu (form: Form) =
+open Browser
+
+let createMenu (form: Form) browser =
     let menu = new MainMenu()
     let itemFile = new MenuItem(Resources.MenuFile)
     menu.MenuItems.Add itemFile |> ignore
@@ -29,7 +31,7 @@ let createMenu (form: Form) =
 
     let itemView = new MenuItem(Resources.MenuView)
     menu.MenuItems.Add itemView |> ignore
-    //let itemDevTools = new MenuItem(Resources.MenuDeveloperTools, OnDevTools, Shortcut.F12)
-    //itemView.MenuItems.Add itemDevTools |> ignore
+    let itemDevTools = new MenuItem(Resources.MenuDeveloperTools, EventHandler(fun s e -> browser.ShowDevTools ()), Shortcut.F12)
+    itemView.MenuItems.Add itemDevTools |> ignore
     
     menu

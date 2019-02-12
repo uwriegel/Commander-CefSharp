@@ -48,10 +48,11 @@ namespace Commander
         {
             var pos = url.LastIndexOf(".");
             if (pos == -1)
-                "text/html";
+                return "text/html";
             else
-                var ext = url.Substring(pos + 1).ToLower()
-                ResourceHandler.GetMimeType(ext)
+            {
+                var ext = url.Substring(pos + 1).ToLower();
+                return GetMimeType(ext);
             }
         }
 
