@@ -4,7 +4,7 @@ open System.Windows.Forms
 open Resources
 open System
 
-let createMenu () =
+let createMenu (form: Form) =
     let menu = new MainMenu()
     let itemFile = new MenuItem(Resources.MenuFile)
     menu.MenuItems.Add(itemFile) |> ignore
@@ -24,7 +24,6 @@ let createMenu () =
 //var itemProperties = new MenuItem(Resources.MenuProperties, (s, e) => { });
 //itemFile.MenuItems.Add(itemProperties);
 //itemFile.MenuItems.Add("-");
-    //let itemExit = new MenuItem(Resources.MenuExit, EventHandler(fun s e -> form.Close()), Shortcut.AltF4)
-    let itemExit = new MenuItem(Resources.MenuExit, EventHandler(fun s e -> ()), Shortcut.AltF4)
+    let itemExit = new MenuItem(Resources.MenuExit, EventHandler(fun s e -> form.Close()), Shortcut.AltF4)
     itemFile.MenuItems.Add(itemExit) |> ignore
     menu

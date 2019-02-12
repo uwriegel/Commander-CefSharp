@@ -4,12 +4,12 @@ open System.Windows.Forms
 open Resources
 open Menu
 
-type MainForm () = 
+type MainForm () as this = 
     inherit Form()
 
     do 
         base.SuspendLayout()
-        base.Menu <- createMenu ()
+        base.Menu <- createMenu this
         base.StartPosition <- FormStartPosition.Manual
         //brauser.Location <- System.Drawing.Point(0, 0)
         //brauser.Size <- Size(base.ClientSize.Width, base.ClientSize.Height)
