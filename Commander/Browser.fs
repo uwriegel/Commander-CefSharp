@@ -21,3 +21,5 @@ let createBrowser (browser: ChromiumWebBrowser) =
     {
         ShowDevTools = showDevTools
     }
+
+type BrowerForm = { ToFullScreen: unit->unit }

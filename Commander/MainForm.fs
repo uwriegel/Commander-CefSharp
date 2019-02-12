@@ -1,24 +1,38 @@
 ﻿namespace Commander
 
 open System.Windows.Forms
+open System.Drawing
 
 open CefSharp.WinForms
 
-open Resources
+open Browser
 open Menu
-open System.Drawing
+open Resources
 
 type MainForm () as this = 
     inherit Form()
 
     let browser = new ChromiumWebBrowser("")
 
+    let mutable fullScreenForm: Form = null
+
+    let toFullScreen () = 
+        if fullScreenForm = null then
+            fullScreenForm <- new Form()
+            this.Controls.Remove browser
+            fullScreenForm.Controls.Add browser
+            fullScreenForm.WindowState <- FormWindowState.Normal
+            fullScreenForm.FormBorderStyle <- FormBorderStyle.None
+            browser.Size <- fullScreenForm.ClientSize
+            fullScreenForm.Bounds <- Screen.PrimaryScreen.Bounds
+            fullScreenForm.Show()
+
     do 
         this.SuspendLayout()
 
         let browserAccess = Browser.createBrowser browser
         
-        this.Menu <- createMenu this browserAccess
+        this.Menu <- createMenu this browserAccess { ToFullScreen = toFullScreen }
 
         let location = Settings.Default.WindowLocation
         if location.X <> -1 && location.Y <> -1 then
@@ -67,3 +81,5 @@ type MainForm () as this =
 
         browser.Focus() |> ignore
 
+
+    
