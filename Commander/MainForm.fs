@@ -18,7 +18,8 @@ type MainForm () as this =
         
         this.Menu <- createMenu this
 
-        if Settings.Default.WindowLocation.X <> -1 && Settings.Default.WindowLocation.Y <> -1 then
+        let location = Settings.Default.WindowLocation
+        if location.X <> -1 && location.Y <> -1 then
             this.StartPosition <- FormStartPosition.Manual
             this.Location <- Settings.Default.WindowLocation
         this.Size <- Settings.Default.WindowSize
@@ -28,7 +29,7 @@ type MainForm () as this =
         this.KeyPreview <- true
 
         browser.Location <- System.Drawing.Point(0, 0)
-        browser.Size <- Size(this.ClientSize.Width, this.ClientSize.Height)
+        browser.Size <- this.ClientSize
         browser.TabIndex <- 0
         browser.Anchor <- AnchorStyles.Top ||| AnchorStyles.Bottom ||| AnchorStyles.Left ||| AnchorStyles.Right
         this.AutoScaleDimensions <- System.Drawing.SizeF(6.0f, 13.0f);
@@ -38,25 +39,29 @@ type MainForm () as this =
         this.Name <- "MainForm"
         this.Text <- "Commander"
                
-        this.ResumeLayout false
         this.Controls.Add browser
-        browser.Focus() |> ignore
-        browser.Load("https://www.caseris.de")
+        browser.Load(Browser.getCommanderUrl ())
+        
+        this.ResumeLayout false
 
         let formClosing s e = 
             Settings.Default.WindowLocation <- 
                 if this.WindowState = FormWindowState.Normal then 
                     this.Location 
                 else 
-                    this.RestoreBounds.Location
+                    let restoreBounds = this.RestoreBounds
+                    restoreBounds.Location
             Settings.Default.WindowSize <-
                 if this.WindowState = FormWindowState.Normal then 
                     this.Size
                 else
-                    this.RestoreBounds.Size
+                    let restoreBounds = this.RestoreBounds
+                    restoreBounds.Size
 
             Settings.Default.Save()
             Settings.Default.WindowState <- this.WindowState
 
         this.FormClosing.AddHandler(FormClosingEventHandler(formClosing))
+
+        browser.Focus() |> ignore
 
