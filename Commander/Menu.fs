@@ -25,5 +25,11 @@ let createMenu (form: Form) =
 //itemFile.MenuItems.Add(itemProperties);
 //itemFile.MenuItems.Add("-");
     let itemExit = new MenuItem(Resources.MenuExit, EventHandler(fun s e -> form.Close()), Shortcut.AltF4)
-    itemFile.MenuItems.Add(itemExit) |> ignore
+    itemFile.MenuItems.Add itemExit |> ignore
+
+    let itemView = new MenuItem(Resources.MenuView)
+    menu.MenuItems.Add itemView |> ignore
+    //let itemDevTools = new MenuItem(Resources.MenuDeveloperTools, OnDevTools, Shortcut.F12)
+    //itemView.MenuItems.Add itemDevTools |> ignore
+    
     menu

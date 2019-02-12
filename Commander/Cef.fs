@@ -8,6 +8,8 @@ open System.Threading
 open CefSharp
 open CefSharp.WinForms
 
+open CustomProtocol
+
 let initialize () =
     let cachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CefControl")
     let settings = 
@@ -21,6 +23,7 @@ let initialize () =
 
     settings.CefCommandLineArgs.Add("enable-media-stream", "enable-media-stream")
     settings.CefCommandLineArgs.Add("disable-web-security", "disable-web-security")
+    settings.registerCustomProtocolFactory ()
 
     CefSharp.Cef.Initialize settings |> ignore
     CefSharpSettings.LegacyJavascriptBindingEnabled <- true
