@@ -7,17 +7,17 @@ open System
 let createMenu (form: Form) =
     let menu = new MainMenu()
     let itemFile = new MenuItem(Resources.MenuFile)
-    menu.MenuItems.Add(itemFile) |> ignore
+    menu.MenuItems.Add itemFile |> ignore
     let itemRename = new MenuItem(Resources.MenuRename, EventHandler(fun s e -> ()), Shortcut.F2)
-    itemFile.MenuItems.Add(itemRename) |> ignore
-    itemFile.MenuItems.Add("-") |> ignore
+    itemFile.MenuItems.Add itemRename |> ignore
+    itemFile.MenuItems.Add "-" |> ignore
 //    let itemCopy = new MenuItem(Resources.MenuCopy, async (s, e) => await commander.FocusedView.Copy(commander.Other), Shortcut.F5);
 //itemFile.MenuItems.Add(itemCopy);
-//var itemMove = new MenuItem(Resources.MenuMove, (s, e) => { }, Shortcut.F6);
-//itemFile.MenuItems.Add(itemMove);
-//var itemDelete = new MenuItem(Resources.MenuDelete, (s, e) => { }, Shortcut.Del);
-//itemFile.MenuItems.Add(itemDelete);
-//itemFile.MenuItems.Add("-");
+    let itemMove = new MenuItem(Resources.MenuMove, EventHandler(fun s e -> ()), Shortcut.F6)
+    itemFile.MenuItems.Add itemMove |> ignore
+    let itemDelete = new MenuItem(Resources.MenuDelete, EventHandler(fun s e -> ()), Shortcut.Del)
+    itemFile.MenuItems.Add itemDelete |> ignore
+    itemFile.MenuItems.Add "-" |> ignore
 //var itemCreateFolder = new MenuItem(Resources.MenuCreateFolder, 
 //    async (s, e) => await commander.FocusedView.CreateFolder(), Shortcut.F7);
 //itemFile.MenuItems.Add(itemCreateFolder);
