@@ -1,11 +1,17 @@
 ﻿namespace Commander
 
 open System.Windows.Forms
+
+open CefSharp.WinForms
+
 open Resources
 open Menu
+open System.Drawing
 
 type MainForm () as this = 
     inherit Form()
+
+    let browser = new ChromiumWebBrowser("")
 
     do 
         this.SuspendLayout()
@@ -21,18 +27,21 @@ type MainForm () as this =
 
         this.KeyPreview <- true
 
-        //brauser.Location <- System.Drawing.Point(0, 0)
-        //brauser.Size <- Size(base.ClientSize.Width, base.ClientSize.Height)
-        //brauser.TabIndex <- 0
-        //brauser.Anchor <- AnchorStyles.Top ||| AnchorStyles.Bottom ||| AnchorStyles.Left ||| AnchorStyles.Right
+        browser.Location <- System.Drawing.Point(0, 0)
+        browser.Size <- Size(this.ClientSize.Width, this.ClientSize.Height)
+        browser.TabIndex <- 0
+        browser.Anchor <- AnchorStyles.Top ||| AnchorStyles.Bottom ||| AnchorStyles.Left ||| AnchorStyles.Right
         this.AutoScaleDimensions <- System.Drawing.SizeF(6.0f, 13.0f);
         this.AutoScaleMode <- AutoScaleMode.Font
+        this.Icon <- Resources.Kirk
+
         this.Name <- "MainForm"
         this.Text <- "Commander"
+               
         this.ResumeLayout false
-        //base.Controls.Add brauser
-        //brauser.Focus() |> ignore
-        //brauser.Load("https://www.caseris.de")
+        this.Controls.Add browser
+        browser.Focus() |> ignore
+        browser.Load("https://www.caseris.de")
 
         let formClosing s e = 
             Settings.Default.WindowLocation <- 
@@ -50,3 +59,4 @@ type MainForm () as this =
             Settings.Default.WindowState <- this.WindowState
 
         this.FormClosing.AddHandler(FormClosingEventHandler(formClosing))
+

@@ -4,6 +4,7 @@ open Commander
 
 [<EntryPoint>]
 let main argv = 
+    Cef.initialize ()
     Application.EnableVisualStyles()
     Application.SetCompatibleTextRenderingDefault false
     Application.Run(new MainForm())
