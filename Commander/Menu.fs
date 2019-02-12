@@ -6,7 +6,7 @@ open System
 
 open Browser
 
-let createMenu (form: Form) browser browserForm =
+let createMenu (form: Form) (browser: Browser) browserForm =
     let menu = new MainMenu()
     let itemFile = new MenuItem(Resources.MenuFile)
     menu.MenuItems.Add itemFile |> ignore
@@ -36,5 +36,7 @@ let createMenu (form: Form) browser browserForm =
     itemView.MenuItems.Add "-" |> ignore
     let itemDevTools = new MenuItem(Resources.MenuDeveloperTools, EventHandler(fun s e -> browser.ShowDevTools ()), Shortcut.F12)
     itemView.MenuItems.Add itemDevTools |> ignore
+
+    //browser.InitializeAccelerators
     
     menu

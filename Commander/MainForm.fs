@@ -30,7 +30,7 @@ type MainForm () as this =
     do 
         this.SuspendLayout()
 
-        let browserAccess = Browser.createBrowser browser
+        let browserAccess = new Browser(browser)
         
         this.Menu <- createMenu this browserAccess { ToFullScreen = toFullScreen }
 
