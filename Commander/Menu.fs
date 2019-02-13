@@ -7,6 +7,18 @@ open System
 open Browser
 open System.Collections
 open System.Collections.Generic
+open System.Windows.Forms
+
+let castEnumerator (enumerator: IEnumerator) = {
+    new IEnumerator<'U> with
+        member x.Current with get() = enumerator.Current :?> 'U
+    interface IEnumerator with
+        member x.Current with get() = enumerator.Current
+        member x.MoveNext() = enumerator.MoveNext()
+        member x.Reset() = enumerator.Reset()
+    interface IDisposable with
+        member x.Dispose() = ()
+}      
 
 let makeSeq enumerator = {
     new IEnumerable<'U> with
@@ -68,8 +80,32 @@ let createMenu (form: Form) (browser: Browser) browserForm =
     let itemDevTools = new MenuItem(Resources.MenuDeveloperTools, EventHandler(fun s e -> browser.ShowDevTools ()), Shortcut.F12)
     itemView.MenuItems.Add itemDevTools |> ignore
     
+
+    let schwein = menu.MenuItems.GetEnumerator() |> castEnumerator 
+    let a = schwein.MoveNext()
+    let b = schwein.Current
+    let a1 = schwein.MoveNext()
+    let b1 = schwein.Current
+    let a2 = schwein.MoveNext()
+    let b2 = schwein.Current
+    let a3 = schwein.MoveNext()
+    let b3 = schwein.Current
+    let a4 = schwein.MoveNext()
+    let b4 = schwein.Current
+    let a5 = schwein.MoveNext()
+    let b5 = schwein.Current
+    let a6 = schwein.MoveNext()
+    let b6 = schwein.Current
+    let a7 = schwein.MoveNext()
+    let b7 = schwein.Current
+    let a8 = schwein.MoveNext()
+
+
+
+
     let accelerators = 
-        menu.MenuItems.GetEnumerator() :?> IEnumerator<MenuItem>
+        menu.MenuItems.GetEnumerator()
+        |> castEnumerator 
         |> makeSeq 
         |> Seq.map createAccelerator
         |> Seq.toArray
