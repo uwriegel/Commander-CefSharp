@@ -11,6 +11,10 @@
     <Copyright>Uwe Riegel</Copyright>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>5</WarningLevel>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="EnumerableExtensions.fs" />
   </ItemGroup>
