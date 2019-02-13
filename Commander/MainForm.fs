@@ -56,6 +56,7 @@ type MainForm () as this =
         this.Text <- "Commander"
                
         this.Controls.Add browser
+        browser.KeyboardHandler <- browserAccess
         browser.Load(Browser.getCommanderUrl ())
         
         this.ResumeLayout false
