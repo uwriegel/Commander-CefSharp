@@ -3,6 +3,7 @@
 open CefSharp
 open CefSharp.WinForms
 open System.Windows.Forms
+open System
 
 let mutable private commanderUrl = "serve://commander/"
 let mutable private isAngularServing = false
@@ -12,6 +13,14 @@ let getCommanderUrl () = commanderUrl
 let initialize (cmdLine: string[]) = 
     if cmdLine.Length > 0 && cmdLine.[0] = "-serve" then isAngularServing <- true
     if isAngularServing then commanderUrl <- "http://localhost:4200/"
+
+[<NoComparison>]
+[<NoEquality>]
+type Host = {
+    Control: Control
+    GetFullScreenForm: unit->Form
+    ExitFullScreen: unit->unit
+}
     
 [<NoComparison>]
 type Accelerator = {
@@ -22,7 +31,7 @@ type Accelerator = {
     Shift: bool
 }
     
-type Browser(browser: ChromiumWebBrowser)  =
+type Browser (host, browser: ChromiumWebBrowser)  =
     let mutable accelerators: Accelerator[] = Array.empty
 
     member this.InitializeAccelerators value = accelerators <- value
@@ -42,11 +51,12 @@ type Browser(browser: ChromiumWebBrowser)  =
             if keytype = KeyType.RawKeyDown then
                 match accelerators |> Seq.tryFind findAccelerator with
                 | Some value -> 
-                    //Invoke((Action)(() => accelerator.Value.MenuItem.PerformClick()));
+                    host.Control.Invoke(Action(fun () -> value.MenuItem.PerformClick())) |> ignore
                     true
                 | None -> 
-                    //if fullScreenForm <> null && windowsKeyCode = (Keys.Escape :?> int) then 
-                    if true then      
+                    let fullScreenForm = host.GetFullScreenForm ()
+                    if fullScreenForm <> null && windowsKeyCode = LanguagePrimitives.EnumToValue Keys.Escape then 
+                        host.Control.Invoke(Action(host.ExitFullScreen)) |> ignore
                         true
                     else
                         false

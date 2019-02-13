@@ -1,7 +1,6 @@
 ﻿namespace Commander
 
 open System.Windows.Forms
-open System.Drawing
 
 open CefSharp.WinForms
 
@@ -26,11 +25,24 @@ type MainForm () as this =
             browser.Size <- fullScreenForm.ClientSize
             fullScreenForm.Bounds <- Screen.PrimaryScreen.Bounds
             fullScreenForm.Show()
+    let exitFullScreen () =
+        fullScreenForm.Controls.Remove browser
+        this.Controls.Add browser
+        browser.Size <- this.ClientSize
+        fullScreenForm.Close()
+        fullScreenForm <- null
+        ()
+
+    let getFullScreenForm () = fullScreenForm
 
     do 
         this.SuspendLayout()
 
-        let browserAccess = new Browser(browser)
+        let browserAccess = new Browser({
+            Control = this
+            GetFullScreenForm = getFullScreenForm
+            ExitFullScreen = exitFullScreen
+        }, browser)
         
         this.Menu <- createMenu this browserAccess { ToFullScreen = toFullScreen }
 

@@ -15,4 +15,12 @@ let castEnumerator<'U> (enumerator: IEnumerator) = {
         member x.Dispose() = ()
 }      
 
+let makeSeq enumerator = {
+    new IEnumerable<'U> with
+        member x.GetEnumerator() = enumerator
+    interface IEnumerable with
+        member x.GetEnumerator() = 
+            (enumerator :> IEnumerator)
+}
+
 
