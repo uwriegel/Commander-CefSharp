@@ -9,7 +9,7 @@ open System.Collections
 open System.Collections.Generic
 open System.Windows.Forms
 
-let castEnumerator (enumerator: IEnumerator) = {
+let castEnumerator<'U> (enumerator: IEnumerator) = {
     new IEnumerator<'U> with
         member x.Current with get() = enumerator.Current :?> 'U
     interface IEnumerator with
@@ -100,14 +100,21 @@ let createMenu (form: Form) (browser: Browser) browserForm =
     let b7 = schwein.Current
     let a8 = schwein.MoveNext()
 
+    let makeSeqFromEnumerator enumerator = 
+        enumerator
+        |> castEnumerator<MenuItem> 
+        |> makeSeq 
 
+    let getSubMenuItems (menuItems: Menu.MenuItemCollection) = menuItems.GetEnumerator() |> makeSeqFromEnumerator
 
+    let getMenuItems (menuItems: Menu.MenuItemCollection) =
+        getSubMenuItems menuItems
+        |> Seq.collect (fun n -> getSubMenuItems n.MenuItems)
 
     let accelerators = 
-        menu.MenuItems.GetEnumerator()
-        |> castEnumerator 
-        |> makeSeq 
+        getMenuItems menu.MenuItems
         |> Seq.map createAccelerator
+        |> Seq.filter (fun n -> n.Key <> 0)
         |> Seq.toArray
     
     browser.InitializeAccelerators accelerators
