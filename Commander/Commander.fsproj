@@ -100,6 +100,11 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FsTools\FsTools.fsproj">
+      <Name>FsTools</Name>
+      <Project>{587aab21-3819-48ba-94f5-15a53cb1681d}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Resources\Resources.csproj">
       <Name>Resources</Name>
       <Project>{36630e4d-10c3-48d7-b197-91f45b2e1ec4}</Project>
