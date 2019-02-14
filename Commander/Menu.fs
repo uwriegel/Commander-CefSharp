@@ -7,6 +7,9 @@ open System
 open Browser
 open EnumerableExtensions   
 
+type Themes = { Blue: string; LightBlue: string; Dark: string} 
+let themes = { Blue = "blue"; LightBlue = "lightblue"; Dark = "dark" }
+
 let createAccelerator (menuItem: MenuItem) = 
     let key, alt, ctrl, shift = 
         match menuItem.Shortcut with
@@ -61,6 +64,56 @@ let createMenu (form: Form) (browser: Browser) browserForm =
     let itemView = new MenuItem(Resources.MenuView)
     menu.MenuItems.Add itemView |> ignore
 
+    let itemTheme = new MenuItem(Resources.MenuThemes)
+    itemView.MenuItems.Add itemTheme |> ignore
+    itemView.MenuItems.Add "-" |> ignore
+    
+    let itemThemeBlue = new MenuItem(Resources.MenuThemeBlue)
+    itemThemeBlue.RadioCheck <- true
+    let itemThemeLightBlue = new MenuItem(Resources.MenuThemeLightBlue)
+    itemThemeLightBlue.RadioCheck <- true
+    let itemThemeDark = new MenuItem(Resources.MenuThemeDark)
+    itemThemeDark.RadioCheck <- true
+
+    if Settings.Default.Theme = themes.LightBlue then 
+        itemThemeLightBlue.Checked <- true
+    elif Settings.Default.Theme = themes.Dark then 
+        itemThemeDark.Checked <- true
+    else 
+        itemThemeBlue.Checked <- true
+
+    let onTheme (src: obj) (e: EventArgs) =
+        if src.Equals itemThemeBlue then
+            itemThemeBlue.Checked <- true
+            itemThemeLightBlue.Checked <- false
+            itemThemeDark.Checked <- false
+            browser.SetTheme themes.Blue
+            Settings.Default.Theme <- themes.Blue
+        elif src.Equals itemThemeLightBlue then
+            itemThemeBlue.Checked <- false
+            itemThemeLightBlue.Checked <- true
+            itemThemeDark.Checked <- false
+            browser.SetTheme themes.LightBlue
+            Settings.Default.Theme <- themes.LightBlue
+        elif src.Equals itemThemeDark then
+            itemThemeBlue.Checked <- false
+            itemThemeLightBlue.Checked <- false
+            itemThemeDark.Checked <- true
+            browser.SetTheme themes.Dark
+            Settings.Default.Theme <- themes.Dark
+        Settings.Default.Save()
+
+    itemThemeBlue.Click.AddHandler(EventHandler(onTheme))
+    itemThemeLightBlue.Click.AddHandler(EventHandler(onTheme))
+    itemThemeDark.Click.AddHandler(EventHandler(onTheme))
+
+    itemThemeBlue.RadioCheck <- true
+    itemThemeLightBlue.RadioCheck <- true
+    itemThemeDark.RadioCheck <- true
+    itemTheme.MenuItems.Add itemThemeBlue |> ignore
+    itemTheme.MenuItems.Add itemThemeLightBlue |> ignore
+    itemTheme.MenuItems.Add itemThemeDark |> ignore
+           
     let itemZoom = new MenuItem(Resources.MenuZoom)
     itemView.MenuItems.Add itemZoom |> ignore
     let itemZoom50 = new MenuItem("50%", EventHandler(fun s e -> browser.OnZoom(s :?> MenuItem, 50.0)))

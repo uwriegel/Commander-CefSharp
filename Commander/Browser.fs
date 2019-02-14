@@ -64,6 +64,9 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
 
     member this.InitializeAccelerators value = accelerators <- value
 
+    member this.SetTheme(theme: string) =
+        browser.EvaluateScriptAsync ("themes.theme = '" + theme + "'") |> ignore
+
     member this.ShowDevTools () = 
         browser.GetBrowser().ShowDevTools()
 
