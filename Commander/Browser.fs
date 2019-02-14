@@ -4,6 +4,7 @@ open CefSharp
 open CefSharp.WinForms
 open System.Windows.Forms
 open System
+open Commander
 
 let mutable private commanderUrl = "serve://commander/"
 let mutable private isAngularServing = false
@@ -31,8 +32,17 @@ type Accelerator = {
     Shift: bool
 }
     
-type Browser (host, browser: ChromiumWebBrowser)  =
+type Browser (host, browser: ChromiumWebBrowser) as this =
     let mutable accelerators: Accelerator[] = Array.empty
+
+    do 
+        browser.RegisterJsObject("CommanderLeft", this.leftView, BindingOptions(CamelCaseJavascriptNames = true))        
+        browser.RegisterJsObject("CommanderRight", this.rigthtView, BindingOptions(CamelCaseJavascriptNames = true))      
+        browser.RegisterJsObject("CommanderControl", this.commander, BindingOptions(CamelCaseJavascriptNames = true))
+
+    member this.leftView = CommanderView()
+    member this.rigthtView = CommanderView()
+    member this.commander = CommanderControl(this.leftView, this.rigthtView)
 
     member this.InitializeAccelerators value = accelerators <- value
 

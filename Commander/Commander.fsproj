@@ -78,6 +78,8 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="CustomProtocol.fs" />
     <Compile Include="Cef.fs" />
+    <Compile Include="CommanderView.fs" />
+    <Compile Include="CommanderControl.fs" />
     <Compile Include="Browser.fs" />
     <Compile Include="Menu.fs" />
     <Compile Include="MainForm.fs" />
