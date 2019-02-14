@@ -7,8 +7,6 @@ open System
 open Browser
 open EnumerableExtensions   
 
-
-
 let createAccelerator (menuItem: MenuItem) = 
     let key, alt, ctrl, shift = 
         match menuItem.Shortcut with
@@ -29,6 +27,13 @@ let createAccelerator (menuItem: MenuItem) =
         Ctrl = ctrl
         Shift = shift
     }
+
+let makeSeqFromEnumerator enumerator = 
+    enumerator
+    |> castEnumerator<MenuItem> 
+    |> makeSeq 
+
+let getSubMenuItems (menuItems: Menu.MenuItemCollection) = menuItems.GetEnumerator() |> makeSeqFromEnumerator
 
 let createMenu (form: Form) (browser: Browser) browserForm =
     let menu = new MainMenu()
@@ -55,19 +60,44 @@ let createMenu (form: Form) (browser: Browser) browserForm =
 
     let itemView = new MenuItem(Resources.MenuView)
     menu.MenuItems.Add itemView |> ignore
+
+    let itemZoom = new MenuItem(Resources.MenuZoom)
+    itemView.MenuItems.Add itemZoom |> ignore
+    let itemZoom50 = new MenuItem("50%", EventHandler(fun s e -> browser.OnZoom(s :?> MenuItem, 50.0)))
+    itemZoom50.RadioCheck <- true
+    itemZoom.MenuItems.Add itemZoom50 |> ignore
+    let itemZoom75 = new MenuItem("75%", EventHandler(fun s e -> browser.OnZoom(s :?> MenuItem, 75.0)))
+    itemZoom75.RadioCheck <- true
+    itemZoom.MenuItems.Add itemZoom75 |> ignore
+    let itemZoom100 = new MenuItem("100%", EventHandler(fun s e -> browser.OnZoom(s :?> MenuItem, 100.0)))
+    itemZoom100.Checked <- true
+    itemZoom100.RadioCheck <- true
+    itemZoom.MenuItems.Add itemZoom100 |> ignore
+    let itemZoom150 = new MenuItem("150%", EventHandler(fun s e -> browser.OnZoom(s :?> MenuItem, 150.0)))
+    itemZoom150.RadioCheck <- true
+    itemZoom.MenuItems.Add itemZoom150 |> ignore
+    let itemZoom200 = new MenuItem("200%", EventHandler(fun s e -> browser.OnZoom(s :?> MenuItem, 200.0)))
+    itemZoom200.RadioCheck <- true
+    itemZoom.MenuItems.Add itemZoom200 |> ignore
+    let itemZoom250 = new MenuItem("250%", EventHandler(fun s e -> browser.OnZoom(s :?> MenuItem, 250.0)))
+    itemZoom250.RadioCheck <- true
+    itemZoom.MenuItems.Add itemZoom250 |> ignore
+    let itemZoom300 = new MenuItem("300%", EventHandler(fun s e -> browser.OnZoom(s :?> MenuItem, 300.0)))
+    itemZoom300.RadioCheck <- true
+    itemZoom.MenuItems.Add itemZoom300 |> ignore
+    let itemZoom350 = new MenuItem("350%", EventHandler(fun s e -> browser.OnZoom(s :?> MenuItem, 350.0)))
+    itemZoom350.RadioCheck <- true
+    itemZoom.MenuItems.Add itemZoom350 |> ignore
+    let itemZoom400 = new MenuItem("400%", EventHandler(fun s e -> browser.OnZoom(s :?> MenuItem, 400.0)))
+    itemZoom400.RadioCheck <- true
+    itemZoom.MenuItems.Add itemZoom400 |> ignore
+
     let itemFullscreen = new MenuItem(Resources.MenuFullscreen, EventHandler(fun s e -> browserForm.ToFullScreen()), Shortcut.F11)
     itemView.MenuItems.Add itemFullscreen |> ignore
     itemView.MenuItems.Add "-" |> ignore
     let itemDevTools = new MenuItem(Resources.MenuDeveloperTools, EventHandler(fun s e -> browser.ShowDevTools ()), Shortcut.F12)
     itemView.MenuItems.Add itemDevTools |> ignore
     
-    let makeSeqFromEnumerator enumerator = 
-        enumerator
-        |> castEnumerator<MenuItem> 
-        |> makeSeq 
-
-    let getSubMenuItems (menuItems: Menu.MenuItemCollection) = menuItems.GetEnumerator() |> makeSeqFromEnumerator
-
     let getMenuItems (menuItems: Menu.MenuItemCollection) =
         getSubMenuItems menuItems
         |> Seq.collect (fun n -> getSubMenuItems n.MenuItems)
@@ -80,4 +110,7 @@ let createMenu (form: Form) (browser: Browser) browserForm =
     
     browser.InitializeAccelerators accelerators
     
-    menu
+    let clearZoomItems () =
+        getSubMenuItems itemZoom.MenuItems |> Seq.forall (fun n -> n.Checked <- false; true) |> ignore
+
+    (menu, clearZoomItems)

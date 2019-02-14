@@ -14,6 +14,7 @@ type MainForm () as this =
     let browser = new ChromiumWebBrowser("")
 
     let mutable fullScreenForm: Form = null
+    let mutable clearZoomItems = fun () -> ()
 
     let toFullScreen () = 
         if fullScreenForm = null then
@@ -42,9 +43,12 @@ type MainForm () as this =
             Control = this
             GetFullScreenForm = getFullScreenForm
             ExitFullScreen = exitFullScreen
+            ClearZoomItems = fun () -> clearZoomItems ()
         }, browser)
         
-        this.Menu <- createMenu this browserAccess { ToFullScreen = toFullScreen }
+        let menu, clearZoomItemsFunc = createMenu this browserAccess { ToFullScreen = toFullScreen }
+        this.Menu <- menu
+        clearZoomItems <- clearZoomItemsFunc
 
         let location = Settings.Default.WindowLocation
         if location.X <> -1 && location.Y <> -1 then
@@ -69,6 +73,7 @@ type MainForm () as this =
                
         this.Controls.Add browser
         browser.KeyboardHandler <- browserAccess
+        browser.LoadHandler <- browserAccess
         browser.Load(Browser.getCommanderUrl ())
         
         this.ResumeLayout false
@@ -94,5 +99,5 @@ type MainForm () as this =
 
         browser.Focus() |> ignore
 
-
+    
     

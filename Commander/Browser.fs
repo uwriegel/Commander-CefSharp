@@ -21,6 +21,7 @@ type Host = {
     Control: Control
     GetFullScreenForm: unit->Form
     ExitFullScreen: unit->unit
+    ClearZoomItems: unit->unit
 }
     
 [<NoComparison>]
@@ -35,19 +36,43 @@ type Accelerator = {
 type Browser (host, browser: ChromiumWebBrowser) as this =
     let mutable accelerators: Accelerator[] = Array.empty
 
-    do 
-        browser.RegisterJsObject("CommanderLeft", this.leftView, BindingOptions(CamelCaseJavascriptNames = true))        
-        browser.RegisterJsObject("CommanderRight", this.rigthtView, BindingOptions(CamelCaseJavascriptNames = true))      
-        browser.RegisterJsObject("CommanderControl", this.commander, BindingOptions(CamelCaseJavascriptNames = true))
+    let onMouseWheel (delta: double) = 
+        this.ZoolLevel <- this.ZoolLevel + if delta > 0.0 then 10.0 else -10.0
+        host.ClearZoomItems ()
+    
+    let leftView = CommanderView()
+    let rigthtView = CommanderView()
+    let commander = CommanderControl(leftView, rigthtView)
 
-    member this.leftView = CommanderView()
-    member this.rigthtView = CommanderView()
-    member this.commander = CommanderControl(this.leftView, this.rigthtView)
+    do 
+        browser.RegisterJsObject("CommanderLeft", leftView, BindingOptions(CamelCaseJavascriptNames = true))        
+        browser.RegisterJsObject("CommanderRight", rigthtView, BindingOptions(CamelCaseJavascriptNames = true))      
+        browser.RegisterJsObject("CommanderControl", commander, BindingOptions(CamelCaseJavascriptNames = true))
+        browser.RegisterJsObject("MouseWheelZoomControl", MouseWheelZoomControl(onMouseWheel), BindingOptions(CamelCaseJavascriptNames = true))
+
+    let mutable zoomLevel = 0.0
+
+    member this.ZoolLevel 
+        with get() = zoomLevel
+        and set value = 
+            let newValue = 
+                if value > 400.0 then 400.0
+                elif value < 50.0 then 50.0
+                else value
+            zoomLevel <- newValue
+            browser.SetZoomLevel(Math.Log(zoomLevel / 100.0) / Math.Log 1.2)
 
     member this.InitializeAccelerators value = accelerators <- value
 
     member this.ShowDevTools () = 
         browser.GetBrowser().ShowDevTools()
+
+    member this.OnZoom(thisMenuItem: MenuItem, zoomLevel) = 
+        this.ZoolLevel <- zoomLevel
+        host.ClearZoomItems ()
+        thisMenuItem.Checked <- true
+
+    
 
     interface IKeyboardHandler with
         member this.OnPreKeyEvent(chromiumWebBrowser: IWebBrowser, ibrowser: IBrowser, keytype: KeyType, windowsKeyCode: int, 
@@ -75,6 +100,24 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         member this.OnKeyEvent(chromiumWebBrowser: IWebBrowser, browser: IBrowser, keytype: KeyType, windowsKeyCode: int, 
                                 nativeKeyCode: int, modifiers: CefEventFlags, isSystemKey: bool) =
             false
+
+    interface ILoadHandler with
+        member this.OnFrameLoadStart(browserControl: IWebBrowser, frameLoadStartArgs: FrameLoadStartEventArgs) = ()
+        member this.OnFrameLoadEnd(browserControl: IWebBrowser, frameLoadEndArgs: FrameLoadEndEventArgs) = 
+            if frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url = commanderUrl then
+                browser.EvaluateScriptAsync("themes.theme = '" + Resources.Settings.Default.Theme + "'") |> ignore
+                browser.EvaluateScriptAsync(@"document.addEventListener('mousewheel', e => {
+    if (e.ctrlKey) {
+        MouseWheelZoomControl.onMouseWheel(e.wheelDelta)
+        e.stopPropagation()
+        e.preventDefault()
+    }
+}, true)"           
+                ) |> ignore
+                host.Control.BeginInvoke(Action(fun () -> browser.Focus ()|> ignore)) |> ignore
+
+        member this.OnLoadError(browserControl: IWebBrowser, loadErrorArgs: LoadErrorEventArgs) = ()
+        member this.OnLoadingStateChange(browserControl: IWebBrowser, loadingStateChangedArgs: LoadingStateChangedEventArgs) = ()
 
 [<NoEquality>]
 [<NoComparison>]
