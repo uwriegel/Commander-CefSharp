@@ -13,15 +13,15 @@ let themes = { Blue = "blue"; LightBlue = "lightblue"; Dark = "dark" }
 let createAccelerator (menuItem: MenuItem) = 
     let key, alt, ctrl, shift = 
         match menuItem.Shortcut with
-        | Shortcut.CtrlH -> (72, false, true, false)
-        | Shortcut.CtrlR -> (82, false, true, false)
-        | Shortcut.F3 -> (114, false, false, false)
-        | Shortcut.F5 -> (116, false, false, false)
-        | Shortcut.F7 -> (118, false, false, false)
-        | Shortcut.F9 -> (120, false, false, false)
-        | Shortcut.F11 -> (122, false, false, false)
-        | Shortcut.F12-> (123, false, false, false)
-        | _ -> (0, false, false, false)
+        | Shortcut.CtrlH -> 72, false, true, false
+        | Shortcut.CtrlR -> 82, false, true, false
+        | Shortcut.F3 -> 114, false, false, false
+        | Shortcut.F5 -> 116, false, false, false
+        | Shortcut.F7 -> 118, false, false, false
+        | Shortcut.F9 -> 120, false, false, false
+        | Shortcut.F11 -> 122, false, false, false
+        | Shortcut.F12-> 123, false, false, false
+        | _ -> 0, false, false, false
 
     {
         MenuItem = menuItem
