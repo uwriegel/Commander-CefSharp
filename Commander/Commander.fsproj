@@ -84,6 +84,7 @@
     <Compile Include="CommanderView.fs" />
     <Compile Include="CommanderControl.fs" />
     <Compile Include="MouseWheelZoomControl.fs" />
+    <Compile Include="Viewer.fs" />
     <Compile Include="Browser.fs" />
     <Compile Include="Menu.fs" />
     <Compile Include="MainForm.fs" />

@@ -49,11 +49,13 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         setRecentPath = (fun path -> Resources.Settings.Default.RightRecentPath <- path)
     })
     let commander = CommanderControl(leftView, rigthtView)
+    let viewer = Viewer()
 
     do 
         browser.RegisterJsObject("CommanderLeft", leftView, BindingOptions(CamelCaseJavascriptNames = true))        
         browser.RegisterJsObject("CommanderRight", rigthtView, BindingOptions(CamelCaseJavascriptNames = true))      
         browser.RegisterJsObject("CommanderControl", commander, BindingOptions(CamelCaseJavascriptNames = true))
+        browser.RegisterJsObject("Viewer", viewer, BindingOptions(CamelCaseJavascriptNames = true))      
         browser.RegisterJsObject("MouseWheelZoomControl", MouseWheelZoomControl(onMouseWheel), BindingOptions(CamelCaseJavascriptNames = true))
 
     let mutable zoomLevel = 0.0
@@ -70,18 +72,24 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
 
     member this.InitializeAccelerators value = accelerators <- value
 
+    member this.Copy () = commander.Copy ()
+    member this.CreateFolder () = commander.CreateFolder ()
+    member this.AdaptPath () = commander.AdaptPath ()
+    member this.Refresh () = commander.Refresh ()
     member this.SetTheme(theme: string) =
         browser.EvaluateScriptAsync ("themes.theme = '" + theme + "'") |> ignore
 
     member this.ShowDevTools () = 
         browser.GetBrowser().ShowDevTools()
 
-    member this.OnZoom(thisMenuItem: MenuItem, zoomLevel) = 
-        this.ZoolLevel <- zoomLevel
-        host.ClearZoomItems ()
-        thisMenuItem.Checked <- true
+    member this.OnZoom(zoomLevel) = this.ZoolLevel <- zoomLevel
 
-    
+    member this.OnViewer (activate: bool) =
+        browser.EvaluateScriptAsync ("commander.setViewer", activate) |> ignore
+
+    member this.ShowHidden (showHidden: bool) =
+        leftView.ShowHidden showHidden
+        rightView.ShowHidden showHidden
 
     interface IKeyboardHandler with
         member this.OnPreKeyEvent(chromiumWebBrowser: IWebBrowser, ibrowser: IBrowser, keytype: KeyType, windowsKeyCode: int, 
@@ -127,6 +135,13 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
 
         member this.OnLoadError(browserControl: IWebBrowser, loadErrorArgs: LoadErrorEventArgs) = ()
         member this.OnLoadingStateChange(browserControl: IWebBrowser, loadingStateChangedArgs: LoadingStateChangedEventArgs) = ()
+    
+    interface IContextMenuHandler with
+        member this.OnBeforeContextMenu(chromiumWebBrowser: IWebBrowser, browser: IBrowser, frame: IFrame, parameters: IContextMenuParams, model: IMenuModel) =
+            model.Clear () |> ignore
+        member this.OnContextMenuCommand(chromiumWebBrowser: IWebBrowser, browser: IBrowser, frame: IFrame, parameters: IContextMenuParams, commandId: CefMenuCommand, eventFlags: CefEventFlags) = false
+        member this.OnContextMenuDismissed(chromiumWebBrowser: IWebBrowser, browser: IBrowser, frame: IFrame) = ()
+        member this.RunContextMenu(chromiumWebBrowser: IWebBrowser, browser: IBrowser, frame: IFrame, parameters: IContextMenuParams, model: IMenuModel, callback: IRunContextMenuCallback) = false
 
 [<NoEquality>]
 [<NoComparison>]

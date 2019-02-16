@@ -60,11 +60,11 @@ type MainForm () as this =
 
         this.KeyPreview <- true
 
-        browser.Location <- System.Drawing.Point(0, 0)
+        browser.Location <- System.Drawing.Point (0, 0)
         browser.Size <- this.ClientSize
         browser.TabIndex <- 0
         browser.Anchor <- AnchorStyles.Top ||| AnchorStyles.Bottom ||| AnchorStyles.Left ||| AnchorStyles.Right
-        this.AutoScaleDimensions <- System.Drawing.SizeF(6.0f, 13.0f);
+        this.AutoScaleDimensions <- System.Drawing.SizeF(6.0f, 13.0f)
         this.AutoScaleMode <- AutoScaleMode.Font
         this.Icon <- Resources.Kirk
 
@@ -74,6 +74,7 @@ type MainForm () as this =
         this.Controls.Add browser
         browser.KeyboardHandler <- browserAccess
         browser.LoadHandler <- browserAccess
+        browser.MenuHandler <- browserAccess
         browser.Load(Browser.getCommanderUrl ())
         
         this.ResumeLayout false
