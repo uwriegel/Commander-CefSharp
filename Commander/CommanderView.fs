@@ -1,6 +1,7 @@
 ﻿namespace Commander
 
 open Model
+open System.Threading
 
 [<NoComparison>]
 [<NoEquality>]
@@ -37,8 +38,11 @@ type CommanderView(settings: Settings, executeScript: string->obj->unit)  =
                 DirectoryProcessor.get
         async {
             let newItems = get ()
-            ()
-        } |> Async.StartImmediate
+            let affe = newItems.Drives.Value |> Seq.toArray
+
+            if not request.IsCancelled then
+                ()
+        } |> Async.Start
         ()
 
     member this.Ready () = 

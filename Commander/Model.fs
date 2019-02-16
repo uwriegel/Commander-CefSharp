@@ -105,14 +105,6 @@ type Items = {
     //    Files = files.ToArray();
     //}
 
-    //public Items(IEnumerable<Drive> drives)
-    //{
-    //    Path = "root";
-    //    ViewType = ViewType.Root;
-    //    Drives = drives.ToArray();
-    //    Directories = null;
-    //    Files = null;
-    //}
 
     //Items(Items itemsToUpdate, IEnumerable<FileItem> files)
     //{
@@ -131,4 +123,6 @@ type Items = {
 }
 
 let createEmptyItems () = {ViewType = ViewType.Root; Path = ""; Drives = None; Directories = None; Files = None }
+
+let createDriveItems drives = {ViewType = ViewType.Root; Path = "root"; Drives = Some drives; Directories = None; Files = None }
 

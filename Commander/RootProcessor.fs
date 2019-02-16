@@ -1,6 +1,9 @@
 ﻿module RootProcessor
 
+open System.IO
+
 open Model
+
 
 [<Literal>]
 let name = "root"
@@ -11,4 +14,13 @@ let columns = [ { Name = Resources.Resources.RootName; IsSortable = false; Colum
 ] 
 
 let get path =
-    createEmptyItems ()
+    DriveInfo.GetDrives ()
+    |> Seq.filter (fun n -> n.IsReady)
+    |> Seq.sortBy (fun n -> n.Name)
+    |> Seq.mapi (fun i n -> {
+        Index = i
+        Name = n.Name
+        Label = n.VolumeLabel
+        Size = n.TotalSize
+    })
+    |> createDriveItems 
