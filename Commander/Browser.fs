@@ -44,16 +44,16 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         getRecentPath = (fun () -> Resources.Settings.Default.LeftRecentPath)
         setRecentPath = (fun path -> Resources.Settings.Default.LeftRecentPath <- path)
     })
-    let rigthtView = CommanderView({ 
+    let rightView = CommanderView({ 
         getRecentPath = (fun () -> Resources.Settings.Default.RightRecentPath)
         setRecentPath = (fun path -> Resources.Settings.Default.RightRecentPath <- path)
     })
-    let commander = CommanderControl(leftView, rigthtView)
+    let commander = CommanderControl(leftView, rightView)
     let viewer = Viewer()
 
     do 
         browser.RegisterJsObject("CommanderLeft", leftView, BindingOptions(CamelCaseJavascriptNames = true))        
-        browser.RegisterJsObject("CommanderRight", rigthtView, BindingOptions(CamelCaseJavascriptNames = true))      
+        browser.RegisterJsObject("CommanderRight", rightView, BindingOptions(CamelCaseJavascriptNames = true))      
         browser.RegisterJsObject("CommanderControl", commander, BindingOptions(CamelCaseJavascriptNames = true))
         browser.RegisterJsObject("Viewer", viewer, BindingOptions(CamelCaseJavascriptNames = true))      
         browser.RegisterJsObject("MouseWheelZoomControl", MouseWheelZoomControl(onMouseWheel), BindingOptions(CamelCaseJavascriptNames = true))
