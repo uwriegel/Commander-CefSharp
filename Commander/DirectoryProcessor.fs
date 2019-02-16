@@ -12,3 +12,6 @@ let columns = [ { Name = Resources.Resources.DirectoryName; IsSortable = false; 
                    { Name = Resources.Resources.DirectorySize; IsSortable = true; ColumnsType = ColumnsType.Size };  
                    { Name = Resources.Resources.DirectoryVersion; IsSortable = false; ColumnsType = ColumnsType.String } 
                ] 
+
+let get path =
+    createEmptyItems ()

@@ -9,3 +9,6 @@ let columns = [ { Name = Resources.Resources.RootName; IsSortable = false; Colum
     { Name = Resources.Resources.RootLabel; IsSortable = false; ColumnsType = ColumnsType.String }; 
     { Name = Resources.Resources.RootSize; IsSortable = false; ColumnsType = ColumnsType.Size } 
 ] 
+
+let get path =
+    createEmptyItems ()
