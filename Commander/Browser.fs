@@ -36,6 +36,10 @@ type Accelerator = {
 type Browser (host, browser: ChromiumWebBrowser) as this =
     let mutable accelerators: Accelerator[] = Array.empty
 
+    let executeScript clss (method: string) param = 
+        let json = Json.serialize param
+        browser.EvaluateScriptAsync(clss + "." + method + "(" + json + ")") |> ignore
+
     let onMouseWheel (delta: double) = 
         this.ZoolLevel <- this.ZoolLevel + if delta > 0.0 then 10.0 else -10.0
         host.ClearZoomItems ()
@@ -43,11 +47,11 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
     let leftView = CommanderView({ 
         getRecentPath = (fun () -> Resources.Settings.Default.LeftRecentPath)
         setRecentPath = (fun path -> Resources.Settings.Default.LeftRecentPath <- path)
-    })
+    }, executeScript "commanderViewLeft")
     let rightView = CommanderView({ 
         getRecentPath = (fun () -> Resources.Settings.Default.RightRecentPath)
         setRecentPath = (fun path -> Resources.Settings.Default.RightRecentPath <- path)
-    })
+    }, executeScript "commanderViewRight")
     let commander = CommanderControl(leftView, rightView)
     let viewer = Viewer()
 

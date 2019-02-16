@@ -9,7 +9,7 @@ type Settings = {
     setRecentPath: string->unit
 }
 
-type CommanderView(settings: Settings)  =
+type CommanderView(settings: Settings, executeScript: string->obj->unit)  =
     
     let getViewType (path: string) = 
         match path with 
@@ -25,8 +25,7 @@ type CommanderView(settings: Settings)  =
     member this.Ready () = 
         let viewType = getViewType <| settings.getRecentPath ()
         let columns = getColumns viewType
-        //let jason = Json.serialize columns
-        ()
+        executeScript "setColumns" columns
     
     member this.Copy (otherView: CommanderView) = ()
     member this.CreateFolder () = ()

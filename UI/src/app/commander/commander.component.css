@@ -19,6 +19,7 @@ app-commander-view, .viewer {
     color: white;
     padding-top: 2px;
     padding-left: 5px;
-    background-color: blue;
+    color: var(--selected-color);
+    background-color: var(--selected-bg-color);
     height: 18px;
 }
