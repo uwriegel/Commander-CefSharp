@@ -40,8 +40,14 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         this.ZoolLevel <- this.ZoolLevel + if delta > 0.0 then 10.0 else -10.0
         host.ClearZoomItems ()
     
-    let leftView = CommanderView()
-    let rigthtView = CommanderView()
+    let leftView = CommanderView({ 
+        getRecentPath = (fun () -> Resources.Settings.Default.LeftRecentPath)
+        setRecentPath = (fun path -> Resources.Settings.Default.LeftRecentPath <- path)
+    })
+    let rigthtView = CommanderView({ 
+        getRecentPath = (fun () -> Resources.Settings.Default.RightRecentPath)
+        setRecentPath = (fun path -> Resources.Settings.Default.RightRecentPath <- path)
+    })
     let commander = CommanderControl(leftView, rigthtView)
 
     do 

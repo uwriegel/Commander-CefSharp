@@ -78,6 +78,9 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="CustomProtocol.fs" />
     <Compile Include="Cef.fs" />
+    <Compile Include="Model.fs" />
+    <Compile Include="DirectoryProcessor.fs" />
+    <Compile Include="RootProcessor.fs" />
     <Compile Include="CommanderView.fs" />
     <Compile Include="CommanderControl.fs" />
     <Compile Include="MouseWheelZoomControl.fs" />
@@ -90,10 +93,17 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
-      <HintPath>..\packages\FSharp.Core.4.6.1\lib\net45\FSharp.Core.dll</HintPath>
+      <HintPath>..\packages\FSharp.Core.4.6.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core" />
+    <Reference Include="FSharp.Core" />
+    <Reference Include="FSharpTools">
+      <HintPath>..\packages\FSharpTools.0.0.1\lib\netstandard2.0\FSharpTools.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -104,11 +114,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FsTools\FsTools.fsproj">
-      <Name>FsTools</Name>
-      <Project>{587aab21-3819-48ba-94f5-15a53cb1681d}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Resources\Resources.csproj">
       <Name>Resources</Name>
       <Project>{36630e4d-10c3-48d7-b197-91f45b2e1ec4}</Project>

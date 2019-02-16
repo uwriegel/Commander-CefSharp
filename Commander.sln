@@ -11,8 +11,6 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Commander", "Commander\Comm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resources", "Resources\Resources.csproj", "{36630E4D-10C3-48D7-B197-91F45B2E1EC4}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsTools", "FsTools\FsTools.fsproj", "{587AAB21-3819-48BA-94F5-15A53CB1681D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,18 +68,6 @@ Global
 		{36630E4D-10C3-48D7-B197-91F45B2E1EC4}.Release|x64.Build.0 = Release|Any CPU
 		{36630E4D-10C3-48D7-B197-91F45B2E1EC4}.Release|x86.ActiveCfg = Release|Any CPU
 		{36630E4D-10C3-48D7-B197-91F45B2E1EC4}.Release|x86.Build.0 = Release|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Debug|x64.Build.0 = Debug|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Debug|x86.Build.0 = Debug|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Release|x64.ActiveCfg = Release|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Release|x64.Build.0 = Release|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Release|x86.ActiveCfg = Release|Any CPU
-		{587AAB21-3819-48BA-94F5-15A53CB1681D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

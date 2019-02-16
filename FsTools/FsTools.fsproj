@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageId>UFsTools</PackageId>
+    <PackageId>FSharpTools</PackageId>
     <Version>0.0.1</Version>
     <Authors>Uwe Riegel</Authors>
     <Company>Uwe Riegel</Company>
