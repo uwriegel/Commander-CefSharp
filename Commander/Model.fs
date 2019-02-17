@@ -150,3 +150,9 @@ let createDriveResponse name label (size: int64) index = {
     IsExif = false
 }
     
+[<NoComparison>]
+type Response = {
+    //string ItemToSelect
+    Path: string
+    Items: seq<ResponseItem>
+}

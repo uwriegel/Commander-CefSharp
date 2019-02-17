@@ -59,9 +59,8 @@ type CommanderView(browserAccess: BrowserAccess)  =
     let setIndex index =
         currentIndex <- index
         async {
-            return! browserAccess.executeScript "setCurrentItem" (Some ("":>obj))
-        }//await ExecuteScriptAsync("setCurrentItem", GetCurrentItemPath(currentIndex));
-
+            return! browserAccess.executeScript "setCurrentItem" (Some ((getCurrentItemPath currentIndex):>obj))
+        }
 
     let changePath path (directoryToSelect: string option)= 
         let request = requestFactory.create()
@@ -107,10 +106,18 @@ type CommanderView(browserAccess: BrowserAccess)  =
         changePath (browserAccess.getRecentPath ()) None 
 
     member this.GetItems () = 
-        match currentItems.ViewType, currentItems.Drives, currentItems.Directories, currentItems.Files with
-        | ViewType.Root, drives, [||], [||] -> ()
-        | ViewType.Directory, [||], directories, files -> ()
-        | _ -> ()
+        let responses = 
+            match currentItems.ViewType, currentItems.Drives, currentItems.Directories, currentItems.Files with
+            | ViewType.Root, drives, [||], [||] -> 
+                drives
+                |> Seq.mapi (fun i n -> createDriveResponse n.Name n.Label n.Size i)
+            | ViewType.Directory, [||], directories, files -> failwith "not implemented"
+            | _ -> failwith "Invalid ViewType"
+        let response: Response = { 
+            Path = currentItems.Path
+            Items = responses 
+        }
+        Json.serialize response
 
     member this.Copy (otherView: CommanderView) = ()
     member this.CreateFolder () = ()
