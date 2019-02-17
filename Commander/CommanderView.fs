@@ -1,9 +1,11 @@
 ﻿namespace Commander
 
+open System
+open System.IO
+open System.Threading
+
 open CefSharp
 open Model
-open System.Threading
-open System.IO
 
 [<NoComparison>]
 [<NoEquality>]
@@ -13,7 +15,7 @@ type BrowserAccess = {
     executeScript: string->obj option->Async<JavascriptResponse>
 }
 
-type CommanderView(browserAccess: BrowserAccess)  =
+type CommanderView(browserAccess: BrowserAccess) as this =
     let requestFactory = RequestFactory()
     let mutable currentItems = Model.createEmptyItems ()
     let mutable currentIndex = 0
@@ -56,13 +58,7 @@ type CommanderView(browserAccess: BrowserAccess)  =
         else
             getDirectory ()
 
-    let setIndex index =
-        currentIndex <- index
-        async {
-            return! browserAccess.executeScript "setCurrentItem" (Some ((getCurrentItemPath currentIndex):>obj))
-        }
-
-    let changePath path (directoryToSelect: string option)= 
+    let changePath path (directoryToSelect: string option) = 
         let request = requestFactory.create()
         let viewType = getViewType path
         let setColumns = viewType <> currentItems.ViewType 
@@ -82,6 +78,7 @@ type CommanderView(browserAccess: BrowserAccess)  =
                 ()
             if not request.IsCancelled then  
                 currentItems <- newItems
+                // TODO:
                 //sort()
                 browserAccess.setRecentPath currentItems.Path
 
@@ -90,12 +87,11 @@ type CommanderView(browserAccess: BrowserAccess)  =
                     | None, _ -> ItemIndex.getDefault currentItems.ViewType
                     | Some value, ViewType.Directory -> 0
                     | Some value, ViewType.Root -> 
-                        //var folderToSelect = newItems.Drives.First(n => string.Compare(n.Name, directoryToSelect, true) == 0);
-                        //return ItemIndex.Create(ItemType.Directory, folderToSelect.Index);
-                        0
+                        let folderToSelect = newItems.Drives |> Array.find (fun n -> String.Compare(n.Name, value, true) = 0)
+                        ItemIndex.create ItemType.Directory folderToSelect.Index
                     | _, _ -> 0
 
-                let! res = setIndex (getCurrentIndex ())
+                let! res = this.SetIndex (getCurrentIndex ())
 
                 let! response = browserAccess.executeScript "itemsChanged" None
                 ()
@@ -118,6 +114,12 @@ type CommanderView(browserAccess: BrowserAccess)  =
             Items = responses 
         }
         Json.serialize response
+
+    member this.SetIndex index =
+        currentIndex <- index
+        async {
+            return! browserAccess.executeScript "setCurrentItem" (Some ((getCurrentItemPath currentIndex):>obj))
+        }
 
     member this.Copy (otherView: CommanderView) = ()
     member this.CreateFolder () = ()
