@@ -23,4 +23,5 @@ let get path =
         Label = n.VolumeLabel
         Size = n.TotalSize
     })
+    |> Seq.toArray 
     |> createDriveItems 

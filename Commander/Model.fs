@@ -117,12 +117,36 @@ type Items = {
 
     ViewType: ViewType
     Path: string
-    Drives: seq<Drive> option 
-    Directories: seq<DirectoryItem> option 
-    Files: seq<FileItem> option 
+    Drives: Drive[] 
+    Directories: DirectoryItem[] 
+    Files: FileItem[] 
 }
 
-let createEmptyItems () = {ViewType = ViewType.Root; Path = ""; Drives = None; Directories = None; Files = None }
+let createEmptyItems () = {ViewType = ViewType.Uninitialized; Path = ""; Drives = [||]; Directories = [||]; Files = [||] }
 
-let createDriveItems drives = {ViewType = ViewType.Root; Path = "root"; Drives = Some drives; Directories = None; Files = None }
+let createDriveItems drives = {ViewType = ViewType.Root; Path = "root"; Drives = drives; Directories = [||]; Files = [||] }
 
+
+type ItemType = Undefined = -1 | Parent = 0 | Directory = 1 | File = 2
+
+[<NoComparison>]
+type ResponseItem = {
+    ItemType: ItemType 
+    Index: int
+    Items: seq<string>
+    Icon: string
+    IsCurrent: bool 
+    IsHidden: bool 
+    IsExif: bool
+}
+
+let createDriveResponse name label (size: int64) index = {
+    ItemType = ItemType.Directory
+    Index = index
+    Items = [ name; label; size.ToString "N0" ]
+    Icon = "Drive"
+    IsCurrent = false
+    IsHidden = false
+    IsExif = false
+}
+    
