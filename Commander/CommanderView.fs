@@ -1,16 +1,18 @@
 ﻿namespace Commander
 
+open CefSharp
 open Model
 open System.Threading
 
 [<NoComparison>]
 [<NoEquality>]
-type Settings = {
+type BrowserAccess = {
     getRecentPath: unit->string
     setRecentPath: string->unit
+    executeScript: string->obj option->Async<JavascriptResponse>
 }
 
-type CommanderView(settings: Settings, executeScript: string->obj->unit)  =
+type CommanderView(browserAccess: BrowserAccess)  =
     let requestFactory = RequestFactory()
     let mutable currentItems = Model.createEmptyItems ()
     
@@ -38,18 +40,23 @@ type CommanderView(settings: Settings, executeScript: string->obj->unit)  =
                 DirectoryProcessor.get
         async {
             let newItems = get ()
-            let affe = newItems.Drives.Value |> Seq.toArray
 
-            if not request.IsCancelled then
+            if setColumns && not request.IsCancelled then
+                let columns = getColumns viewType
+                let! response = browserAccess.executeScript "setColumns" (Some (columns:> obj))
+                ()
+            if not request.IsCancelled then  
+                currentItems <- newItems
+                //sort()
+                browserAccess.setRecentPath currentItems.Path
+                let! response = browserAccess.executeScript "itemsChanged" None
                 ()
         } |> Async.Start
         ()
 
     member this.Ready () = 
-        let path = settings.getRecentPath ()
-        let viewType = getViewType path
-        let columns = getColumns viewType
-        executeScript "setColumns" columns
+        let path = browserAccess.getRecentPath ()
+        //let viewType = getViewType path
         changePath path
     
     member this.Copy (otherView: CommanderView) = ()

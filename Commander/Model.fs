@@ -17,7 +17,7 @@ type Columns = {
     Values: seq<Column>
 }
 
-type ViewType = Root = 0 | Directory = 1
+type ViewType = Uninitialized = -1 | Root = 0 | Directory = 1
 
 type Drive = {
     Index: int
