@@ -13,3 +13,5 @@ let getDefault viewType =
 let getArrayIndex index = int ((uint32 index) &&& (uint32 0xFFFFFF))
 let getItemType index = enum<ItemType>(int (byte (index >>> 24)))
 
+let isSelected index arrayIndex itemType =
+    (create itemType arrayIndex) = index

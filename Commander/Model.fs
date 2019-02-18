@@ -140,12 +140,12 @@ type ResponseItem = {
     IsExif: bool
 }
 
-let createDriveResponse name label (size: int64) index = {
+let createDriveResponse name label (size: int64) index isCurrent = {
     ItemType = ItemType.Directory
     Index = index
     Items = [ name; label; size.ToString "N0" ]
     Icon = "Drive"
-    IsCurrent = false
+    IsCurrent = isCurrent
     IsHidden = false
     IsExif = false
 }

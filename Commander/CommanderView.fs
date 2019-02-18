@@ -106,7 +106,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
             match currentItems.ViewType, currentItems.Drives, currentItems.Directories, currentItems.Files with
             | ViewType.Root, drives, [||], [||] -> 
                 drives
-                |> Seq.mapi (fun i n -> createDriveResponse n.Name n.Label n.Size i)
+                |> Seq.mapi (fun i n -> createDriveResponse n.Name n.Label n.Size i (ItemIndex.isSelected currentIndex i ItemType.Directory))
             | ViewType.Directory, [||], directories, files -> failwith "not implemented"
             | _ -> failwith "Invalid ViewType"
         let response: Response = { 

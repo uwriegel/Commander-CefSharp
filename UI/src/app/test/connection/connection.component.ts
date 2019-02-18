@@ -24,7 +24,7 @@ export class ConnectionComponent implements OnInit, ICommanderView {
     }
 
     itemsChanged() { 
-        console.log(CommanderLeft.getItems())
+        console.log(JSON.parse(CommanderLeft.getItems()))
     }
 
     setCurrentItem(item: string) { 
