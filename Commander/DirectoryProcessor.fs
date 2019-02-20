@@ -15,12 +15,11 @@ let getSafeItems get =
     with
     | :? UnauthorizedAccessException -> [||]
 
-let columns = [ { Name = Resources.Resources.DirectoryName; IsSortable = false; ColumnsType = ColumnsType.String };
-                   { Name = Resources.Resources.DirectoryExtension; IsSortable = false; ColumnsType = ColumnsType.String };  
-                   { Name = Resources.Resources.DirectoryDate; IsSortable = true; ColumnsType = ColumnsType.Date };  
-                   { Name = Resources.Resources.DirectorySize; IsSortable = true; ColumnsType = ColumnsType.Size };  
-                   { Name = Resources.Resources.DirectoryVersion; IsSortable = false; ColumnsType = ColumnsType.String } 
-               ] 
+let columns = [{ Name = Resources.Resources.DirectoryName; IsSortable = false; ColumnsType = ColumnsType.String };
+               { Name = Resources.Resources.DirectoryExtension; IsSortable = false; ColumnsType = ColumnsType.String };  
+               { Name = Resources.Resources.DirectoryDate; IsSortable = true; ColumnsType = ColumnsType.Date };  
+               { Name = Resources.Resources.DirectorySize; IsSortable = true; ColumnsType = ColumnsType.Size };  
+               { Name = Resources.Resources.DirectoryVersion; IsSortable = false; ColumnsType = ColumnsType.String }] 
 
 let get path showHidden () =
 
@@ -36,6 +35,18 @@ let get path showHidden () =
         |> Seq.mapi (fun i n -> {Index = i; Name = n.Name; Date = n.LastWriteTime; IsHidden = hasFlag n.Attributes FileAttributes.Hidden }) 
         |> Seq.toArray
 
+    //let files =
+    //    getSafeItems (fun () -> di.GetFiles())
+    //    |> Seq.filter (fun n -> 
+    //        if showHidden then 
+    //            true 
+    //        else 
+    //            not (hasFlag n.Attributes FileAttributes.Hidden)
+    //    )
+    //    |> Seq.mapi (fun i n -> {Index = i; Name = n.Name; Date = n.LastWriteTime; IsHidden = hasFlag n.Attributes FileAttributes.Hidden }) 
+    //    |> Seq.toArray
+    //           .Select((n, i) => new FileItem(i, n.Name, n.FullName, n.Extension, n.LastWriteTime, n.Length, n.Attributes.HasFlag(FileAttributes.Hidden)));
+
     createDirectoryItems path directories
 
 let getItems currentIndex (directories: DirectoryItem[]) (files: FileItem[]) = 
@@ -43,12 +54,12 @@ let getItems currentIndex (directories: DirectoryItem[]) (files: FileItem[]) =
 
     let directories = 
         directories
-        |> Seq.mapi (fun i n -> createDirectoryResponse n.Name n.Date (ItemIndex.create ItemType.Directory 0) (ItemIndex.isSelected currentIndex 0 ItemType.Directory))
+        |> Seq.mapi (fun i n -> createDirectoryResponse n.Name n.Date (ItemIndex.create ItemType.Directory i) (ItemIndex.isSelected currentIndex i ItemType.Directory))
         |> Seq.toList
 
     let files = 
         files
-        |> Seq.mapi (fun i n -> createFileResponse n.Name n.Extension n.Date n.Size n.Icon (ItemIndex.create ItemType.Directory 0) (ItemIndex.isSelected currentIndex 0 ItemType.Directory))
+        |> Seq.mapi (fun i n -> createFileResponse n.Name n.Extension n.Date n.Size n.Icon (ItemIndex.create ItemType.Directory i) (ItemIndex.isSelected currentIndex i ItemType.File))
         |> Seq.toList
 
     List.concat [ parent; directories; files ]
