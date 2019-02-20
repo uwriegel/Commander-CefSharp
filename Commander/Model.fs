@@ -128,7 +128,7 @@ let createEmptyItems () = {ViewType = ViewType.Uninitialized; Path = ""; Drives 
 
 let createDriveItems drives = {ViewType = ViewType.Root; Path = "root"; Drives = drives; Directories = [||]; Files = [||] }
 
-let createDirectoryItems drives = {ViewType = ViewType.Directory; Path = "root"; Drives = drives; Directories = [||]; Files = [||] }
+let createDirectoryItems path directories = {ViewType = ViewType.Directory; Path = path; Drives = [||]; Directories = directories; Files = [||] }
 
 type ItemType = Undefined = -1 | Parent = 0 | Directory = 1 | File = 2
 
@@ -152,7 +152,37 @@ let createDriveResponse name label (size: int64) index isCurrent = {
     IsHidden = false
     IsExif = false
 }
-    
+
+let createParentResponse itemIndex isCurrent = {
+    ItemType = ItemType.Parent
+    Index = itemIndex 
+    Items = [ ".." ]
+    Icon = "Folder"
+    IsCurrent = isCurrent
+    IsHidden = false
+    IsExif = false
+}
+   
+let createDirectoryResponse name (date: DateTime) index isCurrent = {
+    ItemType = ItemType.Directory
+    Index = index
+    Items = [ name; ""; date.ToString "g" ]
+    Icon = "Folder"
+    IsCurrent = isCurrent
+    IsHidden = false
+    IsExif = false
+}
+
+let createFileResponse name ext (date: DateTime) (size: int64) icon index isCurrent = {
+    ItemType = ItemType.File
+    Index = index
+    Items = [ name; ext; date.ToString "g"; size.ToString("N0") ]
+    Icon = icon
+    IsCurrent = isCurrent
+    IsHidden = false
+    IsExif = false
+}
+
 [<NoComparison>]
 type Response = {
     //string ItemToSelect

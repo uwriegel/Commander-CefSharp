@@ -6,6 +6,7 @@ open System.Threading
 
 open CefSharp
 open Model
+open DirectoryProcessor
 
 [<NoComparison>]
 [<NoEquality>]
@@ -71,7 +72,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                 //currentSorting <- None
                 RootProcessor.get
             | ViewType.Directory | _ ->
-                DirectoryProcessor.get
+                DirectoryProcessor.get path true
         async {
             let newItems = get ()
 
@@ -124,7 +125,9 @@ type CommanderView(browserAccess: BrowserAccess) as this =
             | ViewType.Root, drives, [||], [||] -> 
                 drives
                 |> Seq.mapi (fun i n -> createDriveResponse n.Name n.Label n.Size i (ItemIndex.isSelected currentIndex i ItemType.Directory))
-            | ViewType.Directory, [||], directories, files -> failwith "not implemented"
+                |> Seq.toArray
+            | ViewType.Directory, [||], directories, files -> 
+                getItems currentIndex directories files
             | _ -> failwith "Invalid ViewType"
         let response: Response = { 
             Path = currentItems.Path

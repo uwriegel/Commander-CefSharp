@@ -80,10 +80,10 @@
     <Compile Include="CustomProtocol.fs" />
     <Compile Include="Cef.fs" />
     <Compile Include="Model.fs" />
+    <Compile Include="ItemIndex.fs" />
     <Compile Include="Request.fs" />
     <Compile Include="DirectoryProcessor.fs" />
     <Compile Include="RootProcessor.fs" />
-    <Compile Include="ItemIndex.fs" />
     <Compile Include="CommanderView.fs" />
     <Compile Include="CommanderControl.fs" />
     <Compile Include="MouseWheelZoomControl.fs" />
@@ -102,8 +102,11 @@
     <Reference Include="FSharp.Core" />
     <Reference Include="FSharp.Core" />
     <Reference Include="FSharpTools">
-      <HintPath>..\packages\FSharpTools.0.0.1\lib\netstandard2.0\FSharpTools.dll</HintPath>
+      <HintPath>..\packages\FSharpTools.0.0.2\lib\netstandard2.0\FSharpTools.dll</HintPath>
+      <Private>True</Private>
     </Reference>
+    <Reference Include="FSharpTools" />
+    <Reference Include="FSharpTools" />
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
