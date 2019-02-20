@@ -5,6 +5,8 @@ open System.Diagnostics
 
 type ColumnsType = String = 0 | Size = 1 | Date = 2
 
+type  ProcessItemType = Show = 0 | Properties = 1 | StartAs = 2
+
 type Column = {
     Name: string
     IsSortable: bool
@@ -126,6 +128,7 @@ let createEmptyItems () = {ViewType = ViewType.Uninitialized; Path = ""; Drives 
 
 let createDriveItems drives = {ViewType = ViewType.Root; Path = "root"; Drives = drives; Directories = [||]; Files = [||] }
 
+let createDirectoryItems drives = {ViewType = ViewType.Directory; Path = "root"; Drives = drives; Directories = [||]; Files = [||] }
 
 type ItemType = Undefined = -1 | Parent = 0 | Directory = 1 | File = 2
 

@@ -58,6 +58,9 @@ type CommanderView(browserAccess: BrowserAccess) as this =
         else
             getDirectory ()
 
+    let processFile (file: string) processItemType =
+        ()
+
     let changePath path (directoryToSelect: string option) = 
         let request = requestFactory.create()
         let viewType = getViewType path
@@ -100,6 +103,20 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
     member this.Ready () = 
         changePath (browserAccess.getRecentPath ()) None 
+
+    member this.ProcessItem processItemType = 
+        let itemType = ItemIndex.getItemType currentIndex
+        let item = getCurrentItemPath currentIndex
+
+        match itemType, processItemType with
+            | ItemType.Parent, _ -> 
+                let info = new DirectoryInfo(currentItems.Path)
+                changePath item (Some info.Name)
+            | ItemType.Directory, ProcessItemType.Properties -> processFile item processItemType
+            | ItemType.Directory, _ -> changePath item None
+            | ItemType.File, _ -> processFile item processItemType
+            | _ -> ()
+        ()
 
     member this.GetItems () = 
         let responses = 
