@@ -80,6 +80,7 @@
     <Compile Include="CustomProtocol.fs" />
     <Compile Include="Cef.fs" />
     <Compile Include="Model.fs" />
+    <Compile Include="Globals.fs" />
     <Compile Include="ItemIndex.fs" />
     <Compile Include="Request.fs" />
     <Compile Include="DirectoryProcessor.fs" />

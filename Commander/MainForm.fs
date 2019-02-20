@@ -75,7 +75,7 @@ type MainForm () as this =
         browser.KeyboardHandler <- browserAccess
         browser.LoadHandler <- browserAccess
         browser.MenuHandler <- browserAccess
-        browser.Load(Browser.getCommanderUrl ())
+        browser.Load(Globals.getCommanderUrl ())
         
         this.ResumeLayout false
 

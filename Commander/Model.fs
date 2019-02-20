@@ -128,7 +128,7 @@ let createEmptyItems () = {ViewType = ViewType.Uninitialized; Path = ""; Drives 
 
 let createDriveItems drives = {ViewType = ViewType.Root; Path = "root"; Drives = drives; Directories = [||]; Files = [||] }
 
-let createDirectoryItems path directories = {ViewType = ViewType.Directory; Path = path; Drives = [||]; Directories = directories; Files = [||] }
+let createDirectoryItems path directories files = {ViewType = ViewType.Directory; Path = path; Drives = [||]; Directories = directories; Files = files }
 
 type ItemType = Undefined = -1 | Parent = 0 | Directory = 1 | File = 2
 

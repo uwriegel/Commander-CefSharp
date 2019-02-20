@@ -6,15 +6,6 @@ open System.Windows.Forms
 open System
 open Commander
 
-let mutable private commanderUrl = "serve://commander/"
-let mutable private isAngularServing = false
-
-let getCommanderUrl () = commanderUrl
-
-let initialize (cmdLine: string[]) = 
-    if cmdLine.Length > 0 && cmdLine.[0] = "-serve" then isAngularServing <- true
-    if isAngularServing then commanderUrl <- "http://localhost:4200/"
-
 [<NoComparison>]
 [<NoEquality>]
 type Host = {
@@ -131,7 +122,7 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
     interface ILoadHandler with
         member this.OnFrameLoadStart(browserControl: IWebBrowser, frameLoadStartArgs: FrameLoadStartEventArgs) = ()
         member this.OnFrameLoadEnd(browserControl: IWebBrowser, frameLoadEndArgs: FrameLoadEndEventArgs) = 
-            if frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url = commanderUrl then
+            if frameLoadEndArgs.Frame.IsMain && frameLoadEndArgs.Frame.Url = Globals.getCommanderUrl () then
                 browser.EvaluateScriptAsync("themes.theme = '" + Resources.Settings.Default.Theme + "'") |> ignore
                 browser.EvaluateScriptAsync(@"document.addEventListener('mousewheel', e => {
     if (e.ctrlKey) {
