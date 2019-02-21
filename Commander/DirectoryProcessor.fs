@@ -27,45 +27,49 @@ let getNameOnly (name : string) =
 
 let get path showHidden () =
 
-    let getIcon fullname extension = 
-        let part1 = if Globals.isAngularServing then "serve://commander/" else "" 
-        let part2 = if String.Compare(extension, ".exe", true) <> 0 then "icon?path=" + fullname else "icon?path=" + extension
-        part1 + part2
+    try 
+        let getIcon fullname extension = 
+            let part1 = if Globals.isAngularServing then "serve://commander/" else "" 
+            let part2 = if String.Compare(extension, ".exe", true) <> 0 then "icon?path=" + fullname else "icon?path=" + extension
+            part1 + part2
 
-    let di = new DirectoryInfo(path)
-    let directories =
-        getSafeItems (fun () -> di.GetDirectories())
-        |> Seq.filter (fun n -> 
-            if showHidden then 
-                true 
-            else 
-                not (hasFlag n.Attributes FileAttributes.Hidden)
-        )
-        |> Seq.mapi (fun i n -> {Index = i; Name = n.Name; Date = n.LastWriteTime; IsHidden = hasFlag n.Attributes FileAttributes.Hidden }) 
-        |> Seq.toArray
+        let di = new DirectoryInfo(path)
+        let directories =
+            getSafeItems (fun () -> di.GetDirectories())
+            |> Seq.filter (fun n -> 
+                if showHidden then 
+                    true 
+                else 
+                    not (hasFlag n.Attributes FileAttributes.Hidden)
+            )
+            |> Seq.mapi (fun i n -> {Index = i; Name = n.Name; Date = n.LastWriteTime; IsHidden = hasFlag n.Attributes FileAttributes.Hidden }) 
+            |> Seq.toArray
 
-    let files =
-        getSafeItems (fun () -> di.GetFiles())
-        |> Seq.filter (fun n -> 
-            if showHidden then 
-                true 
-            else 
-                not (hasFlag n.Attributes FileAttributes.Hidden)
-        )
-        |> Seq.mapi (fun i n -> {
-                Index = i
-                Name = getNameOnly n.Name
-                Extension = n.Extension
-                Size = n.Length
-                Date = n.LastWriteTime
-                HasExifDate = false
-                IsHidden = hasFlag n.Attributes FileAttributes.Hidden 
-                Icon = getIcon n.Name n.Extension
-                Version = null
-            }) 
-        |> Seq.toArray
+        let files =
+            getSafeItems (fun () -> di.GetFiles())
+            |> Seq.filter (fun n -> 
+                if showHidden then 
+                    true 
+                else 
+                    not (hasFlag n.Attributes FileAttributes.Hidden)
+            )
+            |> Seq.mapi (fun i n -> {
+                    Index = i
+                    Name = getNameOnly n.Name
+                    Extension = n.Extension
+                    Size = n.Length
+                    Date = n.LastWriteTime
+                    HasExifDate = false
+                    IsHidden = hasFlag n.Attributes FileAttributes.Hidden 
+                    Icon = getIcon n.Name n.Extension
+                    Version = null
+                }) 
+            |> Seq.toArray
 
-    createDirectoryItems path directories files
+        createDirectoryItems path directories files
+
+    with 
+    | _ -> createEmptyItems ()
 
 let getItems currentIndex (directories: DirectoryItem[]) (files: FileItem[]) = 
     let parent = [ createParentResponse (ItemIndex.create ItemType.Parent 0) (ItemIndex.isSelected currentIndex 0 ItemType.Parent) ] 

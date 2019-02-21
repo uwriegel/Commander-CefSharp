@@ -146,6 +146,8 @@ type CommanderView(browserAccess: BrowserAccess) as this =
             return! browserAccess.executeScript "setCurrentItem" (Some ((getCurrentItemPath currentIndex):>obj))
         }
 
+    member this.ChangePath path = changePath path None
+
     member this.Copy (otherView: CommanderView) = ()
     member this.CreateFolder () = ()
     member this.AdaptPath (path: string) = ()
