@@ -89,7 +89,13 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                 let getCurrentIndex () =
                     match directoryToSelect, viewType with
                     | None, _ -> ItemIndex.getDefault currentItems.ViewType
-                    | Some value, ViewType.Directory -> 0
+                    | Some value, ViewType.Directory -> 
+                        let folderToSelect = 
+                            newItems.Directories
+                            |> Seq.tryFind (fun n -> String.Compare(n.Name, value, true) = 0)
+                        match folderToSelect with
+                        | Some value -> ItemIndex.create ItemType.Directory value.Index
+                        | None -> 0
                     | Some value, ViewType.Root -> 
                         let folderToSelect = newItems.Drives |> Array.find (fun n -> String.Compare(n.Name, value, true) = 0)
                         ItemIndex.create ItemType.Directory folderToSelect.Index
@@ -126,8 +132,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                 drives
                 |> Seq.mapi (fun i n -> createDriveResponse n.Name n.Label n.Size i (ItemIndex.isSelected currentIndex i ItemType.Directory))
                 |> Seq.toArray
-            | ViewType.Directory, [||], directories, files -> 
-                getItems currentIndex directories files
+            | ViewType.Directory, [||], directories, files -> getItems currentIndex directories files
             | _ -> failwith "Invalid ViewType"
         let response: Response = { 
             Path = currentItems.Path
