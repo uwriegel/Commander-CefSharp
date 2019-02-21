@@ -11,7 +11,6 @@ let main argv =
     Application.Run(new MainForm())
     0 
  
- // TODO: WinApi nuget
  // TODO: Sorting
  // TODO: Version
  // TODO: Exif

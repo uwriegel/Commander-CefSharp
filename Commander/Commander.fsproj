@@ -77,7 +77,6 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Preview.fs" />
     <Compile Include="CustomProtocol.fs" />
     <Compile Include="Cef.fs" />
     <Compile Include="Model.fs" />
@@ -98,6 +97,9 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ClrWinApi">
+      <HintPath>..\packages\ClrWinApi.1.0.0\lib\netstandard2.0\ClrWinApi.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core">
       <HintPath>..\packages\FSharp.Core.4.6.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
