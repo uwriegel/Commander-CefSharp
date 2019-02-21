@@ -72,7 +72,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                 //currentSorting <- None
                 RootProcessor.get
             | ViewType.Directory | _ ->
-                DirectoryProcessor.get path true
+                DirectoryProcessor.get path Globals.showHidden
         async {
             let newItems = get ()
 
@@ -152,5 +152,4 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     member this.CreateFolder () = ()
     member this.AdaptPath (path: string) = ()
     member this.Path with get() = ""
-    member this.ShowHidden (showHidden: bool) = ()
-    member this.Refresh () = ()
+    member this.Refresh () = changePath currentItems.Path None

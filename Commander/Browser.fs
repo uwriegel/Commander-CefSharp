@@ -89,8 +89,9 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         browser.EvaluateScriptAsync ("commander.setViewer", activate) |> ignore
 
     member this.ShowHidden (showHidden: bool) =
-        leftView.ShowHidden showHidden
-        rightView.ShowHidden showHidden
+        Globals.showHidden <- showHidden
+        leftView.Refresh ()
+        rightView.Refresh ()
 
     interface IKeyboardHandler with
         member this.OnPreKeyEvent(chromiumWebBrowser: IWebBrowser, ibrowser: IBrowser, keytype: KeyType, windowsKeyCode: int, 

@@ -163,23 +163,23 @@ let createParentResponse itemIndex isCurrent = {
     IsExif = false
 }
    
-let createDirectoryResponse name (date: DateTime) index isCurrent = {
+let createDirectoryResponse name (date: DateTime) index isCurrent isHidden = {
     ItemType = ItemType.Directory
     Index = index
     Items = [ name; ""; date.ToString "g" ]
     Icon = "Folder"
     IsCurrent = isCurrent
-    IsHidden = false
+    IsHidden = isHidden 
     IsExif = false
 }
 
-let createFileResponse name ext (date: DateTime) (size: int64) icon index isCurrent = {
+let createFileResponse name ext (date: DateTime) (size: int64) icon index isCurrent isHidden = {
     ItemType = ItemType.File
     Index = index
     Items = [ name; ext; date.ToString "g"; size.ToString("N0") ]
     Icon = icon
     IsCurrent = isCurrent
-    IsHidden = false
+    IsHidden = isHidden
     IsExif = false
 }
 
