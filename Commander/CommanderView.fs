@@ -168,3 +168,5 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     member this.AdaptPath (path: string) = ()
     member this.Path with get() = ""
     member this.Refresh () = changePath currentItems.Path None
+
+    member this.GetTestItems() = DirectoryProcessor.getTestItems ()

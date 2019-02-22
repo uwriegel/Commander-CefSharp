@@ -96,6 +96,12 @@ namespace Commander.Processors
             return await dispatcher.DeferredExecution(() => Api.SHFileOperation(ref fileop) == 0, 400);
         }
 
+        public static string[] GetTestItems() =>
+            (from n in (new DirectoryInfo(@"c:\windows\system32")).GetFiles()
+             let icon = (Program.IsAngularServing ? "serve://commander/" : "") +
+                 (string.Compare(n.Extension, ".exe", true) == 0 ? "icon?path=" + n.FullName : "icon?path=" + n.Extension)
+             select icon).ToArray();
+
         static IEnumerable<T> GetSafeItems<T>(Func<IEnumerable<T>> get) where T : FileSystemInfo
         {
             try

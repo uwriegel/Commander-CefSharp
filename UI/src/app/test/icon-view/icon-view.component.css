@@ -1,3 +1,7 @@
+.scroller {
+    overflow-y: auto;
+    height: 100vh;
+}
 .it-image {
     width: 16px;
 }

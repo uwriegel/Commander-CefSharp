@@ -9,6 +9,11 @@ open EnumExtensions
 [<Literal>]
 let name = "directory"
 
+let getIcon fullname extension = 
+    let part1 = if Globals.isAngularServing then "serve://commander/" else "" 
+    let part2 = if String.Compare(extension, ".exe", true) <> 0 then "icon?path=" + fullname else "icon?path=" + extension
+    part1 + part2
+
 let getSafeItems get =
     try 
         get ()
@@ -28,11 +33,6 @@ let getNameOnly (name : string) =
 let get path showHidden () =
 
     try 
-        let getIcon fullname extension = 
-            let part1 = if Globals.isAngularServing then "serve://commander/" else "" 
-            let part2 = if String.Compare(extension, ".exe", true) <> 0 then "icon?path=" + fullname else "icon?path=" + extension
-            part1 + part2
-
         let di = new DirectoryInfo(path)
         let directories =
             getSafeItems (fun () -> di.GetDirectories())
@@ -112,3 +112,11 @@ let extendItems (itemsToExtend: Items) =
         Directories = itemsToExtend.Directories
         Files = files
     }
+
+let getTestItems () = 
+    let di = new DirectoryInfo(@"c:\windows\system32")
+    di.GetFiles()
+    |> Seq.map (fun n -> getIcon n.Name n.Extension)
+    |> Seq.toArray
+
+    

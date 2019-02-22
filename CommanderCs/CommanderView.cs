@@ -286,6 +286,8 @@ namespace Commander
         public void SetSelected(object[] objects)
             => selectedIndexes = objects?.Cast<int>().ToArray();
 
+        public string[] GetTestItems() => DirectoryProcessor.GetTestItems();
+
         #endregion
 
         #region Methods

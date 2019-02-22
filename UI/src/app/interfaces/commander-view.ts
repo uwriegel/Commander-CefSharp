@@ -17,6 +17,7 @@ export interface IProcessor {
     createFolder(item: string): any
     copy(targetPath: string): any
     setSelected(items: number[]): any
+    getTestItems(): string[]
 }
 
 export interface ICommanderView {
@@ -24,5 +25,5 @@ export interface ICommanderView {
     itemsChanged(): any
     setCurrentItem(item: string): any
     createFolder(text: string): any
-    copy(targetPath: string, text: string): any 
+    copy(targetPath: string, text: string): any
 }
