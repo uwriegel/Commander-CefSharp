@@ -104,7 +104,22 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                 let! res = this.SetIndex (getCurrentIndex ())
 
                 let! response = browserAccess.executeScript "itemsChanged" None
-                ()
+                if viewType = ViewType.Directory then
+                    async {
+                        let newItems =
+                            if not request.IsCancelled then  
+                                Some (extendItems currentItems)
+                            else 
+                                None
+                        match request.IsCancelled, newItems with
+                        | false, Some value -> 
+                            currentItems <- value
+                            // Sort(); // TODO
+                            let! response = browserAccess.executeScript "itemsChanged" None
+                            ()
+                        | _ -> ()
+                        
+                    } |> Async.Start
         } |> Async.Start
         ()
 

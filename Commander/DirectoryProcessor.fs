@@ -86,3 +86,29 @@ let getItems currentIndex (directories: DirectoryItem[]) (files: FileItem[]) =
 
     List.concat [ parent; directories; files ]
     |> List.toArray
+
+let extendItem (itemToExtend: FileItem) (path: string) = 
+    if String.Compare(itemToExtend.Extension, ".tif", true) = 0 
+            || String.Compare(itemToExtend.Extension, ".jpeg", true) = 0
+            || String.Compare(itemToExtend.Extension, ".jpg", true) = 0 then 
+        //itemToExtend.UpdateExif(path)
+        itemToExtend
+    elif String.Compare(itemToExtend.Extension, ".exe", true) = 0 
+            || String.Compare(itemToExtend.Extension, ".dll", true) = 0 then
+        //itemToExtend.UpdateVersion(path)
+        itemToExtend
+    else
+        itemToExtend
+
+let extendItems (itemsToExtend: Items) =
+    let files = 
+        itemsToExtend.Files
+        |> Seq.map (fun n -> extendItem n itemsToExtend.Path)
+        |> Seq.toArray
+    { 
+        Path = itemsToExtend.Path 
+        ViewType = ViewType.Directory
+        Drives = [||]
+        Directories = itemsToExtend.Directories
+        Files = files
+    }
