@@ -11,7 +11,7 @@ let name = "directory"
 
 let getIcon fullname extension = 
     let part1 = if Globals.isAngularServing then "serve://commander/" else "" 
-    let part2 = if String.Compare(extension, ".exe", true) <> 0 then "icon?path=" + fullname else "icon?path=" + extension
+    let part2 = if String.Compare(extension, ".exe", true) = 0 then "icon?path=" + fullname else "icon?path=" + extension
     part1 + part2
 
 let getSafeItems get =

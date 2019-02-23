@@ -1,4 +1,5 @@
-<div class="scroller">
+<button (click)="show=true" >Show</button>
+<div class="scroller" *ngIf="show">
     <div *ngFor="let item of items">
         <img [src]="item | sanitize" class="it-image">
         {{item}}

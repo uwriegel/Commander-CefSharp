@@ -8,6 +8,7 @@ import { IProcessor } from '../../interfaces/commander-view'
 })
 export class IconViewComponent {
     items: string[] = []
+    show = false
 
     constructor() {
         this.items = CommanderLeft.getTestItems()
