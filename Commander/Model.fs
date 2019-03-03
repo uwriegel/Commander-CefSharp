@@ -90,9 +90,21 @@ type FileItem = {
     Size: int64 
     IsHidden: bool 
     HasExifDate: bool 
-    Version: FileVersionInfo 
+    Version: string 
 }
 
+let updateVersion fileItem version =
+    {
+        Index = fileItem.Index
+        Name = fileItem.Name
+        Extension = fileItem.Extension
+        Icon = fileItem.Icon
+        Date = fileItem.Date
+        Size = fileItem.Size
+        IsHidden = fileItem.IsHidden
+        HasExifDate = fileItem.HasExifDate
+        Version = version
+    }
 [<NoComparison>]
 type Items = {
     //public static Items UpdateFiles(Items itemsToUpdate, IEnumerable<FileItem> files)
@@ -173,10 +185,10 @@ let createDirectoryResponse name (date: DateTime) index isCurrent isHidden = {
     IsExif = false
 }
 
-let createFileResponse name ext (date: DateTime) (size: int64) icon index isCurrent isHidden = {
+let createFileResponse name ext (date: DateTime) (size: int64) version icon index isCurrent isHidden = {
     ItemType = ItemType.File
     Index = index
-    Items = [ name; ext; date.ToString "g"; size.ToString("N0") ]
+    Items = [ name; ext; date.ToString "g"; size.ToString("N0"); version ]
     Icon = icon
     IsCurrent = isCurrent
     IsHidden = isHidden

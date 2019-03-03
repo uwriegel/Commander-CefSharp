@@ -1,10 +1,12 @@
 ﻿module DirectoryProcessor
 
-open Model
-open System.IO
 open System
+open System.Diagnostics
+open System.IO
 
 open EnumExtensions
+open Model
+open Commander
 
 [<Literal>]
 let name = "directory"
@@ -19,6 +21,9 @@ let getSafeItems get =
         get ()
     with
     | :? UnauthorizedAccessException -> [||]
+
+let getFullName fileItem path =
+    Path.Combine(path, fileItem.Name + fileItem.Extension)
 
 let columns = [{ Name = Resources.Resources.DirectoryName; IsSortable = false; ColumnsType = ColumnsType.String };
                { Name = Resources.Resources.DirectoryExtension; IsSortable = false; ColumnsType = ColumnsType.String };  
@@ -81,13 +86,21 @@ let getItems currentIndex (directories: DirectoryItem[]) (files: FileItem[]) =
 
     let files = 
         files
-        |> Seq.mapi (fun i n -> createFileResponse n.Name n.Extension n.Date n.Size n.Icon (ItemIndex.create ItemType.Directory i) (ItemIndex.isSelected currentIndex i ItemType.File) n.IsHidden)
+        |> Seq.mapi (fun i n -> createFileResponse n.Name n.Extension n.Date n.Size n.Version n.Icon (ItemIndex.create ItemType.Directory i) (ItemIndex.isSelected currentIndex i ItemType.File) n.IsHidden)
         |> Seq.toList
 
     List.concat [ parent; directories; files ]
     |> List.toArray
 
 let extendItem (itemToExtend: FileItem) (path: string) = 
+
+    let updateVersion () = 
+        let file = getFullName itemToExtend path
+        let fvi =  FileVersionInfo.GetVersionInfo file
+        match FileVersion.getVersion fvi with
+        | Some value -> updateVersion itemToExtend value
+        | None -> itemToExtend
+
     if String.Compare(itemToExtend.Extension, ".tif", true) = 0 
             || String.Compare(itemToExtend.Extension, ".jpeg", true) = 0
             || String.Compare(itemToExtend.Extension, ".jpg", true) = 0 then 
@@ -95,8 +108,7 @@ let extendItem (itemToExtend: FileItem) (path: string) =
         itemToExtend
     elif String.Compare(itemToExtend.Extension, ".exe", true) = 0 
             || String.Compare(itemToExtend.Extension, ".dll", true) = 0 then
-        //itemToExtend.UpdateVersion(path)
-        itemToExtend
+        updateVersion ()
     else
         itemToExtend
 
