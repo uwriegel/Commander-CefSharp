@@ -8,12 +8,11 @@ open System
 let main argv = 
 
 
-    let affe = ExifReader.GetExif @"C:\Users\uwe.CASERIS\Pictures\bild02.jpg"
+    let exif = ExifReader.getExif @"C:\Users\uwe.CASERIS\Pictures\bild03.jpg"
     let res = 
-        match affe with
-        | Some reader -> reader.GetTagValue (uint16 ExifReader.ExifTags.DateTimeOriginal)
-        | None -> null
-
+        match exif with
+        | Some reader -> Some (ExifReader.getDateValue ExifReader.ExifTag.DateTimeOriginal reader)
+        | None -> None
 
     Cef.initialize ()
     Globals.initialize argv
