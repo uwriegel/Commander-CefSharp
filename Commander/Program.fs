@@ -6,6 +6,15 @@ open System
 [<EntryPoint>]
 [<STAThread>]
 let main argv = 
+
+
+    let affe = ExifReader.GetExif @"C:\Users\uwe.CASERIS\Pictures\bild02.jpg"
+    let res = 
+        match affe with
+        | Some reader -> reader.GetTagValue (uint16 ExifReader.ExifTags.DateTimeOriginal)
+        | None -> null
+
+
     Cef.initialize ()
     Globals.initialize argv
     Application.EnableVisualStyles()
