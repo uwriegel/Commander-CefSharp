@@ -61,7 +61,8 @@ let createMenu (form: Form) (browser: Browser) browserForm =
     let itemDelete = new MenuItem(Resources.MenuDelete, EventHandler(fun s e -> ()), Shortcut.Del)
     itemFile.MenuItems.Add itemDelete |> ignore
     itemFile.MenuItems.Add "-" |> ignore
-    let itemCreateFolder = new MenuItem(Resources.MenuCreateFolder, EventHandler(fun s e -> browser.CreateFolder ()), Shortcut.F7)
+    let itemCreateFolder = new MenuItem(Resources.MenuCreateFolder, 
+                                EventHandler(fun s e -> browser.CreateFolder ()), Shortcut.F7)
     itemFile.MenuItems.Add itemCreateFolder |> ignore 
     let itemProperties = new MenuItem(Resources.MenuProperties, EventHandler(fun s e -> ()))
     itemFile.MenuItems.Add itemProperties |> ignore 
@@ -89,7 +90,8 @@ let createMenu (form: Form) (browser: Browser) browserForm =
 
     let itemView = new MenuItem(Resources.MenuView)
     menu.MenuItems.Add itemView |> ignore
-    let itemShowHidden = new MenuItem(Resources.MenuShowHidden, EventHandler(fun s e -> onShowHidden (s :?> MenuItem)), Shortcut.CtrlH)
+    let itemShowHidden = new MenuItem(Resources.MenuShowHidden, 
+                            EventHandler(fun s e -> onShowHidden (s :?> MenuItem)), Shortcut.CtrlH)
     itemShowHidden.Checked <- false
     itemView.MenuItems.Add itemShowHidden |> ignore
     let itemRefresh = new MenuItem(Resources.MenuRefresh, EventHandler(fun s e -> browser.Refresh()), Shortcut.CtrlR)

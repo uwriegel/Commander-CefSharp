@@ -57,7 +57,8 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         browser.RegisterJsObject("CommanderRight", rightView, BindingOptions(CamelCaseJavascriptNames = true))      
         browser.RegisterJsObject("CommanderControl", commander, BindingOptions(CamelCaseJavascriptNames = true))
         browser.RegisterJsObject("Viewer", viewer, BindingOptions(CamelCaseJavascriptNames = true))      
-        browser.RegisterJsObject("MouseWheelZoomControl", MouseWheelZoomControl(onMouseWheel), BindingOptions(CamelCaseJavascriptNames = true))
+        browser.RegisterJsObject("MouseWheelZoomControl", MouseWheelZoomControl(onMouseWheel), 
+                                    BindingOptions(CamelCaseJavascriptNames = true))
 
     let mutable zoomLevel = 0.0
 
@@ -141,9 +142,11 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
     interface IContextMenuHandler with
         member this.OnBeforeContextMenu(chromiumWebBrowser: IWebBrowser, browser: IBrowser, frame: IFrame, parameters: IContextMenuParams, model: IMenuModel) =
             model.Clear () |> ignore
-        member this.OnContextMenuCommand(chromiumWebBrowser: IWebBrowser, browser: IBrowser, frame: IFrame, parameters: IContextMenuParams, commandId: CefMenuCommand, eventFlags: CefEventFlags) = false
+        member this.OnContextMenuCommand(chromiumWebBrowser: IWebBrowser, browser: IBrowser, frame: IFrame, 
+                                            parameters: IContextMenuParams, commandId: CefMenuCommand, eventFlags: CefEventFlags) = false
         member this.OnContextMenuDismissed(chromiumWebBrowser: IWebBrowser, browser: IBrowser, frame: IFrame) = ()
-        member this.RunContextMenu(chromiumWebBrowser: IWebBrowser, browser: IBrowser, frame: IFrame, parameters: IContextMenuParams, model: IMenuModel, callback: IRunContextMenuCallback) = false
+        member this.RunContextMenu(chromiumWebBrowser: IWebBrowser, browser: IBrowser, frame: IFrame, 
+                                        parameters: IContextMenuParams, model: IMenuModel, callback: IRunContextMenuCallback) = false
 
 [<NoEquality>]
 [<NoComparison>]
