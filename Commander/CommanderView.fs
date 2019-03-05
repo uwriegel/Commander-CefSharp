@@ -132,6 +132,9 @@ type CommanderView(browserAccess: BrowserAccess) as this =
         } |> Async.Start
         ()
 
+    let sort (index: int) (ascending: bool) =
+        ()
+
     member this.Ready () = 
         changePath (browserAccess.getRecentPath ()) None 
 
@@ -171,6 +174,8 @@ type CommanderView(browserAccess: BrowserAccess) as this =
         }
 
     member this.ChangePath path = changePath path None
+
+    member this.Sort index ascending = sort index ascending
 
     member this.Copy (otherView: CommanderView) = ()
     member this.CreateFolder () = ()
