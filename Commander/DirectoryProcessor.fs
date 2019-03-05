@@ -101,11 +101,18 @@ let extendItem (itemToExtend: FileItem) (path: string) =
         | Some value -> updateVersion itemToExtend value
         | None -> itemToExtend
 
+    let updateExif () = 
+        let exif = 
+            getFullName itemToExtend path
+            |> ExifReader.getExif
+        match exif with 
+        | Some reader -> updateExif itemToExtend (ExifReader.getDateValue ExifReader.ExifTag.DateTimeOriginal reader)
+        | None -> itemToExtend
+
     if String.Compare(itemToExtend.Extension, ".tif", true) = 0 
             || String.Compare(itemToExtend.Extension, ".jpeg", true) = 0
             || String.Compare(itemToExtend.Extension, ".jpg", true) = 0 then 
-        //itemToExtend.UpdateExif(path)
-        itemToExtend
+        updateExif ()
     elif String.Compare(itemToExtend.Extension, ".exe", true) = 0 
             || String.Compare(itemToExtend.Extension, ".dll", true) = 0 then
         updateVersion ()

@@ -105,6 +105,24 @@ let updateVersion fileItem version =
         HasExifDate = fileItem.HasExifDate
         Version = version
     }
+
+let updateExif fileItem exif = 
+    let dateTime, hasExif = 
+        match exif with
+        | Some value -> value, true
+        | None -> fileItem.Date, false
+    {
+        Index = fileItem.Index
+        Name = fileItem.Name
+        Extension = fileItem.Extension
+        Icon = fileItem.Icon
+        Date = dateTime
+        Size = fileItem.Size
+        IsHidden = fileItem.IsHidden
+        HasExifDate = hasExif
+        Version = fileItem.Version
+    }
+
 [<NoComparison>]
 type Items = {
     //public static Items UpdateFiles(Items itemsToUpdate, IEnumerable<FileItem> files)
