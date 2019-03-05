@@ -64,7 +64,7 @@ let get path showHidden () =
                     Extension = n.Extension
                     Size = n.Length
                     Date = n.LastWriteTime
-                    HasExifDate = false
+                    isExif = false
                     IsHidden = hasFlag n.Attributes FileAttributes.Hidden 
                     Icon = getIcon n.Name n.Extension
                     Version = null
@@ -81,12 +81,14 @@ let getItems currentIndex (directories: DirectoryItem[]) (files: FileItem[]) =
 
     let directories = 
         directories
-        |> Seq.mapi (fun i n -> createDirectoryResponse n.Name n.Date (ItemIndex.create ItemType.Directory i) (ItemIndex.isSelected currentIndex i ItemType.Directory) n.IsHidden)
+        |> Seq.mapi (fun i n -> createDirectoryResponse n.Name n.Date (ItemIndex.create ItemType.Directory i) 
+                                    (ItemIndex.isSelected currentIndex i ItemType.Directory) n.IsHidden)
         |> Seq.toList
 
     let files = 
         files
-        |> Seq.mapi (fun i n -> createFileResponse n.Name n.Extension n.Date n.Size n.Version n.Icon (ItemIndex.create ItemType.Directory i) (ItemIndex.isSelected currentIndex i ItemType.File) n.IsHidden)
+        |> Seq.mapi (fun i n -> createFileResponse n.Name n.Extension n.Date n.Size n.Version n.Icon (ItemIndex.create ItemType.Directory i) 
+                                                    (ItemIndex.isSelected currentIndex i ItemType.File) n.IsHidden n.isExif)
         |> Seq.toList
 
     List.concat [ parent; directories; files ]
@@ -101,11 +103,18 @@ let extendItem (itemToExtend: FileItem) (path: string) =
         | Some value -> updateVersion itemToExtend value
         | None -> itemToExtend
 
+    let updateExif () = 
+        let exif = 
+            getFullName itemToExtend path
+            |> ExifReader.getExif
+        match exif with 
+        | Some reader -> updateExif itemToExtend (ExifReader.getDateValue ExifReader.ExifTag.DateTimeOriginal reader)
+        | None -> itemToExtend
+
     if String.Compare(itemToExtend.Extension, ".tif", true) = 0 
             || String.Compare(itemToExtend.Extension, ".jpeg", true) = 0
             || String.Compare(itemToExtend.Extension, ".jpg", true) = 0 then 
-        //itemToExtend.UpdateExif(path)
-        itemToExtend
+        updateExif ()
     elif String.Compare(itemToExtend.Extension, ".exe", true) = 0 
             || String.Compare(itemToExtend.Extension, ".dll", true) = 0 then
         updateVersion ()
