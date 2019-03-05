@@ -103,6 +103,16 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
                 let! res = this.SetIndex (getCurrentIndex ())
 
+                let sort items = {
+                    ViewType = items.ViewType
+                    Path = items.Path
+                    Drives = items.Drives
+                    Directories = items.Directories
+                    Files = 
+                        items.Files
+                        |> Array.sortByDescending (fun n -> n.Size)
+                }
+
                 let! response = browserAccess.executeScript "itemsChanged" None
                 if viewType = ViewType.Directory then
                     async {
@@ -113,8 +123,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                                 None
                         match request.IsCancelled, newItems with
                         | false, Some value -> 
-                            currentItems <- value
-                            // Sort(); // TODO
+                            currentItems <- sort value
                             let! response = browserAccess.executeScript "itemsChanged" None
                             ()
                         | _ -> ()

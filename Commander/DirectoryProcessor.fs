@@ -25,11 +25,11 @@ let getSafeItems get =
 let getFullName fileItem path =
     Path.Combine(path, fileItem.Name + fileItem.Extension)
 
-let columns = [{ Name = Resources.Resources.DirectoryName; IsSortable = false; ColumnsType = ColumnsType.String };
-               { Name = Resources.Resources.DirectoryExtension; IsSortable = false; ColumnsType = ColumnsType.String };  
+let columns = [{ Name = Resources.Resources.DirectoryName; IsSortable = true; ColumnsType = ColumnsType.String };
+               { Name = Resources.Resources.DirectoryExtension; IsSortable = true; ColumnsType = ColumnsType.String };  
                { Name = Resources.Resources.DirectoryDate; IsSortable = true; ColumnsType = ColumnsType.Date };  
                { Name = Resources.Resources.DirectorySize; IsSortable = true; ColumnsType = ColumnsType.Size };  
-               { Name = Resources.Resources.DirectoryVersion; IsSortable = false; ColumnsType = ColumnsType.String }] 
+               { Name = Resources.Resources.DirectoryVersion; IsSortable = true; ColumnsType = ColumnsType.String }] 
 
 let getNameOnly (name : string) = 
     let pos = name.LastIndexOf "."
