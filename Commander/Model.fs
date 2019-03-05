@@ -89,7 +89,7 @@ type FileItem = {
     Date: DateTime 
     Size: int64 
     IsHidden: bool 
-    HasExifDate: bool 
+    isExif: bool 
     Version: string 
 }
 
@@ -102,7 +102,7 @@ let updateVersion fileItem version =
         Date = fileItem.Date
         Size = fileItem.Size
         IsHidden = fileItem.IsHidden
-        HasExifDate = fileItem.HasExifDate
+        isExif = fileItem.isExif
         Version = version
     }
 
@@ -119,7 +119,7 @@ let updateExif fileItem exif =
         Date = dateTime
         Size = fileItem.Size
         IsHidden = fileItem.IsHidden
-        HasExifDate = hasExif
+        isExif = hasExif
         Version = fileItem.Version
     }
 
@@ -203,14 +203,14 @@ let createDirectoryResponse name (date: DateTime) index isCurrent isHidden = {
     IsExif = false
 }
 
-let createFileResponse name ext (date: DateTime) (size: int64) version icon index isCurrent isHidden = {
+let createFileResponse name ext (date: DateTime) (size: int64) version icon index isCurrent isHidden isExif = {
     ItemType = ItemType.File
     Index = index
     Items = [ name; ext; date.ToString "g"; size.ToString("N0"); version ]
     Icon = icon
     IsCurrent = isCurrent
     IsHidden = isHidden
-    IsExif = false
+    IsExif = isExif
 }
 
 [<NoComparison>]

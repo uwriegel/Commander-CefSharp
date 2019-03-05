@@ -64,7 +64,7 @@ let get path showHidden () =
                     Extension = n.Extension
                     Size = n.Length
                     Date = n.LastWriteTime
-                    HasExifDate = false
+                    isExif = false
                     IsHidden = hasFlag n.Attributes FileAttributes.Hidden 
                     Icon = getIcon n.Name n.Extension
                     Version = null
@@ -86,7 +86,7 @@ let getItems currentIndex (directories: DirectoryItem[]) (files: FileItem[]) =
 
     let files = 
         files
-        |> Seq.mapi (fun i n -> createFileResponse n.Name n.Extension n.Date n.Size n.Version n.Icon (ItemIndex.create ItemType.Directory i) (ItemIndex.isSelected currentIndex i ItemType.File) n.IsHidden)
+        |> Seq.mapi (fun i n -> createFileResponse n.Name n.Extension n.Date n.Size n.Version n.Icon (ItemIndex.create ItemType.Directory i) (ItemIndex.isSelected currentIndex i ItemType.File) n.IsHidden n.isExif)
         |> Seq.toList
 
     List.concat [ parent; directories; files ]

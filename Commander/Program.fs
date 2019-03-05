@@ -13,5 +13,6 @@ let main argv =
     Application.Run(new MainForm())
     0 
  
+ // TODO: setSelected exception (Einfg)
  // TODO: Sorting
- // TODO: Exif
+ 
