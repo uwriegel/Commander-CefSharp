@@ -10,6 +10,8 @@ module ClrWinApi =
 
 module FileVersion = 
     
+    open System
+    open System.Collections.Generic
     open System.Diagnostics
 
     let hasInfo (fvi: FileVersionInfo) = 
@@ -20,6 +22,31 @@ module FileVersion =
             Some (string fvi.FileMajorPart + "." + string fvi.FileMinorPart + "." + string fvi.FileBuildPart + "." + string fvi.FilePrivatePart)
         else
             None
+
+    let parse versionString = 
+        if String.IsNullOrEmpty versionString then 
+            0, 0, 0, 0 
+        else
+            let parts = versionString.Split([|'.'|])
+            let getPart index = 
+                if index < parts.Length then
+                    int parts.[index]
+                else
+                    0
+            if parts.Length = 0 then
+                0, 0, 0, 0
+            else
+                getPart 0, getPart 1, getPart 2, getPart 3 
+
+    let compare (x0, x1, x2, x3) (y0, y1, y2, y3) =
+        if x0 <> y0 then x0 - y0 
+        elif x1 <> y1 then x1 - y1 
+        elif x2 <> y2 then x2 - y2 
+        else x3 - y3
+
+    type VersionComparer() = 
+        interface IComparer<int*int*int*int> with
+            member this.Compare (x, y) = compare x y
 
 module ExifReader =
     type ExifTag = 

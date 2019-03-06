@@ -75,7 +75,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                 | 1, descending -> fun a b -> ascendingOrDescending descending (String.Compare(a.Extension, b.Extension, true))
                 | 2, descending -> fun a b -> ascendingOrDescending descending (if a.Date > b.Date then 1 else -1)
                 | 3, descending -> fun a b -> ascendingOrDescending descending (int (a.Size - b.Size))
-                | 4, descending -> fun a b -> ascendingOrDescending descending (String.Compare(a.Version, b.Version))
+                | 4, descending -> fun a b -> ascendingOrDescending descending (FileVersion.compare (FileVersion.parse a.Version) (FileVersion.parse b.Version))
                 | _ -> fun a b -> ascendingOrDescending false (String.Compare(a.Name, b.Name, true))
             {
                 ViewType = items.ViewType

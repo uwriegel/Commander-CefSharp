@@ -13,7 +13,8 @@ let main argv =
     Application.Run(new MainForm())
     0 
  
- // TODO: Sorting: case Version 
+ // TODO: Sorting in DirectoryProcessor not CommanderView
+ // TODO: Sorting: selection is wrong
  // TODO: setSelected exception (Einfg)
  
   
