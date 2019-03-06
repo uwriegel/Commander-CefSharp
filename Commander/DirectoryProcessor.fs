@@ -87,7 +87,7 @@ let getItems currentIndex (directories: DirectoryItem[]) (files: FileItem[]) =
 
     let files = 
         files
-        |> Seq.mapi (fun i n -> createFileResponse n.Name n.Extension n.Date n.Size n.Version n.Icon (ItemIndex.create ItemType.Directory i) 
+        |> Seq.mapi (fun i n -> createFileResponse n.Name n.Extension n.Date n.Size n.Version n.Icon (ItemIndex.create ItemType.File i) 
                                                     (ItemIndex.isSelected currentIndex i ItemType.File) n.IsHidden n.isExif)
         |> Seq.toList
 

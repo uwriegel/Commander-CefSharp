@@ -13,7 +13,7 @@ let main argv =
     Application.Run(new MainForm())
     0 
  
- // TODO: setSelected exception (Einfg)
- // TODO: Sorting: case insensitive 
  // TODO: Sorting: case Version 
+ // TODO: setSelected exception (Einfg)
  
+  

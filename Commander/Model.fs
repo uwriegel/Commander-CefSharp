@@ -125,28 +125,6 @@ let updateExif fileItem exif =
 
 [<NoComparison>]
 type Items = {
-    //public static Items UpdateFiles(Items itemsToUpdate, IEnumerable<FileItem> files)
-    //    => new Items(itemsToUpdate, files);
-
-    //public Items(string path, IEnumerable<DirectoryItem> directories, IEnumerable<FileItem> files)
-    //{
-    //    Path = path;
-    //    ViewType = ViewType.Directory;
-    //    Drives = null;
-    //    Directories = directories.ToArray();
-    //    Files = files.ToArray();
-    //}
-
-
-    //Items(Items itemsToUpdate, IEnumerable<FileItem> files)
-    //{
-    //    Path = itemsToUpdate.Path;
-    //    ViewType = ViewType.Directory;
-    //    Drives = null;
-    //    Directories = itemsToUpdate.Directories;
-    //    Files = files.ToArray();
-    //}
-
     ViewType: ViewType
     Path: string
     Drives: Drive[] 

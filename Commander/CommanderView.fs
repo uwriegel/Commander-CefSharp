@@ -63,21 +63,20 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     let processFile (file: string) processItemType = ()
 
     let sortBy items = 
+        let ascendingOrDescending descending expression = 
+            if descending then -expression else expression
+            
         match currentSorting with
         | None -> items
         | Some currentSorting ->
             let sortFunction = 
                 match currentSorting with
-                | 0, false -> Array.sortBy (fun n -> n.Name)
-                | 1, false -> Array.sortBy (fun n -> n.Extension)
-                | 2, false -> Array.sortBy (fun n -> n.Date)
-                | 3, false -> Array.sortBy (fun n -> n.Size)
-                | 4, false -> Array.sortBy (fun n -> n.Version)
-                | 1, true -> Array.sortByDescending (fun n -> n.Extension)
-                | 2, true -> Array.sortByDescending (fun n -> n.Date)
-                | 3, true -> Array.sortByDescending (fun n -> n.Size)
-                | 4, true -> Array.sortByDescending (fun n -> n.Version)
-                | _ -> Array.sortByDescending (fun n -> n.Name)        
+                | 0, descending -> fun a b -> ascendingOrDescending descending (String.Compare(a.Name, b.Name, true))
+                | 1, descending -> fun a b -> ascendingOrDescending descending (String.Compare(a.Extension, b.Extension, true))
+                | 2, descending -> fun a b -> ascendingOrDescending descending (if a.Date > b.Date then 1 else -1)
+                | 3, descending -> fun a b -> ascendingOrDescending descending (int (a.Size - b.Size))
+                | 4, descending -> fun a b -> ascendingOrDescending descending (String.Compare(a.Version, b.Version))
+                | _ -> fun a b -> ascendingOrDescending false (String.Compare(a.Name, b.Name, true))
             {
                 ViewType = items.ViewType
                 Path = items.Path
@@ -85,7 +84,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                 Directories = items.Directories
                 Files = 
                     items.Files
-                    |> sortFunction
+                    |> Array.sortWith sortFunction
             }
 
     let changePath path (directoryToSelect: string option) = 
@@ -108,8 +107,6 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                 ()
             if not request.IsCancelled then  
                 currentItems <- newItems
-                // TODO:
-                //sort()
                 browserAccess.setRecentPath currentItems.Path
 
                 let getCurrentIndex () =
