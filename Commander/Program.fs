@@ -14,5 +14,6 @@ let main argv =
     0 
  
  // TODO: setSelected exception (Einfg)
- // TODO: Sorting
+ // TODO: Sorting: case insensitive 
+ // TODO: Sorting: case Version 
  

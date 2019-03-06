@@ -20,6 +20,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     let requestFactory = RequestFactory()
     let mutable currentItems = Model.createEmptyItems ()
     let mutable currentIndex = 0
+    let mutable currentSorting: (int*bool) option = None
     
     let getViewType (path: string) = 
         match path with 
@@ -59,8 +60,33 @@ type CommanderView(browserAccess: BrowserAccess) as this =
         else
             getDirectory ()
 
-    let processFile (file: string) processItemType =
-        ()
+    let processFile (file: string) processItemType = ()
+
+    let sortBy items = 
+        match currentSorting with
+        | None -> items
+        | Some currentSorting ->
+            let sortFunction = 
+                match currentSorting with
+                | 0, false -> Array.sortBy (fun n -> n.Name)
+                | 1, false -> Array.sortBy (fun n -> n.Extension)
+                | 2, false -> Array.sortBy (fun n -> n.Date)
+                | 3, false -> Array.sortBy (fun n -> n.Size)
+                | 4, false -> Array.sortBy (fun n -> n.Version)
+                | 1, true -> Array.sortByDescending (fun n -> n.Extension)
+                | 2, true -> Array.sortByDescending (fun n -> n.Date)
+                | 3, true -> Array.sortByDescending (fun n -> n.Size)
+                | 4, true -> Array.sortByDescending (fun n -> n.Version)
+                | _ -> Array.sortByDescending (fun n -> n.Name)        
+            {
+                ViewType = items.ViewType
+                Path = items.Path
+                Drives = items.Drives
+                Directories = items.Directories
+                Files = 
+                    items.Files
+                    |> sortFunction
+            }
 
     let changePath path (directoryToSelect: string option) = 
         let request = requestFactory.create()
@@ -69,7 +95,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
         let get = 
             match viewType with
             | ViewType.Root ->
-                //currentSorting <- None
+                currentSorting <- None
                 RootProcessor.get
             | ViewType.Directory | _ ->
                 DirectoryProcessor.get path Globals.showHidden
@@ -103,16 +129,6 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
                 let! res = this.SetIndex (getCurrentIndex ())
 
-                let sort items = {
-                    ViewType = items.ViewType
-                    Path = items.Path
-                    Drives = items.Drives
-                    Directories = items.Directories
-                    Files = 
-                        items.Files
-                        |> Array.sortByDescending (fun n -> n.Size)
-                }
-
                 let! response = browserAccess.executeScript "itemsChanged" None
                 if viewType = ViewType.Directory then
                     async {
@@ -123,7 +139,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                                 None
                         match request.IsCancelled, newItems with
                         | false, Some value -> 
-                            currentItems <- sort value
+                            currentItems <- sortBy value
                             let! response = browserAccess.executeScript "itemsChanged" None
                             ()
                         | _ -> ()
@@ -133,7 +149,9 @@ type CommanderView(browserAccess: BrowserAccess) as this =
         ()
 
     let sort (index: int) (ascending: bool) =
-        ()
+        currentSorting <- Some (index, not ascending)
+        currentItems <- sortBy currentItems
+        browserAccess.executeScript "itemsChanged" None
 
     member this.Ready () = 
         changePath (browserAccess.getRecentPath ()) None 
