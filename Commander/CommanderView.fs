@@ -172,7 +172,14 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     member this.AdaptPath (path: string) = ()
     member this.Path with get() = ""
     member this.Refresh () = changePath currentItems.Path None
-    member this.SetSelected (selectedValues: int[]) = 
-        selectedIndexes = selectedValues
+    member this.SetSelected (selectedValues: obj[]) = 
+        let toInt (n: obj) = 
+            match n with
+            | null -> 0
+            | _ -> n :?> int
+        match selectedValues with 
+        | null -> selectedIndexes <- [||]
+        | _ -> selectedIndexes <-  selectedValues |> Array.map toInt
+        
 
     member this.GetTestItems() = DirectoryProcessor.getTestItems ()
