@@ -14,7 +14,6 @@ let main argv =
     0 
  
  // TODO: Sorting in DirectoryProcessor not CommanderView
- // TODO: Sorting: selection is wrong
- // TODO: setSelected exception (Einfg)
+  // TODO: setSelected exception (Einfg)
  
   
