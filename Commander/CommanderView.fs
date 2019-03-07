@@ -20,6 +20,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     let mutable currentItems = Model.createEmptyItems ()
     let mutable currentIndex = 0
     let mutable currentSorting: (int*bool) option = None
+    let mutable selectedIndexes: int[] = [||]
     
     let getViewType (path: string) = 
         match path with 
@@ -171,5 +172,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     member this.AdaptPath (path: string) = ()
     member this.Path with get() = ""
     member this.Refresh () = changePath currentItems.Path None
+    member this.SetSelected (selectedValues: int[]) = 
+        selectedIndexes = selectedValues
 
     member this.GetTestItems() = DirectoryProcessor.getTestItems ()
