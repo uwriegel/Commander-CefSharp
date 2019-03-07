@@ -13,7 +13,6 @@ let main argv =
     Application.Run(new MainForm())
     0 
  
- // TODO: Sorting in DirectoryProcessor not CommanderView
-  // TODO: setSelected exception (Einfg)
+   // TODO: setSelected exception (Einfg)
  
   

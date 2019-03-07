@@ -61,31 +61,6 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
     let processFile (file: string) processItemType = ()
 
-    let sortBy items = 
-        let ascendingOrDescending descending expression = 
-            if descending then -expression else expression
-            
-        match currentSorting with
-        | None -> items
-        | Some currentSorting ->
-            let sortFunction = 
-                match currentSorting with
-                | 0, descending -> fun a b -> ascendingOrDescending descending (String.Compare(a.Name, b.Name, true))
-                | 1, descending -> fun a b -> ascendingOrDescending descending (String.Compare(a.Extension, b.Extension, true))
-                | 2, descending -> fun a b -> ascendingOrDescending descending (if a.Date > b.Date then 1 else -1)
-                | 3, descending -> fun a b -> ascendingOrDescending descending (int (a.Size - b.Size))
-                | 4, descending -> fun a b -> ascendingOrDescending descending (FileVersion.compare (FileVersion.parse a.Version) (FileVersion.parse b.Version))
-                | _ -> fun a b -> ascendingOrDescending false (String.Compare(a.Name, b.Name, true))
-            {
-                ViewType = items.ViewType
-                Path = items.Path
-                Drives = items.Drives
-                Directories = items.Directories
-                Files = 
-                    items.Files
-                    |> Array.sortWith sortFunction
-            }
-
     let changePath path (directoryToSelect: string option) = 
         let request = requestFactory.create()
         let viewType = getViewType path
@@ -135,7 +110,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                                 None
                         match request.IsCancelled, newItems with
                         | false, Some value -> 
-                            currentItems <- sortBy value
+                            currentItems <- sortBy currentSorting value
                             let! response = browserAccess.executeScript "itemsChanged" None
                             ()
                         | _ -> ()
@@ -146,7 +121,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
     let sort (index: int) (ascending: bool) =
         currentSorting <- Some (index, not ascending)
-        currentItems <- sortBy currentItems
+        currentItems <- sortBy currentSorting currentItems
         browserAccess.executeScript "itemsChanged" None
 
     member this.Ready () = 
