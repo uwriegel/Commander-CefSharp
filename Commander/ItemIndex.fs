@@ -14,9 +14,4 @@ let getArrayIndex index = int ((uint32 index) &&& (uint32 0xFFFFFF))
 let getItemType index = enum<ItemType>(int (byte (index >>> 24)))
 
 let isSelected index arrayIndex itemType =
-    
-    let mistkerl = create itemType arrayIndex
-    
-    let affe = (create itemType arrayIndex) = index
-
-    affe
+    (create itemType arrayIndex) = index

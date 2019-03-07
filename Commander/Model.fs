@@ -138,7 +138,7 @@ let createDriveItems drives = {ViewType = ViewType.Root; Path = "root"; Drives =
 
 let createDirectoryItems path directories files = {ViewType = ViewType.Directory; Path = path; Drives = [||]; Directories = directories; Files = files }
 
-type ItemType = Undefined = -1 | Parent = 0 | Directory = 1 | File = 2
+type ItemType = Undefined = 0 | Parent = 1 | Directory = 2 | File = 3 | Drive = 4
 
 [<NoComparison>]
 type ResponseItem = {
