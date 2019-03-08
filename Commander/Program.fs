@@ -13,3 +13,10 @@ let main argv =
     Application.Run(new MainForm())
     0  
   
+  // MENU:
+  // Preview
+  // CreateFolder
+  // Copy
+  
+  // TODO: Set SetSelection in Items in F# to preserve selection while sorting 
+
