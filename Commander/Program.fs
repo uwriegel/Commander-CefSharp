@@ -14,9 +14,9 @@ let main argv =
     0  
   
   // MENU:
-  // Preview
   // CreateFolder
   // Copy
   
   // TODO: Set SetSelection in Items in F# to preserve selection while sorting 
+  // TODO: Resizing smaller in PDF View with Grip not possible
 
