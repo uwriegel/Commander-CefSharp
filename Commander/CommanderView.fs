@@ -166,7 +166,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     member this.Sort index ascending = sort index ascending
 
     member this.Copy (otherView: CommanderView) = ()
-    member this.CreateFolder () = 
+    member this.StartCreateFolder () = 
         //TODO: dialog.inputText = item.items[0] != ".." ? item.items[0] : ""
         browserAccess.executeScript "createFolder" (Some (Resources.Resources.dialogCreateFolder :> obj)) |> ignore
 
@@ -182,5 +182,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
         | null -> selectedIndexes <- [||]
         | _ -> selectedIndexes <-  selectedValues |> Array.map toInt
         
+    member this.CreateFolder (item: string) =
+        ()
 
     member this.GetTestItems() = DirectoryProcessor.getTestItems ()

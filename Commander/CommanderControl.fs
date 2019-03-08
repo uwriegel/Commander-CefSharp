@@ -12,7 +12,7 @@ type CommanderControl (leftView: CommanderView, rightView: CommanderView)  =
     member this.Copy () =
         focusedView.Copy <| getOther ()
 
-    member this.CreateFolder () = focusedView.CreateFolder ()
+    member this.CreateFolder () = focusedView.StartCreateFolder ()
     member this.AdaptPath () = 
         (getOther ()).ChangePath focusedView.Path
     member this.Refresh () = focusedView.Refresh ()
