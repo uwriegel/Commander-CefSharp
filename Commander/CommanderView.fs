@@ -166,7 +166,10 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     member this.Sort index ascending = sort index ascending
 
     member this.Copy (otherView: CommanderView) = ()
-    member this.CreateFolder () = ()
+    member this.CreateFolder () = 
+        //TODO: dialog.inputText = item.items[0] != ".." ? item.items[0] : ""
+        browserAccess.executeScript "createFolder" (Some (Resources.Resources.dialogCreateFolder :> obj)) |> ignore
+
     member this.AdaptPath (path: string) = ()
     member this.Path with get() = currentItems.Path
     member this.Refresh () = changePath currentItems.Path None
