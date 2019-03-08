@@ -52,7 +52,8 @@ namespace Commander
                     viewer.Controls.Clear();
                     var browser = new ChromiumWebBrowser("");
                     viewer.Controls.Add(browser);
-                    browser.Load($"file:///{file}");
+                    //browser.Load($"file:///{file}");
+                    browser.Load($"https://www.caseris.de");
                 }
             }));
         }

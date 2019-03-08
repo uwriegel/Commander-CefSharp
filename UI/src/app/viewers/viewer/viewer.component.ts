@@ -46,15 +46,20 @@ export class ViewerComponent implements OnInit {
             this.isImage = this.item.toLowerCase().endsWith(".jpg")
                 || this.item.toLowerCase().endsWith(".png")
                 || this.item.toLowerCase().endsWith(".jpeg")
+
+
+            // TODO: PDF test in another browser
             this.isFrame = this.item.toLowerCase().endsWith(".pdf")
+
             // TODO: not shown when serving with Angular
             this.file = "file?path=" + this.item
             //this.file = "file:///" + this.item
-            
-            //if (item.toLowerCase().endsWith(".pdf"))
-            //    Program.setFile(item)
+
+            // TODO: PDF test in another browser
+            //if (this.item.toLowerCase().endsWith(".pdf"))
+            //    Viewer.setFile(this.item)
             //else
-            //    Program.setFile(null)
+            //    Viewer.setFile(null)
         }
         else {
             this.isImage = null
