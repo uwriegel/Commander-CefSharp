@@ -74,8 +74,8 @@ type CustomProtocol() =
             async { do! asyncSetIcon ext callback } |> Async.Start 
             true
         elif test.StartsWith "commander/file?path=" then
-            //let file = Uri.UnescapeDataString(test.Substring(20))
-            //Serve(file, request.Url, callback);
+            let file = Uri.UnescapeDataString(test.Substring(20))
+            serve file request.Url callback
             true
         elif test.StartsWith "commander" then
             let mutable file = test.Substring 10
