@@ -159,9 +159,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
     member this.SetIndex index =
         currentIndex <- index
-        async {
-            return! browserAccess.executeScript "setCurrentItem" (Some ((getCurrentItemPath currentIndex):>obj))
-        }
+        browserAccess.executeScript "setCurrentItem" (Some ((getCurrentItemPath currentIndex):>obj))
 
     member this.ChangePath path = changePath path None
 

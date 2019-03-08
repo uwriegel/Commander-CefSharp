@@ -7,6 +7,17 @@ module ClrWinApi =
     [<DllImport("kernel32.dll")>]
     extern UInt32 GetCurrentThreadId()
 
+module DateTimeTools = 
+    open System
+    open System.Globalization
+
+    let (|ParseDateTime|_|) (format: string) (dateString: string) =
+        if dateString <> null then
+            match DateTime.TryParseExact(dateString.TrimEnd( [| char 0 |]), format, CultureInfo.InvariantCulture, DateTimeStyles.None) with
+            | true, value -> Some value
+            | _ -> None
+        else
+            None
 
 module FileVersion = 
     
@@ -175,15 +186,15 @@ module ExifReader =
 
     open System
     open System.Collections.Generic
-    open System.Globalization
     open System.IO
     open System.Text
+    
+    open DateTimeTools
 
     let toDate (datestr: string) = 
-        if datestr <> null then
-            Some (DateTime.ParseExact(datestr.TrimEnd( [| char 0 |]), "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture))
-        else
-            None
+        match datestr with
+        | ParseDateTime "yyyy:MM:dd HH:mm:ss" value -> Some value
+        | _ -> None
 
     type Reader (getTagValue: (uint16 -> Object), reader: BinaryReader) =
         interface IDisposable with
