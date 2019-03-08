@@ -50,7 +50,7 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         executeScript = executeScript "commanderViewRight"
     })
     let commander = CommanderControl(leftView, rightView)
-    let viewer = Viewer()
+    let viewer = Viewer(host.Control)
 
     do 
         browser.RegisterJsObject("CommanderLeft", leftView, BindingOptions(CamelCaseJavascriptNames = true))        
@@ -87,6 +87,7 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
     member this.OnZoom(zoomLevel) = this.ZoolLevel <- zoomLevel
 
     member this.OnViewer (activate: bool) =
+        viewer.Show activate;
         browser.EvaluateScriptAsync ("commander.setViewer", activate) |> ignore
 
     member this.ShowHidden (showHidden: bool) =
