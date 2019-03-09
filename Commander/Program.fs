@@ -16,7 +16,7 @@ let main argv =
   // MENU:
   // Copy
   
-  // TODO: from root to directory: nothing happens
+  // TODO: a: does not extend to a:\
   // TODO: Set SetSelection in Items in F# to preserve selection while sorting 
   // TODO: Resizing smaller in PDF View with Grip not possible
   // TODO: CreateFolder: take selection name

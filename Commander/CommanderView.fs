@@ -14,6 +14,7 @@ type BrowserAccess = {
     setRecentPath: string->unit
     executeScript: string->obj option->Async<JavascriptResponse>
     executeCommanderScript: string->obj option->Async<JavascriptResponse>
+    executeScriptWithParams: string->obj[]->Async<JavascriptResponse>
 }
 
 type CommanderView(browserAccess: BrowserAccess) as this =
@@ -87,6 +88,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
                 let getCurrentIndex () =
                     match directoryToSelect, viewType with
+                    | None, ViewType.Root -> ItemIndex.create ItemType.Drive 0
                     | None, _ -> ItemIndex.getDefault currentItems.ViewType
                     | Some value, ViewType.Directory -> 
                         let folderToSelect = 
@@ -97,7 +99,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                         | None -> 0
                     | Some value, ViewType.Root -> 
                         let folderToSelect = newItems.Drives |> Array.find (fun n -> String.Compare(n.Name, value, true) = 0)
-                        ItemIndex.create ItemType.Directory folderToSelect.Index
+                        folderToSelect.Index
                     | _, _ -> 0
 
                 let! res = this.SetIndex (getCurrentIndex ())
@@ -140,6 +142,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
             | ItemType.Directory, ProcessItemType.Properties -> processFile item processItemType
             | ItemType.Directory, _ -> changePath item None
             | ItemType.File, _ -> processFile item processItemType
+            | ItemType.Drive, _ -> changePath item None
             | _ -> ()
         ()
 
@@ -148,7 +151,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
             match currentItems.ViewType, currentItems.Drives, currentItems.Directories, currentItems.Files with
             | ViewType.Root, drives, [||], [||] -> 
                 drives
-                |> Seq.mapi (fun i n -> createDriveResponse n.Name n.Label n.Size i (ItemIndex.isSelected currentIndex i ItemType.Directory))
+                |> Seq.mapi (fun i n -> createDriveResponse n.Name n.Label n.Size n.Index (ItemIndex.isSelected currentIndex i ItemType.Drive))
                 |> Seq.toArray
             | ViewType.Directory, [||], directories, files -> getItems currentIndex directories files
             | _ -> failwith "Invalid ViewType"
@@ -166,7 +169,9 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
     member this.Sort index ascending = sort index ascending
 
-    member this.Copy (otherView: CommanderView) = ()
+    member this.StartCopy (otherView: CommanderView) = 
+        browserAccess.executeScriptWithParams "copy" [| otherView.Path :> obj; Resources.Resources.dialogCopy :> obj |] |> ignore
+
     member this.StartCreateFolder () = 
         //TODO: dialog.inputText = item.items[0] != ".." ? item.items[0] : ""
         browserAccess.executeScript "createFolder" (Some (Resources.Resources.dialogCreateFolder :> obj)) |> ignore
@@ -192,5 +197,8 @@ type CommanderView(browserAccess: BrowserAccess) as this =
             | _ -> ()
         with Exceptions.AlreadyExists ->
             browserAccess.executeCommanderScript "showDialog" (Some (Resources.Resources.FolderAlreadyExists :> obj)) |> ignore
+
+    member this.Copy (targetPath: string) = 
+        ()
 
     member this.GetTestItems() = DirectoryProcessor.getTestItems ()

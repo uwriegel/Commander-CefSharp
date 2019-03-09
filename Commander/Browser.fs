@@ -35,6 +35,9 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
             | None -> ""
         browser.EvaluateScriptAsync(clss + "." + method + "(" + json + ")") |> Async.AwaitTask
 
+    let executeScriptWithParams clss (method: string) (parameters: obj[]) =
+        browser.EvaluateScriptAsync(clss + "." + method, parameters) |> Async.AwaitTask
+
     let onMouseWheel (delta: double) = 
         this.ZoolLevel <- this.ZoolLevel + if delta > 0.0 then 10.0 else -10.0
         host.ClearZoomItems ()
@@ -44,12 +47,14 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         setRecentPath = (fun path -> Resources.Settings.Default.LeftRecentPath <- path)
         executeScript = executeScript "commanderViewLeft"
         executeCommanderScript = executeScript "commander"
+        executeScriptWithParams = executeScriptWithParams "commanderViewLeft"
     })
     let rightView = CommanderView({ 
         getRecentPath = (fun () -> Resources.Settings.Default.RightRecentPath)
         setRecentPath = (fun path -> Resources.Settings.Default.RightRecentPath <- path)
         executeScript = executeScript "commanderViewRight"
         executeCommanderScript = executeScript "commander"
+        executeScriptWithParams = executeScriptWithParams "commanderViewRight"
     })
     let commander = CommanderControl(leftView, rightView)
     let viewer = Viewer(host.Control)

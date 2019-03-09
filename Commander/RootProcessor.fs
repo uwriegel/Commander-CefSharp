@@ -18,7 +18,7 @@ let get path =
     |> Seq.filter (fun n -> n.IsReady)
     |> Seq.sortBy (fun n -> n.Name)
     |> Seq.mapi (fun i n -> {
-        Index = i
+        Index = (ItemIndex.create ItemType.Drive i)
         Name = n.Name
         Label = n.VolumeLabel
         Size = n.TotalSize

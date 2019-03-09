@@ -10,7 +10,7 @@ type CommanderControl (leftView: CommanderView, rightView: CommanderView)  =
         focusedView <- if id = "left" then leftView else rightView
 
     member this.Copy () =
-        focusedView.Copy <| getOther ()
+        focusedView.StartCopy <| getOther ()
 
     member this.CreateFolder () = focusedView.StartCreateFolder ()
     member this.AdaptPath () = 
