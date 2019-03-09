@@ -169,3 +169,7 @@ let createFolder path item =
     let newFolder = Path.Combine(path, item)
     if Directory.Exists(newFolder) then 
         raise Exceptions.AlreadyExists
+
+    try
+        Directory.CreateDirectory newFolder |> ignore
+    with :? UnauthorizedAccessException -> () // TODO: 

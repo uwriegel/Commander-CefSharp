@@ -7,17 +7,27 @@ module ClrWinApi =
     [<DllImport("kernel32.dll")>]
     extern UInt32 GetCurrentThreadId()
 
+module String =
+    let trimEnd chr (str: string) =
+        if str <> null then 
+            str.TrimEnd [| chr |] 
+        else 
+            ""
+
+    let splitChar chr (str: string) =
+        if str <> null then
+            str.Split([|chr|])
+        else
+            [||]
+
 module DateTimeTools = 
     open System
     open System.Globalization
 
     let (|ParseDateTime|_|) (format: string) (dateString: string) =
-        if dateString <> null then
-            match DateTime.TryParseExact(dateString.TrimEnd( [| char 0 |]), format, CultureInfo.InvariantCulture, DateTimeStyles.None) with
-            | true, value -> Some value
-            | _ -> None
-        else
-            None
+        match DateTime.TryParseExact(dateString |> String.trimEnd (char 0), format, CultureInfo.InvariantCulture, DateTimeStyles.None) with
+        | true, value -> Some value
+        | _ -> None
 
 module FileVersion = 
     
@@ -35,19 +45,16 @@ module FileVersion =
             None
 
     let parse versionString = 
-        if String.IsNullOrEmpty versionString then 
-            0, 0, 0, 0 
-        else
-            let parts = versionString.Split([|'.'|])
-            let getPart index = 
-                if index < parts.Length then
-                    int parts.[index]
-                else
-                    0
-            if parts.Length = 0 then
-                0, 0, 0, 0
+        let parts = versionString |> String.splitChar '.'
+        let getPart index = 
+            if index < parts.Length then
+                int parts.[index]
             else
-                getPart 0, getPart 1, getPart 2, getPart 3 
+                0
+        if parts.Length = 0 then
+            0, 0, 0, 0
+        else
+            getPart 0, getPart 1, getPart 2, getPart 3 
 
     let compare (x0, x1, x2, x3) (y0, y1, y2, y3) =
         if x0 <> y0 then x0 - y0 

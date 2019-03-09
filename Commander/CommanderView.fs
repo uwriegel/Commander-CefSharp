@@ -186,7 +186,9 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     member this.CreateFolder (item: string) =
         try 
             match currentItems.ViewType with
-            | ViewType.Directory -> DirectoryProcessor.createFolder currentItems.Path item
+            | ViewType.Directory -> 
+                DirectoryProcessor.createFolder currentItems.Path item
+                changePath currentItems.Path (Some item)
             | _ -> ()
         with Exceptions.AlreadyExists ->
             browserAccess.executeCommanderScript "showDialog" (Some (Resources.Resources.FolderAlreadyExists :> obj)) |> ignore
