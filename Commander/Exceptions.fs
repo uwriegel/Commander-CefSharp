@@ -1,0 +1,4 @@
+﻿module Exceptions
+
+exception AlreadyExists
+

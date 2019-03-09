@@ -43,11 +43,13 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         getRecentPath = (fun () -> Resources.Settings.Default.LeftRecentPath)
         setRecentPath = (fun path -> Resources.Settings.Default.LeftRecentPath <- path)
         executeScript = executeScript "commanderViewLeft"
+        executeCommanderScript = executeScript "commander"
     })
     let rightView = CommanderView({ 
         getRecentPath = (fun () -> Resources.Settings.Default.RightRecentPath)
         setRecentPath = (fun path -> Resources.Settings.Default.RightRecentPath <- path)
         executeScript = executeScript "commanderViewRight"
+        executeCommanderScript = executeScript "commander"
     })
     let commander = CommanderControl(leftView, rightView)
     let viewer = Viewer(host.Control)

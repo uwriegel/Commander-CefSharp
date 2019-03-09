@@ -13,6 +13,7 @@ type BrowserAccess = {
     getRecentPath: unit->string
     setRecentPath: string->unit
     executeScript: string->obj option->Async<JavascriptResponse>
+    executeCommanderScript: string->obj option->Async<JavascriptResponse>
 }
 
 type CommanderView(browserAccess: BrowserAccess) as this =
@@ -183,6 +184,11 @@ type CommanderView(browserAccess: BrowserAccess) as this =
         | _ -> selectedIndexes <-  selectedValues |> Array.map toInt
         
     member this.CreateFolder (item: string) =
-        ()
+        try 
+            match currentItems.ViewType with
+            | ViewType.Directory -> DirectoryProcessor.createFolder currentItems.Path item
+            | _ -> ()
+        with Exceptions.AlreadyExists ->
+            browserAccess.executeCommanderScript "showDialog" (Some (Resources.Resources.FolderAlreadyExists :> obj)) |> ignore
 
     member this.GetTestItems() = DirectoryProcessor.getTestItems ()

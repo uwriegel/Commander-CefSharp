@@ -165,3 +165,7 @@ let sortBy currentSorting items =
                 |> Array.sortWith sortFunction
         }
     
+let createFolder path item =
+    let newFolder = Path.Combine(path, item)
+    if Directory.Exists(newFolder) then 
+        raise Exceptions.AlreadyExists

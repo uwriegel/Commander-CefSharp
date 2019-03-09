@@ -84,6 +84,7 @@
     <Compile Include="Globals.fs" />
     <Compile Include="ItemIndex.fs" />
     <Compile Include="Request.fs" />
+    <Compile Include="Exceptions.fs" />
     <Compile Include="DirectoryProcessor.fs" />
     <Compile Include="RootProcessor.fs" />
     <Compile Include="CommanderView.fs" />
