@@ -206,6 +206,8 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     member this.StartCopy (otherView: CommanderView) = 
         browserAccess.ExecuteScriptWithParams "copy" [| otherView.Path :> obj; Resources.Resources.dialogCopy :> obj |] |> ignore
 
+    // TODO: call only in the right folder
+    // TODO: Dialog resources (Abbrechen) 
     member this.StartCreateFolder () = 
         //TODO: dialog.inputText = item.items[0] != ".." ? item.items[0] : ""
         browserAccess.ExecuteScript "createFolder" (Some (Resources.Resources.dialogCreateFolder :> obj)) |> ignore
