@@ -7,6 +7,9 @@ open System.Windows.Forms
 open CefSharp
 open Model
 open DirectoryProcessor
+open System.Diagnostics
+open ClrWinApi
+open System.Runtime.InteropServices
 
 [<NoComparison>]
 [<NoEquality>]
@@ -65,7 +68,25 @@ type CommanderView(browserAccess: BrowserAccess) as this =
         else
             getDirectory ()
 
-    let processFile (file: string) processItemType = ()
+    let processFile (file: string) processItemType = 
+        match processItemType with
+        | ProcessItemType.Show ->  
+            use p = new Process()
+            p.StartInfo.UseShellExecute <- true
+            p.StartInfo.ErrorDialog <- true
+            p.StartInfo.FileName <- file
+            p.Start () |> ignore
+        | ProcessItemType.Properties ->  
+            let mutable info = ShellExecuteInfo()
+            info.Verb <- "properties"
+            info.File <- file
+            info.Show <- ShowWindowFlag.Show
+            info.Mask <- ShellExecuteFlag.InvokeIDList
+            info.Size <- Marshal.SizeOf(info)
+            ShellExecuteEx(info) |> ignore
+        | ProcessItemType.StartAs ->  
+            Process.Start("rundll32.exe", "shell32, OpenAs_RunDLL "+ file) |> ignore
+        | _ -> ()
 
     let changePath path (directoryToSelect: string option) = 
         let request = requestFactory.create()

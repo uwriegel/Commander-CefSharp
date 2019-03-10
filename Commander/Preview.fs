@@ -12,6 +12,12 @@ module ClrWinApi =
         | DELETE = 0x3
         | RENAME = 0x4
 
+    type ShowWindowFlag = 
+        Show = 5
+
+    type ShellExecuteFlag = 
+        InvokeIDList = 12
+
     [<Flags>]
     type FileOpFlags = 
         MULTIDESTFILES = 0x1us
@@ -89,11 +95,37 @@ module ClrWinApi =
         [<MarshalAs(UnmanagedType.LPWStr)>]
         val mutable ProgressTitle: String
 
+    [<Struct; StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)>]
+    type ShellExecuteInfo =
+        val mutable Size: int
+        val mutable Mask: ShellExecuteFlag
+        val mutable Hwnd: IntPtr
+        [<MarshalAs(UnmanagedType.LPWStr)>]
+        val mutable Verb: string
+        [<MarshalAs(UnmanagedType.LPWStr)>]
+        val mutable File: string
+        [<MarshalAs(UnmanagedType.LPWStr)>]
+        val mutable Parameters: string
+        [<MarshalAs(UnmanagedType.LPWStr)>]
+        val mutable Directory: string
+        val mutable Show: ShowWindowFlag
+        val mutable InstApp: IntPtr
+        val mutable IDList: IntPtr
+        [<MarshalAs(UnmanagedType.LPWStr)>]
+        val mutable Class: string
+        val mutable HkeyClass: IntPtr
+        val mutable HotKey: uint32
+        val mutable Icon: IntPtr
+        val mutable Process: IntPtr
+
     [<DllImport("kernel32.dll")>]
     extern UInt32 GetCurrentThreadId()
 
     [<DllImport("shell32.dll", CharSet = CharSet.Unicode)>]
     extern int SHFileOperation(SHFILEOPSTRUCT fileOp)
+
+    [<DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)>]
+    extern bool ShellExecuteEx(ShellExecuteInfo execInfo)
 
 module Control =
     let deferredExecution<'a> (action: unit->'a) delayInMilliseconds (dispatcher: System.Windows.Forms.Control) = async {

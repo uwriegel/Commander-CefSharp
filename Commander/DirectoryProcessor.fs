@@ -205,7 +205,8 @@ let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: n
     fileop.Func <- FileFuncFlags.COPY
     fileop.From <- createFileOperationPaths (pathes |> Seq.map(fun (source, _) -> source))
     fileop.To <- createFileOperationPaths (pathes |> Seq.map(fun (_, target) -> target))
-
+    
+    // Wait till animation has finished
     let! result = dispatcher |> Control.deferredExecution (fun () -> SHFileOperation fileop) 400
     return 
         match result with

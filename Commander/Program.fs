@@ -3,8 +3,7 @@
 open Commander
 open System
 
-[<EntryPoint>]
-[<STAThread>]
+[<EntryPoint; STAThread>]
 let main argv = 
     Cef.initialize ()
     Globals.initialize argv
