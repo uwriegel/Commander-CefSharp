@@ -1,5 +1,7 @@
 ﻿namespace Commander
 
+open System
+
 module ClrWinApi = 
     open System
     open System.Runtime.InteropServices
@@ -72,24 +74,31 @@ module ClrWinApi =
     /// If you use the above you may encounter an invalid memory access exception (when using ANSI
     /// or see nothing (when using unicode) when you use FOF_SIMPLEPROGRESS flag.
     /// </summary>
-    [<StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)>]
+    [<Struct; StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)>]
     type SHFILEOPSTRUCT = 
-        struct
-            val mutable Hwnd: nativeint
-            val mutable Func: FileFuncFlags
-            [<MarshalAs(UnmanagedType.LPWStr)>]
-            val mutable From: string
-            [<MarshalAs(UnmanagedType.LPWStr)>]
-            val mutable To: string
-            val mutable Flags: FileOpFlags 
-            [<MarshalAs(UnmanagedType.Bool)>]
-            val mutable AnyOperationsAborted: bool
-            val mutable NameMappings: nativeint
-            [<MarshalAs(UnmanagedType.LPWStr)>]
-            val mutable ProgressTitle: String
-        end
+        val mutable Hwnd: IntPtr
+        val mutable Func: FileFuncFlags
+        [<MarshalAs(UnmanagedType.LPWStr)>]
+        val mutable From: string
+        [<MarshalAs(UnmanagedType.LPWStr)>]
+        val mutable To: string
+        val mutable Flags: FileOpFlags 
+        [<MarshalAs(UnmanagedType.Bool)>]
+        val mutable AnyOperationsAborted: bool
+        val mutable NameMappings: IntPtr
+        [<MarshalAs(UnmanagedType.LPWStr)>]
+        val mutable ProgressTitle: String
 
     [<DllImport("kernel32.dll")>]
     extern UInt32 GetCurrentThreadId()
 
+    [<DllImport("shell32.dll", CharSet = CharSet.Unicode)>]
+    extern int SHFileOperation(SHFILEOPSTRUCT fileOp)
+
+module Control =
+    let deferredExecution<'a> (action: unit->'a) delayInMilliseconds (dispatcher: System.Windows.Forms.Control) = async {
+        do! Async.Sleep delayInMilliseconds
+        return dispatcher.Invoke(Func<'a>(action)) :?> 'a
+    }
+       
 

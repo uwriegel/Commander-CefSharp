@@ -2,6 +2,7 @@
 
 open System
 open System.IO
+open System.Windows.Forms
 
 open CefSharp
 open Model
@@ -16,6 +17,7 @@ type BrowserAccess = {
     ExecuteCommanderScript: string->obj option->Async<JavascriptResponse>
     ExecuteScriptWithParams: string->obj[]->Async<JavascriptResponse>
     MainWindow: nativeint
+    Dispatcher: Control
 }
 
 type CommanderView(browserAccess: BrowserAccess) as this =
@@ -210,12 +212,15 @@ type CommanderView(browserAccess: BrowserAccess) as this =
             browserAccess.ExecuteCommanderScript "showDialog" (Some (Resources.Resources.FolderAlreadyExists :> obj)) |> ignore
 
     member this.Copy (targetPath: string) = 
-        let selectedItems = getSelectedItems ()
-        let index, itemType = selectedItems |> Seq.head
-        let refresh = 
-            match itemType with
-            | ItemType.Directory | ItemType.File -> DirectoryProcessor.copy currentItems selectedItems targetPath browserAccess.MainWindow
-            | _ -> false
-        if refresh then this.Other.Refresh() 
+        async { 
+            let selectedItems = getSelectedItems ()
+            let index, itemType = selectedItems |> Seq.head
+            let! refresh = 
+                match itemType with
+                | ItemType.Directory | ItemType.File -> 
+                    DirectoryProcessor.copy currentItems selectedItems targetPath browserAccess.MainWindow browserAccess.Dispatcher
+                | _ -> async.Return false
+            if refresh then this.Other.Refresh() 
+        } |> Async.Start
 
     member this.GetTestItems() = DirectoryProcessor.getTestItems ()

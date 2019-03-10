@@ -3,6 +3,7 @@
 open System
 open System.Diagnostics
 open System.IO
+open System.Windows.Forms
 
 open EnumExtensions
 open Model
@@ -10,6 +11,7 @@ open Model
 open Commander
 open ClrWinApi
 open System.Text
+open System.Runtime.InteropServices
 
 [<Literal>]
 let name = "directory"
@@ -189,11 +191,11 @@ let getItemPathes (index, itemType) targetPath currentItems =
 
 let createFileOperationPaths (paths: seq<string>) =
     let sb = StringBuilder()
-    paths |> Seq.iter (fun n -> sb.Append n |> ignore; sb.Append "\x0" |> ignore)
-    sb.Append "\x0" |> ignore
+    paths |> Seq.iter (fun n -> sb.Append n |> ignore; sb.Append (char 0) |> ignore)
+    sb.Append (char 0) |> ignore
     sb.ToString()
 
-let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: nativeint) = 
+let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: nativeint) (dispatcher: Control) = async {
     let pathes = selectedItems |> Seq.choose (fun n -> currentItems |> getItemPathes n targetPath)
 
     let mutable fileop = SHFILEOPSTRUCT()
@@ -204,4 +206,10 @@ let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: n
     fileop.From <- createFileOperationPaths (pathes |> Seq.map(fun (source, _) -> source))
     fileop.To <- createFileOperationPaths (pathes |> Seq.map(fun (_, target) -> target))
 
-    false // Control dispatcher)
+    let! result = dispatcher |> Control.deferredExecution (fun () -> SHFileOperation fileop) 400
+    return 
+        match result with
+        | 0 -> true
+        | _ -> false
+}
+
