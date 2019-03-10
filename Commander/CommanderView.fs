@@ -10,11 +10,12 @@ open DirectoryProcessor
 [<NoComparison>]
 [<NoEquality>]
 type BrowserAccess = {
-    getRecentPath: unit->string
-    setRecentPath: string->unit
-    executeScript: string->obj option->Async<JavascriptResponse>
-    executeCommanderScript: string->obj option->Async<JavascriptResponse>
-    executeScriptWithParams: string->obj[]->Async<JavascriptResponse>
+    GetRecentPath: unit->string
+    SetRecentPath: string->unit
+    ExecuteScript: string->obj option->Async<JavascriptResponse>
+    ExecuteCommanderScript: string->obj option->Async<JavascriptResponse>
+    ExecuteScriptWithParams: string->obj[]->Async<JavascriptResponse>
+    MainWindow: nativeint
 }
 
 type CommanderView(browserAccess: BrowserAccess) as this =
@@ -80,11 +81,11 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
             if setColumns && not request.IsCancelled then
                 let columns = getColumns viewType None
-                let! response = browserAccess.executeScript "setColumns" (Some (columns:> obj))
+                let! response = browserAccess.ExecuteScript "setColumns" (Some (columns:> obj))
                 ()
             if not request.IsCancelled then  
                 currentItems <- newItems
-                browserAccess.setRecentPath currentItems.Path
+                browserAccess.SetRecentPath currentItems.Path
 
                 let getCurrentIndex () =
                     match directoryToSelect, viewType with
@@ -104,7 +105,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
                 let! res = this.SetIndex (getCurrentIndex ())
 
-                let! response = browserAccess.executeScript "itemsChanged" None
+                let! response = browserAccess.ExecuteScript "itemsChanged" None
                 if viewType = ViewType.Directory then
                     async {
                         let newItems =
@@ -115,7 +116,7 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                         match request.IsCancelled, newItems with
                         | false, Some value -> 
                             currentItems <- sortBy currentSorting value
-                            let! response = browserAccess.executeScript "itemsChanged" None
+                            let! response = browserAccess.ExecuteScript "itemsChanged" None
                             ()
                         | _ -> ()
                         
@@ -126,10 +127,18 @@ type CommanderView(browserAccess: BrowserAccess) as this =
     let sort (index: int) (ascending: bool) =
         currentSorting <- Some (index, not ascending)
         currentItems <- sortBy currentSorting currentItems
-        browserAccess.executeScript "itemsChanged" None
+        browserAccess.ExecuteScript "itemsChanged" None
+
+    let getSelectedItems () = 
+        let selectedIndexes = 
+            match selectedIndexes.Length with
+            | 0 -> [| currentIndex |]
+            | _ -> selectedIndexes
+
+        selectedIndexes |> Seq.map (fun n -> (ItemIndex.getArrayIndex n, ItemIndex.getItemType n))
 
     member this.Ready () = 
-        changePath (browserAccess.getRecentPath ()) None 
+        changePath (browserAccess.GetRecentPath ()) None 
 
     member this.ProcessItem processItemType = 
         let itemType = ItemIndex.getItemType currentIndex
@@ -145,6 +154,8 @@ type CommanderView(browserAccess: BrowserAccess) as this =
             | ItemType.Drive, _ -> changePath item None
             | _ -> ()
         ()
+
+    member val internal Other = this with get, set
 
     member this.GetItems () = 
         let responses = 
@@ -163,18 +174,18 @@ type CommanderView(browserAccess: BrowserAccess) as this =
 
     member this.SetIndex index =
         currentIndex <- index
-        browserAccess.executeScript "setCurrentItem" (Some ((getCurrentItemPath currentIndex):>obj))
+        browserAccess.ExecuteScript "setCurrentItem" (Some ((getCurrentItemPath currentIndex):>obj))
 
     member this.ChangePath path = changePath path None
 
     member this.Sort index ascending = sort index ascending
 
     member this.StartCopy (otherView: CommanderView) = 
-        browserAccess.executeScriptWithParams "copy" [| otherView.Path :> obj; Resources.Resources.dialogCopy :> obj |] |> ignore
+        browserAccess.ExecuteScriptWithParams "copy" [| otherView.Path :> obj; Resources.Resources.dialogCopy :> obj |] |> ignore
 
     member this.StartCreateFolder () = 
         //TODO: dialog.inputText = item.items[0] != ".." ? item.items[0] : ""
-        browserAccess.executeScript "createFolder" (Some (Resources.Resources.dialogCreateFolder :> obj)) |> ignore
+        browserAccess.ExecuteScript "createFolder" (Some (Resources.Resources.dialogCreateFolder :> obj)) |> ignore
 
     member this.AdaptPath (path: string) = ()
     member this.Path with get() = currentItems.Path
@@ -196,9 +207,15 @@ type CommanderView(browserAccess: BrowserAccess) as this =
                 changePath currentItems.Path (Some item)
             | _ -> ()
         with Exceptions.AlreadyExists ->
-            browserAccess.executeCommanderScript "showDialog" (Some (Resources.Resources.FolderAlreadyExists :> obj)) |> ignore
+            browserAccess.ExecuteCommanderScript "showDialog" (Some (Resources.Resources.FolderAlreadyExists :> obj)) |> ignore
 
     member this.Copy (targetPath: string) = 
-        ()
+        let selectedItems = getSelectedItems ()
+        let index, itemType = selectedItems |> Seq.head
+        let refresh = 
+            match itemType with
+            | ItemType.Directory | ItemType.File -> DirectoryProcessor.copy currentItems selectedItems targetPath browserAccess.MainWindow
+            | _ -> false
+        if refresh then this.Other.Refresh() 
 
     member this.GetTestItems() = DirectoryProcessor.getTestItems ()

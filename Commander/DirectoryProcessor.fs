@@ -6,7 +6,10 @@ open System.IO
 
 open EnumExtensions
 open Model
+
 open Commander
+open ClrWinApi
+open System.Text
 
 [<Literal>]
 let name = "directory"
@@ -173,3 +176,32 @@ let createFolder path item =
     try
         Directory.CreateDirectory newFolder |> ignore
     with :? UnauthorizedAccessException -> () // TODO: 
+
+let getItemPathes (index, itemType) targetPath currentItems =
+    match itemType with
+    | ItemType.File -> 
+        Some ((getFullName currentItems.Files.[index] currentItems.Path), 
+            Path.Combine(targetPath, currentItems.Files.[index].Name + currentItems.Files.[index].Extension))
+    | ItemType.Directory -> 
+        Some (Path.Combine(currentItems.Path, currentItems.Directories.[index].Name),
+            Path.Combine(targetPath, currentItems.Directories.[index].Name))
+    | _ -> None 
+
+let createFileOperationPaths (paths: seq<string>) =
+    let sb = StringBuilder()
+    paths |> Seq.iter (fun n -> sb.Append n |> ignore; sb.Append "\x0" |> ignore)
+    sb.Append "\x0" |> ignore
+    sb.ToString()
+
+let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: nativeint) = 
+    let pathes = selectedItems |> Seq.choose (fun n -> currentItems |> getItemPathes n targetPath)
+
+    let mutable fileop = SHFILEOPSTRUCT()
+    fileop.Flags <- FileOpFlags.NOCONFIRMATION ||| FileOpFlags.NOCONFIRMMKDIR ||| FileOpFlags.MULTIDESTFILES
+    fileop.Hwnd <- mainWindow
+    fileop.ProgressTitle <- "Commander"
+    fileop.Func <- FileFuncFlags.COPY
+    fileop.From <- createFileOperationPaths (pathes |> Seq.map(fun (source, _) -> source))
+    fileop.To <- createFileOperationPaths (pathes |> Seq.map(fun (_, target) -> target))
+
+    false // Control dispatcher)

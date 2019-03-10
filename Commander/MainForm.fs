@@ -44,6 +44,7 @@ type MainForm () as this =
             GetFullScreenForm = getFullScreenForm
             ExitFullScreen = exitFullScreen
             ClearZoomItems = fun () -> clearZoomItems ()
+            MainWindow = this.Handle
         }, browser)
         
         let menu, clearZoomItemsFunc = createMenu this browserAccess { ToFullScreen = toFullScreen }

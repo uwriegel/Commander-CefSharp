@@ -13,6 +13,7 @@ type Host = {
     GetFullScreenForm: unit->Form
     ExitFullScreen: unit->unit
     ClearZoomItems: unit->unit
+    MainWindow: nativeint
 }
     
 [<NoComparison>]
@@ -43,23 +44,27 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         host.ClearZoomItems ()
     
     let leftView = CommanderView({ 
-        getRecentPath = (fun () -> Resources.Settings.Default.LeftRecentPath)
-        setRecentPath = (fun path -> Resources.Settings.Default.LeftRecentPath <- path)
-        executeScript = executeScript "commanderViewLeft"
-        executeCommanderScript = executeScript "commander"
-        executeScriptWithParams = executeScriptWithParams "commanderViewLeft"
+        GetRecentPath = (fun () -> Resources.Settings.Default.LeftRecentPath)
+        SetRecentPath = (fun path -> Resources.Settings.Default.LeftRecentPath <- path)
+        ExecuteScript = executeScript "commanderViewLeft"
+        ExecuteCommanderScript = executeScript "commander"
+        ExecuteScriptWithParams = executeScriptWithParams "commanderViewLeft"
+        MainWindow = host.MainWindow
     })
     let rightView = CommanderView({ 
-        getRecentPath = (fun () -> Resources.Settings.Default.RightRecentPath)
-        setRecentPath = (fun path -> Resources.Settings.Default.RightRecentPath <- path)
-        executeScript = executeScript "commanderViewRight"
-        executeCommanderScript = executeScript "commander"
-        executeScriptWithParams = executeScriptWithParams "commanderViewRight"
+        GetRecentPath = (fun () -> Resources.Settings.Default.RightRecentPath)
+        SetRecentPath = (fun path -> Resources.Settings.Default.RightRecentPath <- path)
+        ExecuteScript = executeScript "commanderViewRight"
+        ExecuteCommanderScript = executeScript "commander"
+        ExecuteScriptWithParams = executeScriptWithParams "commanderViewRight"
+        MainWindow = host.MainWindow
     })
     let commander = CommanderControl(leftView, rightView)
     let viewer = Viewer(host.Control)
 
     do 
+        leftView.Other <- rightView
+        rightView.Other <- leftView
         browser.RegisterJsObject("CommanderLeft", leftView, BindingOptions(CamelCaseJavascriptNames = true))        
         browser.RegisterJsObject("CommanderRight", rightView, BindingOptions(CamelCaseJavascriptNames = true))      
         browser.RegisterJsObject("CommanderControl", commander, BindingOptions(CamelCaseJavascriptNames = true))
