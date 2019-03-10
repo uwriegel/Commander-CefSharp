@@ -14,7 +14,7 @@ let main argv =
     0  
   
   // MENU:
-  // Copy
+  // TODO: Properties, Start, StartsWith
   
   // TODO: a: does not extend to a:\
   // TODO: Set SetSelection in Items in F# to preserve selection while sorting 
