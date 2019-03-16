@@ -196,7 +196,35 @@ let createFileOperationPaths (paths: seq<string>) =
     sb.ToString()
 
 let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: nativeint) (dispatcher: Control) = async {
+    let rec getConflict ((source, target): string*string) =
+        let sourceInfo = DirectoryInfo(source)
+        match sourceInfo.Exists with
+        | true -> 
+            let dirs = 
+                Seq.concat [ 
+                    sourceInfo.GetDirectories() |> Seq.map (fun n -> n.FullName, Path.Combine(target, n.Name))
+                    sourceInfo.GetFiles() |> Seq.map (fun n -> n.FullName, Path.Combine(target, n.Name))
+                ]
+            getConflicts dirs
+        | false -> 
+            let sourceInfo = FileInfo(source)
+            let targetInfo = FileInfo(target)
+            match targetInfo.Exists, source <> target with 
+            | true, true -> Some [| (source, target) |]
+            | _, _ -> None 
+    
+    and getConflicts (pathes: seq<string*string>) = 
+        let result = 
+            pathes |> Seq.choose (fun n -> getConflict n)
+            |> Seq.collect (fun n -> n)
+            |> Seq.toArray
+        if result.Length > 0 then
+            Some result
+        else
+            None
+
     let pathes = selectedItems |> Seq.choose (fun n -> currentItems |> getItemPathes n targetPath)
+    let test = getConflicts pathes 
 
     let mutable fileop = SHFILEOPSTRUCT()
     fileop.Flags <- FileOpFlags.NOCONFIRMATION ||| FileOpFlags.NOCONFIRMMKDIR ||| FileOpFlags.MULTIDESTFILES
