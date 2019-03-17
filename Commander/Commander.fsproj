@@ -109,9 +109,10 @@
     <Reference Include="FSharp.Core" />
     <Reference Include="FSharp.Core" />
     <Reference Include="FSharpTools">
-      <HintPath>..\packages\FSharpTools.0.0.6\lib\netstandard2.0\FSharpTools.dll</HintPath>
+      <HintPath>..\packages\FSharpTools.0.0.7\lib\netstandard2.0\FSharpTools.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FSharpTools" />
     <Reference Include="FSharpTools" />
     <Reference Include="FSharpTools" />
     <Reference Include="FSharpTools" />

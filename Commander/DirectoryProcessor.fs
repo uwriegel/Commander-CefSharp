@@ -261,8 +261,7 @@ let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: n
     let test = getConflicts pathes 
     let test2 = 
         match test with 
-        // TODO: seraialize Option
-        | Some value -> Json.serialize value
+        | Some value -> Json.serializeWithOptions value
         | None -> ""
 
     let mutable fileop = SHFILEOPSTRUCT()
