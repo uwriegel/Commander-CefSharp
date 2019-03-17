@@ -27,7 +27,7 @@ let getSafeItems get =
     with
     | :? UnauthorizedAccessException -> [||]
 
-let getFullName fileItem path =
+let getFullName (fileItem: FileItem) path =
     Path.Combine(path, fileItem.Name + fileItem.Extension)
 
 let columns = [{ Name = Resources.Resources.DirectoryName; IsSortable = true; ColumnsType = ColumnsType.String };
@@ -154,11 +154,11 @@ let sortBy currentSorting items =
     | Some currentSorting ->
         let sortFunction = 
             match currentSorting with
-            | 0, descending -> fun a b -> ascendingOrDescending descending (String.Compare(a.Name, b.Name, true))
-            | 1, descending -> fun a b -> ascendingOrDescending descending (String.Compare(a.Extension, b.Extension, true))
-            | 2, descending -> fun a b -> ascendingOrDescending descending (if a.Date > b.Date then 1 else -1)
-            | 3, descending -> fun a b -> ascendingOrDescending descending (int (a.Size - b.Size))
-            | 4, descending -> fun a b -> ascendingOrDescending descending (FileVersion.compare (FileVersion.parse a.Version) (FileVersion.parse b.Version))
+            | 0, descending -> fun (a: FileItem) (b: FileItem) -> ascendingOrDescending descending (String.Compare(a.Name, b.Name, true))
+            | 1, descending -> fun (a: FileItem) (b: FileItem) -> ascendingOrDescending descending (String.Compare(a.Extension, b.Extension, true))
+            | 2, descending -> fun (a: FileItem) (b: FileItem) -> ascendingOrDescending descending (if a.Date > b.Date then 1 else -1)
+            | 3, descending -> fun (a: FileItem) (b: FileItem) -> ascendingOrDescending descending (int (a.Size - b.Size))
+            | 4, descending -> fun (a: FileItem) (b: FileItem) -> ascendingOrDescending descending (FileVersion.compare (FileVersion.parse a.Version) (FileVersion.parse b.Version))
             | _ -> fun a b -> ascendingOrDescending false (String.Compare(a.Name, b.Name, true))
         {
             ViewType = items.ViewType
@@ -196,6 +196,40 @@ let createFileOperationPaths (paths: seq<string>) =
     sb.ToString()
 
 let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: nativeint) (dispatcher: Control) = async {
+    let createConflictItem (sourceInfo: FileInfo) (targetInfo: FileInfo) = 
+        let sourceVersion = let fvi = FileVersionInfo.GetVersionInfo sourceInfo.FullName in FileVersion.getVersion fvi
+        let targetVersion = let fvi = FileVersionInfo.GetVersionInfo targetInfo.FullName in FileVersion.getVersion fvi
+        {
+            Name = sourceInfo.Name
+            Icon = getIcon sourceInfo.FullName sourceInfo.Extension
+
+            Size = {
+                Source = let x = sourceInfo.Length in x.ToString "N0"
+                Target = let x = targetInfo.Length in x.ToString "N0"
+                CompareResult = 
+                    if sourceInfo.Length < targetInfo.Length then 
+                        1 
+                    elif sourceInfo.Length > targetInfo.Length then 
+                        -1 
+                    else 
+                        0
+            }
+
+            Time = {
+                Source = let x = sourceInfo.LastWriteTime in x.ToString "g"
+                Target = let x = targetInfo.LastWriteTime in x.ToString "g"
+                CompareResult = let x = sourceInfo.LastWriteTime - targetInfo.LastWriteTime in int x.TotalMilliseconds
+            }
+            Version = 
+                match sourceVersion, targetVersion with
+                | Some sv, Some tv -> Some { 
+                                        Source = sv
+                                        Target = tv
+                                        CompareResult = (FileVersion.compare (FileVersion.parse sv) (FileVersion.parse tv)) 
+                                     }
+                | _ -> None
+        }
+    
     let rec getConflict ((source, target): string*string) =
         let sourceInfo = DirectoryInfo(source)
         match sourceInfo.Exists with
@@ -210,7 +244,7 @@ let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: n
             let sourceInfo = FileInfo(source)
             let targetInfo = FileInfo(target)
             match targetInfo.Exists, source <> target with 
-            | true, true -> Some [| (source, target) |]
+            | true, true -> Some [| (source, target, createConflictItem sourceInfo targetInfo) |] 
             | _, _ -> None 
     
     and getConflicts (pathes: seq<string*string>) = 
@@ -225,6 +259,11 @@ let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: n
 
     let pathes = selectedItems |> Seq.choose (fun n -> currentItems |> getItemPathes n targetPath)
     let test = getConflicts pathes 
+    let test2 = 
+        match test with 
+        // TODO: seraialize Option
+        | Some value -> Json.serialize value
+        | None -> ""
 
     let mutable fileop = SHFILEOPSTRUCT()
     fileop.Flags <- FileOpFlags.NOCONFIRMATION ||| FileOpFlags.NOCONFIRMMKDIR ||| FileOpFlags.MULTIDESTFILES

@@ -37,51 +37,6 @@ type DirectoryItem = {
 
 [<NoComparison>]
 type FileItem = {
-    //public static FileItem UpdateDate(FileItem itemToUpdate, DateTime date) => new FileItem(itemToUpdate, date);
-
-    //public static FileItem UpdateVersion(FileItem itemToUpdate, FileVersionInfo version) => new FileItem(itemToUpdate, version);
-
-    //public FileItem(int index, string name, string fullname, string extension, DateTime date, long size, bool isHidden)
-    //{
-    //    Index = index;
-    //    Name = name.GetNameOnly();
-    //    Extension = extension;
-    //    Date = date;
-    //    HasExifDate = false;
-    //    Size = size;
-    //    IsHidden = isHidden;
-    //    Version = null;
-
-    //    Icon = (Program.IsAngularServing ? "serve://commander/" : "") +
-    //        (string.Compare(extension, ".exe", true) == 0 ? "icon?path=" + fullname : "icon?path=" + extension);
-    //}
-
-    //FileItem(FileItem itemToUpdate, DateTime date)
-    //{
-    //    Index = itemToUpdate.Index;
-    //    Name = itemToUpdate.Name;
-    //    Extension = itemToUpdate.Extension;
-    //    HasExifDate = true;
-    //    Date = date;
-    //    Size = itemToUpdate.Size;
-    //    IsHidden = itemToUpdate.IsHidden;
-    //    Icon = itemToUpdate.Icon;
-    //    Version = null;
-    //}
-
-    //FileItem(FileItem itemToUpdate, FileVersionInfo version)
-    //{
-    //    Index = itemToUpdate.Index;
-    //    Name = itemToUpdate.Name;
-    //    Extension = itemToUpdate.Extension;
-    //    HasExifDate = false;
-    //    Date = itemToUpdate.Date;
-    //    Size = itemToUpdate.Size;
-    //    IsHidden = itemToUpdate.IsHidden;
-    //    Icon = itemToUpdate.Icon;
-    //    Version = version;
-    //}
-
     Index: int 
     Name: string 
     Extension: string 
@@ -193,7 +148,20 @@ let createFileResponse name ext (date: DateTime) (size: int64) version icon inde
 
 [<NoComparison>]
 type Response = {
-    //string ItemToSelect
     Path: string
     Items: seq<ResponseItem>
+}
+
+type Conflict = {
+    Source: string 
+    Target: string
+    CompareResult: int
+}
+
+type ConflictItem = {
+    Name: string
+    Icon: string
+    Size: Conflict
+    Time: Conflict
+    Version: Conflict option
 }
