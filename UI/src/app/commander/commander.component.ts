@@ -38,6 +38,10 @@ export class CommanderComponent implements OnInit, AfterViewInit, ICommander {
         this.zone.run(async () => await this.dialog.show())
     }
 
+    checkConflicts(conflicts: any) {
+        console.log("CheckConflicts", conflicts)
+    }
+
     onResize() {
         if (this.viewer)
             this.viewerRatio = (this.viewer.appElement.nativeElement as HTMLElement).clientHeight / document.body.clientHeight

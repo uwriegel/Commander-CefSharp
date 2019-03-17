@@ -18,6 +18,7 @@ type BrowserAccess = {
     SetRecentPath: string->unit
     ExecuteScript: string->obj option->Async<JavascriptResponse>
     ExecuteCommanderScript: string->obj option->Async<JavascriptResponse>
+    ExecuteCommanderScriptWithOptions: string->obj->Async<JavascriptResponse>
     ExecuteScriptWithParams: string->obj[]->Async<JavascriptResponse>
     MainWindow: nativeint
     Dispatcher: Control
@@ -241,6 +242,10 @@ type CommanderView(browserAccess: BrowserAccess) as this =
             let! refresh = 
                 match itemType with
                 | ItemType.Directory | ItemType.File -> 
+                    let conflicts = DirectoryProcessor.getConflicts currentItems selectedItems targetPath 
+                    match conflicts with
+                    | Some value -> browserAccess.ExecuteCommanderScriptWithOptions "checkConflicts" (value :> obj) |> ignore
+                    | None -> ()
                     DirectoryProcessor.copy currentItems selectedItems targetPath browserAccess.MainWindow browserAccess.Dispatcher
                 | _ -> async.Return false
             if refresh then this.Other.Refresh() 

@@ -195,7 +195,10 @@ let createFileOperationPaths (paths: seq<string>) =
     sb.Append (char 0) |> ignore
     sb.ToString()
 
-let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: nativeint) (dispatcher: Control) = async {
+let getCopyPathes (currentItems: Items) selectedItems (targetPath: string) = 
+    selectedItems |> Seq.choose (fun n -> currentItems |> getItemPathes n targetPath)
+
+let getConflicts (currentItems: Items) selectedItems (targetPath: string) = 
     let createConflictItem (sourceInfo: FileInfo) (targetInfo: FileInfo) = 
         let sourceVersion = let fvi = FileVersionInfo.GetVersionInfo sourceInfo.FullName in FileVersion.getVersion fvi
         let targetVersion = let fvi = FileVersionInfo.GetVersionInfo targetInfo.FullName in FileVersion.getVersion fvi
@@ -229,7 +232,7 @@ let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: n
                                      }
                 | _ -> None
         }
-    
+
     let rec getConflict ((source, target): string*string) =
         let sourceInfo = DirectoryInfo(source)
         match sourceInfo.Exists with
@@ -246,7 +249,7 @@ let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: n
             match targetInfo.Exists, source <> target with 
             | true, true -> Some [| (source, target, createConflictItem sourceInfo targetInfo) |] 
             | _, _ -> None 
-    
+
     and getConflicts (pathes: seq<string*string>) = 
         let result = 
             pathes |> Seq.choose (fun n -> getConflict n)
@@ -257,13 +260,13 @@ let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: n
         else
             None
 
-    let pathes = selectedItems |> Seq.choose (fun n -> currentItems |> getItemPathes n targetPath)
-    let test = getConflicts pathes 
-    let test2 = 
-        match test with 
-        | Some value -> Json.serializeWithOptions value
-        | None -> ""
+    let pathes = getCopyPathes currentItems selectedItems targetPath
+    match getConflicts pathes with 
+    | Some value when value.Length > 0 -> Some value
+    | _ -> None
 
+let copy (currentItems: Items) selectedItems (targetPath: string) (mainWindow: nativeint) (dispatcher: Control) = async {
+    let pathes = getCopyPathes currentItems selectedItems targetPath
     let mutable fileop = SHFILEOPSTRUCT()
     fileop.Flags <- FileOpFlags.NOCONFIRMATION ||| FileOpFlags.NOCONFIRMMKDIR ||| FileOpFlags.MULTIDESTFILES
     fileop.Hwnd <- mainWindow

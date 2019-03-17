@@ -36,6 +36,10 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
             | None -> ""
         browser.EvaluateScriptAsync(clss + "." + method + "(" + json + ")") |> Async.AwaitTask
 
+    let executeScriptWithOptions clss (method: string) (param: 'T) = 
+        let json = Json.serializeWithOptions param
+        browser.EvaluateScriptAsync(clss + "." + method + "(" + json + ")") |> Async.AwaitTask
+
     let executeScriptWithParams clss (method: string) (parameters: obj[]) =
         browser.EvaluateScriptAsync(clss + "." + method, parameters) |> Async.AwaitTask
 
@@ -48,6 +52,7 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         SetRecentPath = (fun path -> Resources.Settings.Default.LeftRecentPath <- path)
         ExecuteScript = executeScript "commanderViewLeft"
         ExecuteCommanderScript = executeScript "commander"
+        ExecuteCommanderScriptWithOptions = executeScriptWithOptions "commander"
         ExecuteScriptWithParams = executeScriptWithParams "commanderViewLeft"
         MainWindow = host.MainWindow
         Dispatcher = browser
@@ -57,6 +62,7 @@ type Browser (host, browser: ChromiumWebBrowser) as this =
         SetRecentPath = (fun path -> Resources.Settings.Default.RightRecentPath <- path)
         ExecuteScript = executeScript "commanderViewRight"
         ExecuteCommanderScript = executeScript "commander"
+        ExecuteCommanderScriptWithOptions = executeScriptWithOptions "commander"
         ExecuteScriptWithParams = executeScriptWithParams "commanderViewRight"
         MainWindow = host.MainWindow
         Dispatcher = browser
